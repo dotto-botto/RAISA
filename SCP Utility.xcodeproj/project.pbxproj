@@ -1,0 +1,620 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6040514296248F8003577D7 /* SCP_UtilityApp.swift */; };
+		F6040519296248F8003577D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6040518296248F8003577D7 /* Assets.xcassets */; };
+		F604051C296248F8003577D7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F604051B296248F8003577D7 /* Preview Assets.xcassets */; };
+		F6040526296248F9003577D7 /* SCP_UtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6040525296248F9003577D7 /* SCP_UtilityTests.swift */; };
+		F6040530296248F9003577D7 /* SCP_UtilityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604052F296248F9003577D7 /* SCP_UtilityUITests.swift */; };
+		F6040532296248F9003577D7 /* SCP_UtilityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6040531296248F9003577D7 /* SCP_UtilityUITestsLaunchTests.swift */; };
+		F604053F29624968003577D7 /* Article in Resources */ = {isa = PBXBuildFile; fileRef = F604053E29624968003577D7 /* Article */; };
+		F604054529624A21003577D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054029624A21003577D7 /* ContentView.swift */; };
+		F604054629624A21003577D7 /* CustomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054129624A21003577D7 /* CustomListView.swift */; };
+		F604054729624A21003577D7 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054229624A21003577D7 /* ListView.swift */; };
+		F604054829624A21003577D7 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054329624A21003577D7 /* HistoryView.swift */; };
+		F604054929624A21003577D7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054429624A21003577D7 /* HomeView.swift */; };
+		F604054B29624A3F003577D7 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054A29624A3F003577D7 /* SearchView.swift */; };
+		F604054D29624BB3003577D7 /* ArticleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054C29624BB3003577D7 /* ArticleItem.swift */; };
+		F604054F29624BB7003577D7 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054E29624BB7003577D7 /* ArticleView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F6040522296248F9003577D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F6040509296248F8003577D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6040510296248F8003577D7;
+			remoteInfo = "SCP Utility";
+		};
+		F604052C296248F9003577D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F6040509296248F8003577D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6040510296248F8003577D7;
+			remoteInfo = "SCP Utility";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F6040511296248F8003577D7 /* SCP Utility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SCP Utility.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6040514296248F8003577D7 /* SCP_UtilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP_UtilityApp.swift; sourceTree = "<group>"; };
+		F6040518296248F8003577D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F604051B296248F8003577D7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F6040521296248F9003577D7 /* SCP UtilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SCP UtilityTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6040525296248F9003577D7 /* SCP_UtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP_UtilityTests.swift; sourceTree = "<group>"; };
+		F604052B296248F9003577D7 /* SCP UtilityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SCP UtilityUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F604052F296248F9003577D7 /* SCP_UtilityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP_UtilityUITests.swift; sourceTree = "<group>"; };
+		F6040531296248F9003577D7 /* SCP_UtilityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP_UtilityUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F604053E29624968003577D7 /* Article */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Article; sourceTree = "<group>"; };
+		F604054029624A21003577D7 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F604054129624A21003577D7 /* CustomListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomListView.swift; sourceTree = "<group>"; };
+		F604054229624A21003577D7 /* ListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
+		F604054329624A21003577D7 /* HistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		F604054429624A21003577D7 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F604054A29624A3F003577D7 /* SearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		F604054C29624BB3003577D7 /* ArticleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleItem.swift; sourceTree = "<group>"; };
+		F604054E29624BB7003577D7 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F604050E296248F8003577D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F604051E296248F9003577D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6040528296248F9003577D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F6040508296248F8003577D7 = {
+			isa = PBXGroup;
+			children = (
+				F6040513296248F8003577D7 /* SCP Utility */,
+				F6040524296248F9003577D7 /* SCP UtilityTests */,
+				F604052E296248F9003577D7 /* SCP UtilityUITests */,
+				F6040512296248F8003577D7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F6040512296248F8003577D7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F6040511296248F8003577D7 /* SCP Utility.app */,
+				F6040521296248F9003577D7 /* SCP UtilityTests.xctest */,
+				F604052B296248F9003577D7 /* SCP UtilityUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F6040513296248F8003577D7 /* SCP Utility */ = {
+			isa = PBXGroup;
+			children = (
+				F604054029624A21003577D7 /* ContentView.swift */,
+				F604054A29624A3F003577D7 /* SearchView.swift */,
+				F604054129624A21003577D7 /* CustomListView.swift */,
+				F604054329624A21003577D7 /* HistoryView.swift */,
+				F604054429624A21003577D7 /* HomeView.swift */,
+				F604054229624A21003577D7 /* ListView.swift */,
+				F6040514296248F8003577D7 /* SCP_UtilityApp.swift */,
+				F604054C29624BB3003577D7 /* ArticleItem.swift */,
+				F604054E29624BB7003577D7 /* ArticleView.swift */,
+				F604053E29624968003577D7 /* Article */,
+				F6040518296248F8003577D7 /* Assets.xcassets */,
+				F604051A296248F8003577D7 /* Preview Content */,
+			);
+			path = "SCP Utility";
+			sourceTree = "<group>";
+		};
+		F604051A296248F8003577D7 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F604051B296248F8003577D7 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F6040524296248F9003577D7 /* SCP UtilityTests */ = {
+			isa = PBXGroup;
+			children = (
+				F6040525296248F9003577D7 /* SCP_UtilityTests.swift */,
+			);
+			path = "SCP UtilityTests";
+			sourceTree = "<group>";
+		};
+		F604052E296248F9003577D7 /* SCP UtilityUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F604052F296248F9003577D7 /* SCP_UtilityUITests.swift */,
+				F6040531296248F9003577D7 /* SCP_UtilityUITestsLaunchTests.swift */,
+			);
+			path = "SCP UtilityUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F6040510296248F8003577D7 /* SCP Utility */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6040535296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP Utility" */;
+			buildPhases = (
+				F604050D296248F8003577D7 /* Sources */,
+				F604050E296248F8003577D7 /* Frameworks */,
+				F604050F296248F8003577D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SCP Utility";
+			productName = "SCP Utility";
+			productReference = F6040511296248F8003577D7 /* SCP Utility.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F6040520296248F9003577D7 /* SCP UtilityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6040538296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP UtilityTests" */;
+			buildPhases = (
+				F604051D296248F9003577D7 /* Sources */,
+				F604051E296248F9003577D7 /* Frameworks */,
+				F604051F296248F9003577D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F6040523296248F9003577D7 /* PBXTargetDependency */,
+			);
+			name = "SCP UtilityTests";
+			productName = "SCP UtilityTests";
+			productReference = F6040521296248F9003577D7 /* SCP UtilityTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F604052A296248F9003577D7 /* SCP UtilityUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F604053B296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP UtilityUITests" */;
+			buildPhases = (
+				F6040527296248F9003577D7 /* Sources */,
+				F6040528296248F9003577D7 /* Frameworks */,
+				F6040529296248F9003577D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F604052D296248F9003577D7 /* PBXTargetDependency */,
+			);
+			name = "SCP UtilityUITests";
+			productName = "SCP UtilityUITests";
+			productReference = F604052B296248F9003577D7 /* SCP UtilityUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F6040509296248F8003577D7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					F6040510296248F8003577D7 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					F6040520296248F9003577D7 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = F6040510296248F8003577D7;
+					};
+					F604052A296248F9003577D7 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = F6040510296248F8003577D7;
+					};
+				};
+			};
+			buildConfigurationList = F604050C296248F8003577D7 /* Build configuration list for PBXProject "SCP Utility" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F6040508296248F8003577D7;
+			productRefGroup = F6040512296248F8003577D7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F6040510296248F8003577D7 /* SCP Utility */,
+				F6040520296248F9003577D7 /* SCP UtilityTests */,
+				F604052A296248F9003577D7 /* SCP UtilityUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F604050F296248F8003577D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F604053F29624968003577D7 /* Article in Resources */,
+				F604051C296248F8003577D7 /* Preview Assets.xcassets in Resources */,
+				F6040519296248F8003577D7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F604051F296248F9003577D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6040529296248F9003577D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F604050D296248F8003577D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F604054729624A21003577D7 /* ListView.swift in Sources */,
+				F604054529624A21003577D7 /* ContentView.swift in Sources */,
+				F604054829624A21003577D7 /* HistoryView.swift in Sources */,
+				F604054B29624A3F003577D7 /* SearchView.swift in Sources */,
+				F604054929624A21003577D7 /* HomeView.swift in Sources */,
+				F604054629624A21003577D7 /* CustomListView.swift in Sources */,
+				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
+				F604054F29624BB7003577D7 /* ArticleView.swift in Sources */,
+				F604054D29624BB3003577D7 /* ArticleItem.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F604051D296248F9003577D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6040526296248F9003577D7 /* SCP_UtilityTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6040527296248F9003577D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6040532296248F9003577D7 /* SCP_UtilityUITestsLaunchTests.swift in Sources */,
+				F6040530296248F9003577D7 /* SCP_UtilityUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F6040523296248F9003577D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6040510296248F8003577D7 /* SCP Utility */;
+			targetProxy = F6040522296248F9003577D7 /* PBXContainerItemProxy */;
+		};
+		F604052D296248F9003577D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6040510296248F8003577D7 /* SCP Utility */;
+			targetProxy = F604052C296248F9003577D7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F6040533296248F9003577D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F6040534296248F9003577D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F6040536296248F9003577D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SCP Utility/Preview Content\"";
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-Utility";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F6040537296248F9003577D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SCP Utility/Preview Content\"";
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-Utility";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F6040539296248F9003577D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-UtilityTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SCP Utility.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SCP Utility";
+			};
+			name = Debug;
+		};
+		F604053A296248F9003577D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-UtilityTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SCP Utility.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SCP Utility";
+			};
+			name = Release;
+		};
+		F604053C296248F9003577D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-UtilityUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "SCP Utility";
+			};
+			name = Debug;
+		};
+		F604053D296248F9003577D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KY577C2LT2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mharding.SCP-UtilityUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "SCP Utility";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F604050C296248F8003577D7 /* Build configuration list for PBXProject "SCP Utility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6040533296248F9003577D7 /* Debug */,
+				F6040534296248F9003577D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6040535296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP Utility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6040536296248F9003577D7 /* Debug */,
+				F6040537296248F9003577D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6040538296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP UtilityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6040539296248F9003577D7 /* Debug */,
+				F604053A296248F9003577D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F604053B296248F9003577D7 /* Build configuration list for PBXNativeTarget "SCP UtilityUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F604053C296248F9003577D7 /* Debug */,
+				F604053D296248F9003577D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F6040509296248F8003577D7 /* Project object */;
+}
