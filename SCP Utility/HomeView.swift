@@ -11,26 +11,27 @@ import Foundation
 
 struct HomeView: View {
     @State private var path = NavigationPath()
+    @State var query: String
+    @State var nextView: Bool = false
     var body: some View {
-        NavigationSplitView {
-            ContentView()
-        } detail: {
-            NavigationStack(path: $path) {
-                ArticleView(scpquery: "5000")
+        NavigationView {
+            Text("TODO")
+            
+            if nextView {
+                ArticleView(scpquery: query)
             }
         }
+        .navigationTitle("Home")
+        .searchable(text: $query)
+        .onSubmit {
+            nextView = true
+        }
     }
-//    @State var query: String
-//    private var path: savedscps = []
-//    var body: some View {
-//        NavigationStack(path: HomeView) {
-//            List {
-////                Text("Search!")
-////                TextField("SCP-2317, 2317, Tufto's Proposal", text: $query,).textFieldStyle(.roundedBorder)
-//                NavigationLink("",value: <#T##P?#>)
-//            }
-//            .navigationDestination
-//        }
-//
-//    }
 }
+
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView(query: "1000")
+    }
+}
+
