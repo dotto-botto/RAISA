@@ -40,45 +40,23 @@ query Search($query: String! = "\(query)") {
 
 
 // https://api.crom.avn.sh/graphql
-//private func CromData(query: String, completion: @escaping (Result<[String: Data]>)) async -> Data {
-//    let headers: HTTPHeaders = [
-//        "Content-Type": "application/json"
-//    ]
-//
-//    let queryhttp = "http" + query.dropFirst(5) // The query has to be http
-//    let parameters: [String: String] = [
-//        "query": query
-//    ]
-//
-//    let url = "https://api.crom.avn.sh/graphql"
-//    var dataResponse = Data()
-////    let serialQueue = DispatchQueue(label: "serial.queue")
-////
-////    serialQueue.async {
-////        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseData { response in
-////            switch response.result {
-////            case .success(let data):
-////                dataResponse = data
-////            case .failure(let error):
-////                print("Error: \(error)")
-////            }
-////        }
-////    }
-////    serialQueue.async {
-////        return dataResponse
-////    }
-//
-//    AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseData { response in
-//        switch response.result {
-//        case .success(let data):
-//            dataResponse = data
-//        case .failure(let error):
-//            print("Error: \(error)")
-//        }
-//    }
-//
-//    return await dataResponse
-//}
+func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) -> Void) {
+    let headers: HTTPHeaders = [
+        "Content-Type": "application/json"
+    ]
+    
+    let url = "https://api.crom.avn.sh/graphql"
+    
+
+    AF.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).responseData { response in
+        switch response.result {
+        case .success(let data):
+            completion(data, nil)
+        case .failure(let error):
+            completion(nil, error)
+        }
+    }
+}
 
 func cromURLSearch(query: String) -> Article {
     var dataResponse = Data()
@@ -126,13 +104,8 @@ func cromURLSearch(query: String) -> Article {
     
 }
 
-func cromAPISearch(query: String) -> [Article] {
-    var dataResponse = Data()
-    
-    let headers: HTTPHeaders = [
-        "Content-Type": "application/json"
-    ]
-
+var dataResponse = Data()
+func cromAPISearch(query: String, completion: @escaping ([Article]) -> Void) {
     let parameters: [String: String] = [
         "query": (CromQuery(query: query))
     ]
@@ -140,34 +113,31 @@ func cromAPISearch(query: String) -> [Article] {
     let url = "https://api.crom.avn.sh/graphql"
     var responseJSON: JSON = JSON()
     
-    AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseData { response in
-        switch response.result {
-        case .success(let data):
-            dataResponse = data
-        case .failure(let error):
-            print("Error: \(error)")
-        }
-    }
     
     var articles: [Article] = []
-        do {
-            responseJSON = try JSON(data: dataResponse)
-        } catch {
+    cromRequest(params: parameters) { data, error in
+        if let error {
             print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            for pages in responseJSON["data"]["searchPages"].arrayValue {
+                let title = pages["wikidotInfo"]["title"]
+                let source = pages["wikidotInfo"]["source"]
+                let pic = pages["wikidotInfo"]["thumbnailUrl"]
+
+                articles.append(Article(
+                    title: title.string ?? "Could not find title",
+                    pagesource: source.string ?? "Could not find pagesource",
+                    thumbnail: pic.url ?? nil
+                ))
+            }
+            completion(articles)
         }
-
-        for pages in responseJSON["data"]["searchPages"].arrayValue {
-            let title = pages["wikidotInfo"]["title"]
-            let source = pages["wikidotInfo"]["source"]
-            let pic = pages["wikidotInfo"]["thumbnailUrl"]
-
-            articles.append(Article(
-                title: title.string ?? "Could not find title",
-                pagesource: source.string ?? "Could not find pagesource",
-                thumbnail: pic.url ?? nil
-            ))
-        }
-
-    return articles
+    }
 }
 

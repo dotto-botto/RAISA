@@ -24,12 +24,24 @@ struct Article: Identifiable, Codable {
     init(
         title: String,
         pagesource: String,
-        thumbnail: URL? = nil
+        thumbnail: URL? = nil,
+        
+        objclass: ObjectClass? = nil,
+        esoteric: EsotericClass? = nil,
+        clearance: String? = nil,
+        disruption: DisruptionClass? = nil,
+        risk: RiskClass? = nil
     ) {
         self.id = UUID().uuidString
         self.title = title
         self.pagesource = pagesource
         self.thumbnail = thumbnail ?? nil
+        
+        self.objclass = objclass ?? nil
+        self.esoteric = esoteric ?? nil
+        self.clearance = clearance ?? nil
+        self.disruption = disruption ?? nil
+        self.risk = risk ?? nil
     }
     
     /// Create an article from core data object.

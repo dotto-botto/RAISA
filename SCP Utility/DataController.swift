@@ -70,8 +70,10 @@ struct PersistenceController {
     /// Delete all core data.
     func deleteAllData(context: NSManagedObjectContext? = nil) {
         deleteAllLists(context: context)
-        deleteAllHistory(context: context)
         deleteAllArticles(context: context)
+        #if os(iOS)
+        deleteAllHistory(context: context)
+        #endif
     }
 }
 
@@ -390,6 +392,7 @@ extension PersistenceController {
 }
 
 // MARK: - History Operations
+#if os(iOS)
 extension PersistenceController {
     /// Retrieve all saved history entities.
     func getAllHistory(context: NSManagedObjectContext? = nil) -> [HistoryItem]? {
@@ -463,3 +466,4 @@ extension PersistenceController {
         }
     }
 }
+#endif

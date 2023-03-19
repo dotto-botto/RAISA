@@ -25,13 +25,15 @@ struct SearchView: View {
         }
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
-             articles = cromAPISearch(query: query)
+            cromAPISearch(query: query) { scp in
+                articles = scp
+            }
         }
     }
 }
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(query: "1000")
+        SearchView()
     }
 }

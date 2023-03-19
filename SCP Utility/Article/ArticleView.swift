@@ -7,9 +7,10 @@
 
 import SwiftUI
 import Foundation
+#if os(iOS)
 import Kingfisher
 import MarkdownUI
-
+#endif
 
 // TODO: - Optimize redundant checks
 func testValid(item: String) -> Bool {
@@ -55,11 +56,15 @@ struct ArticleView: View {
 //        let document = scp.pagesource
         
         let mode = defaults.integer(forKey: "articleViewSetting")
+        #if os(iOS)
         let _ = PersistenceController.shared.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-
+        #endif
+        
         ScrollView {
+            #if os(iOS)
             if scp.thumbnail != nil && defaults.bool(forKey: "showImages") { KFImage(scp.thumbnail).frame(width: 425)
             }
+            #endif
     
             VStack {
                 if mode == 0 || mode == 1 {
@@ -195,6 +200,6 @@ extension String {
 
 struct ArticleView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: "Example"))
+        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: "Lorem Ipsum"))
     }
 }

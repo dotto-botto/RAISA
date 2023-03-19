@@ -37,33 +37,7 @@ struct ArticleRow: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 30, height: 30)
                         .contextMenu {
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .apollyon)
-                            } label: { Label("APOLLYON", image: "apollyon-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .archon)
-                            } label: { Label("ARCHON", image: "archon-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .cernunnos)
-                            } label: { Label("CERNUNNOS", image: "cernunnos-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .decommissioned)
-                            } label: { Label("DECOMMISSIONED", image: "decommissioned-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .hiemal)
-                            } label: { Label("HIEMAL", image: "hiemal-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .tiamat)
-                            } label: { Label("TIAMAT", image: "tiamat-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .ticonderoga)
-                            } label: { Label("TICONDEROGA", image: "ticonderoga-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .thaumiel)
-                            } label: { Label("THAUMIEL", image: "thaumiel-icon") }
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: .uncontained)
-                            } label: { Label("UNCONTAINED", image: "uncontained-icon") }
+                            
                         }.disabled(!localArticle)
                 }
                 ZStack {
@@ -82,9 +56,37 @@ struct ArticleRow: View {
                 
             } label: { Image(systemName: "trash") }
             
-            Button {
-                
-            } label: { Image(systemName: "ellipsis") }
+            NavigationLink {
+                Menu {
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .apollyon)
+                    } label: { Label("APOLLYON", image: "apollyon-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .archon)
+                    } label: { Label("ARCHON", image: "archon-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .cernunnos)
+                    } label: { Label("CERNUNNOS", image: "cernunnos-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .decommissioned)
+                    } label: { Label("DECOMMISSIONED", image: "decommissioned-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .hiemal)
+                    } label: { Label("HIEMAL", image: "hiemal-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .tiamat)
+                    } label: { Label("TIAMAT", image: "tiamat-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .ticonderoga)
+                    } label: { Label("TICONDEROGA", image: "ticonderoga-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .thaumiel)
+                    } label: { Label("THAUMIEL", image: "thaumiel-icon") }
+                    Button {
+                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .uncontained)
+                    } label: { Label("UNCONTAINED", image: "uncontained-icon") }
+                } label: {}
+            } label: { Image("esoteric-icon").colorInvert() }
         }
         .disabled(!localArticle)
     }

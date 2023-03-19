@@ -25,7 +25,6 @@ struct ListView: View {
             if items == nil {
                 (Text("Tap \"") + Text(Image(systemName: "plus")) + Text("\" to make a list")).foregroundColor(.gray)
             } else {
-//                NavigationLink("ALL_SAVED_ARTICLES") { AllArticleView() }
                 List(items!) { item in
                     let newItem = SCPList(fromEntity: item)
                     
@@ -83,6 +82,23 @@ struct OneListView: View {
     }
     
     var body: some View {
+//        HStack {
+//            Text("tlou2 is bad for multiple reasons")
+//                .foregroundColor(.gray)
+//                .padding(.leading)
+//            Spacer()
+//        }
+        // Custom search bar, to be able to display a subtitle
+        // Commented out becuase I think it looks better without
+//        HStack {
+//            Image(systemName: "magnifyingglass")
+//            TextField("Search", text: $query)
+//                .foregroundColor(.primary)
+//        }
+//        .padding(.vertical, 8)
+//        .padding(.horizontal, 5)
+//        .background(Color(.systemGray5))
+//        .cornerRadius(10)
         if searchResults != nil {
             List {
                 ForEach(searchResults!, id: \.self) { item in
@@ -118,20 +134,6 @@ struct OneListView: View {
         }
     }
 }
-
-struct AllArticleView: View {
-    var body: some View {
-        let articles = PersistenceController.shared.getAllArticles()
-        List {
-            if articles != nil {
-                ForEach(articles!) { article in
-                    ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
-                }
-            }
-        }
-    }
-}
-
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {

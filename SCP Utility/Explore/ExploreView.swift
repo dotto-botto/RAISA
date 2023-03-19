@@ -47,7 +47,7 @@ struct ExploreView: View {
                 
                 // MARK: - Spotlights
                 Text("FEATURED_SCP").bold()
-//                ArticleSpotlight(scp: cromURLSearch(query: <#T##String#>))
+//                ArticleSpotlight(scp: cromURLSearch(query: ))
                 Text("FEATURED_TALE").bold()
                 
                 Text("FEATURED_GOI").bold()
