@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ArticleItem" representedClassName=".ArticleItem" syncable="YES" codeGenerationType="class">
+        <attribute name="clearance" optional="YES" attributeType="String"/>
+        <attribute name="currenttext" optional="YES" attributeType="String"/>
+        <attribute name="disruption" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="esoteric" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="objclass" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pagesource" optional="YES" attributeType="String"/>
+        <attribute name="risk" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="URI"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="HistoryItem" representedClassName=".HistoryItem" syncable="YES" codeGenerationType="class">
+        <attribute name="articletitle" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="thumbnail" optional="YES" attributeType="URI"/>
+    </entity>
+    <entity name="SCPListItem" representedClassName=".SCPListItem" syncable="YES" codeGenerationType="class">
+        <attribute name="contents" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName=".[String]"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="listid" optional="YES" attributeType="String"/>
+    </entity>
+</model>

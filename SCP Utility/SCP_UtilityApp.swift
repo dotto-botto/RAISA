@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct SCP_UtilityApp: App {
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.managedObjectContext) var Context
+
+
+    let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environment(\.managedObjectContext, persistenceController.container.viewContext)
+        }
+        .onChange(of: scenePhase) { _ in
+            persistenceController.save()
         }
     }
 }

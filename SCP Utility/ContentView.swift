@@ -4,21 +4,34 @@
 //
 //  Created by Maximus Harding on 12/25/22.
 //
-// Inspired by The Wikipedia App
-// https://github.com/wikimedia/wikipedia-ios/tree/main/Wikipedia/Code
 
 import SwiftUI
-import UIKit
 
 struct ContentView: View {
+    
+    enum Tab {
+        case home
+        case list
+        case history
+        case search
+        case settings
+    }
+    
+    @State private var selection: Tab = .home
+    
     var body: some View {
-        TabView(selection: .constant(1)) {
-            HomeView().tabItem { Label("Home", systemImage: "house")  }.tag(1)
-            ListView().tabItem { Label("Lists", systemImage: "bookmark")  }.tag(2)
-            HistoryView().tabItem { Label("History", systemImage: "clock")  }.tag(3)
-            SearchView().tabItem { Label("Search", systemImage: "magnifyingglass")  }.tag(4)
+        TabView(selection: $selection) {
+            ExploreView()
+            .tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }.tag(Tab.home)
+            ListView()
+            .tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }.tag(Tab.list)
+            SearchView()
+            .tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }.tag(Tab.search)
+            HistoryView()
+            .tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }.tag(Tab.history)
+            SettingsView()
+            .tabItem { Label("TABBAR_SETTINGS", systemImage: "gearshape")  }.tag(Tab.settings)
         }
-        .padding()
     }
 }
 
