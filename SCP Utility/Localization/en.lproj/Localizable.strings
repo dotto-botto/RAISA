@@ -55,6 +55,7 @@
 "TABBAR_HISTORY" = "History";
 "TABBAR_SEARCH" = "Search";
 "TABBAR_SETTINGS" = "Settings";
+"LOADING" = "Loading...";
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
