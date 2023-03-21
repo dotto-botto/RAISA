@@ -374,6 +374,52 @@ extension PersistenceController {
         }
     }
     
+    /// Update the disruption class of an article.
+    func updateDisruptionClass(articleid: String, newattr: DisruptionClass, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+        
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", articleid)
+        
+        do {
+            if let article = try context.fetch(request).first {
+                switch newattr {
+                case .dark: article.disruption = 0
+                case .vlam: article.disruption = 1
+                case .keneq: article.disruption = 2
+                case .ekhi: article.disruption = 3
+                case .amida: article.disruption = 4
+                }
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
+    /// Update the risk class of an article.
+    func updateRiskClass(articleid: String, newattr: RiskClass, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+        
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", articleid)
+        
+        do {
+            if let article = try context.fetch(request).first {
+                switch newattr {
+                case .notice: article.risk = 0
+                case .caution: article.risk = 1
+                case .warning: article.risk = 2
+                case .danger: article.risk = 3
+                case .critical: article.risk = 4
+                }
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
     /// Delete all article items in core data.
     func deleteAllArticles(context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext
