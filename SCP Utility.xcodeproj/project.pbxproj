@@ -144,7 +144,7 @@
 				F6040514296248F8003577D7 /* SCP_UtilityApp.swift */,
 				F6DFED00299AEFC6002C3F1A /* DataController.swift */,
 				F604054029624A21003577D7 /* ContentView.swift */,
-				F6921A0029BA9D3F00EF19D0 /* SettingsView.swift */,
+				F6A092A729C7EA5C00E661A0 /* Settings */,
 				F6921A0229BAA5DE00EF19D0 /* History */,
 				F69219FB29BA6C5B00EF19D0 /* Explore */,
 				F6DFED04299EF08D002C3F1A /* Search */,
@@ -191,6 +191,14 @@
 				F6921A0529BAA70700EF19D0 /* History.swift */,
 			);
 			path = History;
+			sourceTree = "<group>";
+		};
+		F6A092A729C7EA5C00E661A0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F6921A0029BA9D3F00EF19D0 /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		F6B0C1E029C76D8E00C5BD98 /* SCP Watch Utility Watch App */ = {

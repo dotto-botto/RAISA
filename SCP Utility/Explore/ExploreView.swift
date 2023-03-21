@@ -21,9 +21,22 @@ private func parseHomePage() -> [String?] {
         let issue2: Element? = try body?.getElementsByClass("news")[1]
         let date2: String? = try issue2?.getElementById("toc1")?.text()
         let content2: String? = try issue2!.getElementsByTag("p").first()?.text()
-
         
-        return [date1, content1, date2, content2]
+        let url1: String? = try body?.getElementById("toc2")?.select("a").first()?.attr("href")
+        let url2: String? = try body?.getElementById("toc3")?.select("a").first()?.attr("href")
+        let url3: String? = try body?.getElementById("toc4")?.select("a").first()?.attr("href")
+        let url4: String? = try body?.getElementById("toc5")?.select("a").first()?.attr("href")
+
+        return [
+            date1,    // 0
+            content1, // 1
+            date2,    // 2
+            content2, // 3
+            url1,     // 4
+            url2,     // 5
+            url3,     // 6
+            url4      // 7
+        ]
     } catch {
         print(error)
         return [nil]
@@ -31,13 +44,16 @@ private func parseHomePage() -> [String?] {
 }
 
 struct ExploreView: View {
+    @State var article1 = Article(title: "", pagesource: "")
+    @State var article2 = Article(title: "", pagesource: "")
+    @State var article3 = Article(title: "", pagesource: "")
+    @State var article4 = Article(title: "", pagesource: "")
     var body: some View {
         let news = parseHomePage()
         
         ScrollView {
             VStack {
                 // MARK: - Site News
-                Text("SITE_NEWS")
                 if news[0] != nil && news[1] != nil && news[2] != nil && news[3] != nil  {
                     Text(news[0]!).bold().padding(.trailing)
                     Text(news[1]!).padding(.trailing)
@@ -46,8 +62,13 @@ struct ExploreView: View {
                 }
                 
                 // MARK: - Spotlights
-                Text("FEATURED_SCP").bold()
-//                ArticleSpotlight(scp: cromURLSearch(query: ))
+                if news[4] != nil {
+                    Text("FEATURED_SCP").bold()
+                    let _ = cromAPISearchFromURL(query: news[4]!) { article in
+                        article1 = article
+                    }
+                    ArticleSpotlight(scp: article1)
+                }
                 Text("FEATURED_TALE").bold()
                 
                 Text("FEATURED_GOI").bold()
@@ -57,8 +78,8 @@ struct ExploreView: View {
                 Text("FEATURED_ART").bold()
                 
             }
+            .navigationTitle("SITE_NEWS")
         }
-        .navigationTitle("EXPLORE_TITLE")
     }
 }
 

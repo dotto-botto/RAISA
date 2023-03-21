@@ -82,8 +82,9 @@ struct OneListView: View {
     }
     
     var body: some View {
+        let _ = PersistenceController(inMemory: false)
 //        HStack {
-//            Text("tlou2 is bad for multiple reasons")
+//            Text("Subtitle")
 //                .foregroundColor(.gray)
 //                .padding(.leading)
 //            Spacer()

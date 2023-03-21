@@ -12,7 +12,13 @@ struct ArticleSpotlight: View {
     @State var scp: Article
     var body: some View {
         VStack {
-            Text(scp.title)
+            HStack {
+                Text(scp.title)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.leading)
+                Spacer()
+            }
             HStack {
                 Spacer()
                 ZStack{
@@ -30,17 +36,25 @@ struct ArticleSpotlight: View {
                 ZStack{
                     if scp.risk != nil { Image(scp.risk!.toImage()) }
                 }
-//                ForEach([scp.objclass, scp.esoteric, scp.disruption, scp.risk]) { attr in
-//                    ZStack {
-//                        Image(attr!.toImage())
-//                    }
-//
-//                }
                 Spacer()
             }
         }
+        .padding(10)
+        .cornerRadius(15)
         .background {
-            if scp.thumbnail != nil { KFImage(scp.thumbnail!) }
+            if scp.thumbnail != nil {
+                KFImage(scp.thumbnail!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .opacity(0.5)
+                // https://stackoverflow.com/a/69092800
+                    .mask(LinearGradient(gradient: Gradient(stops: [
+                                .init(color: .black, location: 0),
+                                .init(color: .clear, location: 1),
+                                .init(color: .black, location: 1),
+                                .init(color: .clear, location: 1)
+                            ]), startPoint: .top, endPoint: .bottom))
+            }
         }
     }
 }
