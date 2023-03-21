@@ -30,63 +30,81 @@ struct ArticleRow: View {
         NavigationLink(destination: ArticleView(scp: passedSCP)) {
             HStack {
                 Text(passedSCP.title)
+                    .lineLimit(2)
                 Spacer()
                 ZStack {
-                    Image(passedSCP.esoteric?.toImage() ?? "")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 30, height: 30)
-                        .contextMenu {
-                            
-                        }.disabled(!localArticle)
+                    Menu {
+                        ForEach(EsotericClass.allCases, id: \.self) { eso in
+                            Button {
+                                con.updateEsotericClass(articleid: passedSCP.id, newattr: eso)
+                            } label: {
+                                Label(eso.toLocalString(), image: eso.toImage())
+                            }
+                        }
+                    } label: {
+                        Image(passedSCP.esoteric?.toImage() ?? "")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
+                    }
                 }
                 ZStack {
-                    Image(passedSCP.objclass?.toImage() ?? "")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 30, height: 30)
-                        .contextMenu {
-                            
+                    Menu {
+                        ForEach(ObjectClass.allCases, id: \.self) { obj in
+                            Button {
+                                con.updateObjectClass(articleid: passedSCP.id, newattr: obj)
+                            } label: {
+                                Label(obj.toLocalString(), image: obj.toImage())
+                            }
                         }
+                    } label: {
+                        Image(passedSCP.objclass?.toImage() ?? "")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
+                    }
+                }
+                ZStack {
+                    Menu {
+                        ForEach(RiskClass.allCases, id: \.self) { ris in
+                            Button {
+                                con.updateRiskClass(articleid: passedSCP.id, newattr: ris)
+                            } label: {
+                                Label(ris.toLocalString(), image: ris.toImage())
+                            }
+                        }
+                    } label: {
+                        Image(passedSCP.risk?.toImage() ?? "")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
+                    }
+                }
+                ZStack {
+                    Menu {
+                        ForEach(DisruptionClass.allCases, id: \.self) { dis in
+                            Button {
+                                con.updateDisruptionClass(articleid: passedSCP.id, newattr: dis)
+                            } label: {
+                                Label(dis.toLocalString(), image: dis.toImage())
+                            }
+                        }
+                    } label: {
+                        Image(passedSCP.disruption?.toImage() ?? "")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
+                    }
                 }
             }
         }
-        .swipeActions {
+        .swipeActions(allowsFullSwipe: false) {
             Button(role: .destructive) {
-                
+                con.deleteArticleEntity(articleitem: passedSCP)
             } label: { Image(systemName: "trash") }
-            
-            NavigationLink {
-                Menu {
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .apollyon)
-                    } label: { Label("APOLLYON", image: "apollyon-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .archon)
-                    } label: { Label("ARCHON", image: "archon-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .cernunnos)
-                    } label: { Label("CERNUNNOS", image: "cernunnos-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .decommissioned)
-                    } label: { Label("DECOMMISSIONED", image: "decommissioned-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .hiemal)
-                    } label: { Label("HIEMAL", image: "hiemal-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .tiamat)
-                    } label: { Label("TIAMAT", image: "tiamat-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .ticonderoga)
-                    } label: { Label("TICONDEROGA", image: "ticonderoga-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .thaumiel)
-                    } label: { Label("THAUMIEL", image: "thaumiel-icon") }
-                    Button {
-                        con.updateEsotericClass(articleid: passedSCP.id, newattr: .uncontained)
-                    } label: { Label("UNCONTAINED", image: "uncontained-icon") }
-                } label: {}
-            } label: { Image("esoteric-icon").colorInvert() }
+            Button {
+                
+            } label: { Image(systemName: "ellipsis.circle") }
         }
         .disabled(!localArticle)
     }
@@ -94,6 +112,21 @@ struct ArticleRow: View {
 
 struct ArticleRow_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleRow(passedSCP: Article(title: "Tufto's Proposal", pagesource: ""), localArticle: true)
+        ArticleRow(passedSCP: Article(
+            title: "Tufto's Proposal",
+            pagesource: "",
+            objclass: .keter,
+            esoteric: .thaumiel,
+            disruption: .amida,
+            risk: .danger
+        ), localArticle: true).previewDisplayName("Local")
+        ArticleRow(passedSCP: Article(
+            title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
+            pagesource: "",
+            objclass: .keter,
+            esoteric: .thaumiel,
+            disruption: .amida,
+            risk: .danger
+        ), localArticle: true).previewDisplayName("Online")
     }
 }
