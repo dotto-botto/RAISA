@@ -13,15 +13,32 @@ struct SearchView: View {
     @State var query: String = ""
     @State var callApi: Bool = false
     @State var articles: [Article] = []
+    @State var presentSheet: Bool = false
+    @State var selectedArticle: Article = Article(title: "", pagesource: "")
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(articles) { article in
-                    NavigationLink(article.title) { ArticleView(scp: article) }
+                    NavigationLink(destination: ArticleView(scp: article)) {
+                        HStack {
+                            Text(article.title)
+                            Spacer()
+                            Image(systemName: "bookmark")
+                                .onTapGesture {
+                                    presentSheet = true
+                                    selectedArticle = article
+                                }
+
+                        }
+                    }
                 }
             }
             .navigationTitle("SEARCH_TITLE")
+        }
+        .sheet(isPresented: $presentSheet) {
+        } content: {
+            ListAdd(isPresented: $presentSheet, article: selectedArticle)
         }
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
