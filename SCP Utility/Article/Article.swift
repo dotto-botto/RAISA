@@ -89,7 +89,7 @@ struct Article: Identifiable, Codable {
 }
 
 // MARK: - Atribute Enums
-enum ObjectClass: Int16, Codable {
+enum ObjectClass: Int16, Codable, CaseIterable {
     case safe = 0
     case euclid = 1
     case keter = 2
@@ -108,6 +108,18 @@ enum ObjectClass: Int16, Codable {
         case .pending: return "pending-icon"
         case .explained: return "explained-icon"
         case .esoteric: return "esoteric-icon"
+        }
+    }
+    
+    func toLocalString() -> String {
+        switch self {
+        case .safe: return NSLocalizedString("SAFE", comment: "")
+        case .euclid: return NSLocalizedString("EUCLID", comment: "")
+        case .keter: return NSLocalizedString("KETER", comment: "")
+        case .neutralized: return NSLocalizedString("NEUTRALIZED", comment: "")
+        case .pending: return NSLocalizedString("PENDING", comment: "")
+        case .explained: return NSLocalizedString("EXPLAINED", comment: "")
+        case .esoteric: return NSLocalizedString("ESOTERIC", comment: "")
         }
     }
 }
@@ -137,9 +149,23 @@ enum EsotericClass: Int16, Codable, CaseIterable {
         case .uncontained: return "uncontained-icon"
         }
     }
+    
+    func toLocalString() -> String {
+        switch self {
+        case .apollyon: return NSLocalizedString("APOLLYON", comment: "")
+        case .archon: return NSLocalizedString("ARCHON", comment: "")
+        case .cernunnos: return NSLocalizedString("CERNUNNOS", comment: "")
+        case .decommissioned: return NSLocalizedString("DECOMMISSIONED", comment: "")
+        case .hiemal: return NSLocalizedString("HIEMAL", comment: "")
+        case .tiamat: return NSLocalizedString("TIAMAT", comment: "")
+        case .ticonderoga: return NSLocalizedString("TICONDEROGA", comment: "")
+        case .thaumiel: return NSLocalizedString("THAUMIEL", comment: "")
+        case .uncontained: return NSLocalizedString("UNCONTAINED", comment: "")
+        }
+    }
 }
 
-enum DisruptionClass: Int16, Codable {
+enum DisruptionClass: Int16, Codable, CaseIterable {
     case dark = 0
     case vlam = 1
     case keneq = 2
@@ -156,9 +182,19 @@ enum DisruptionClass: Int16, Codable {
         case .amida: return "amida-icon"
         }
     }
+    
+    func toLocalString() -> String {
+        switch self {
+        case .dark: return NSLocalizedString("DARK", comment: "")
+        case .vlam: return NSLocalizedString("VLAM", comment: "")
+        case .keneq: return NSLocalizedString("KENEQ", comment: "")
+        case .ekhi: return NSLocalizedString("EKHI", comment: "")
+        case .amida: return NSLocalizedString("AMIDA", comment: "")
+        }
+    }
 }
 
-enum RiskClass: Int16, Codable {
+enum RiskClass: Int16, Codable, CaseIterable {
     case notice = 0
     case caution = 1
     case warning = 2
@@ -173,6 +209,16 @@ enum RiskClass: Int16, Codable {
         case .warning: return "warning-icon"
         case .danger: return "danger-icon"
         case .critical: return "critical-icon"
+        }
+    }
+    
+    func toLocalString() -> String {
+        switch self {
+        case .notice: return NSLocalizedString("NOTICE", comment: "")
+        case .caution: return NSLocalizedString("CAUTION", comment: "")
+        case .warning: return NSLocalizedString("WARNING", comment: "")
+        case .danger: return NSLocalizedString("DANGER", comment: "")
+        case .critical: return NSLocalizedString("CRITICAL", comment: "")
         }
     }
 }
