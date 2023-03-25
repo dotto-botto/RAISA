@@ -87,7 +87,8 @@
 
 // MARK: - History View
 "NO_HISTORY" = "You seem to have no history.";
-"CLEAR_HISTORY_BUTTON" = "Clear";
+"CLEAR_HISTORY_BUTTON" = "Clear All History";
+"CLEAR_HISTORY_CONFIRMATION" = "Clear All History?";
 
 // MARK: - List View
 "NO_ARTICLES_IN_LIST" = "There are no articles in this list.";

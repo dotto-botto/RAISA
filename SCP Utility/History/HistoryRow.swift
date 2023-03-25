@@ -12,6 +12,7 @@ struct HistoryRow: View {
     @State var item: History
     
     let defaults = UserDefaults.standard
+    let con = PersistenceController.shared
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -27,6 +28,11 @@ struct HistoryRow: View {
                     .frame(width: 50, height: 50)
                     .clipped()
             }
+        }
+        .swipeActions(allowsFullSwipe: false) {
+            Button(role: .destructive) {
+                con.deleteHistoryFromId(id: item.id)
+            } label: { Image(systemName: "trash") }
         }
     }
 }
