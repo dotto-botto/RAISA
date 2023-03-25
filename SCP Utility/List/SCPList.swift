@@ -14,6 +14,7 @@ struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
     let id: String
     var listid: String
     var contents: [String]? // article id's
+    var subtitle: String?
 
     init(id: String = UUID().uuidString, listid: String) {
         self.id = id
@@ -28,6 +29,7 @@ struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
         self.id = entityid
         self.listid = entitylistid
         self.contents = entity.contents
+        self.subtitle = entity.subtitle
     }
 
     mutating func next() -> Int? {
@@ -46,7 +48,7 @@ struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
         } else {
             self.contents = [article.id]
         }
-        PersistenceController.shared.addArticleToListFromId(listid: self.listid, article: article)
         PersistenceController.shared.createArticleEntity(article: article)
+        PersistenceController.shared.addArticleToListFromId(listid: self.listid, article: article)
     }
 }

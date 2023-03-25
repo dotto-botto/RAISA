@@ -22,5 +22,6 @@
         <attribute name="contents" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName=".[String]"/>
         <attribute name="identifier" optional="YES" attributeType="String"/>
         <attribute name="listid" optional="YES" attributeType="String"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
     </entity>
 </model>

@@ -56,6 +56,9 @@
 "TABBAR_SEARCH" = "Search";
 "TABBAR_SETTINGS" = "Settings";
 "LOADING" = "Loading...";
+"CANCEL" = "Cancel";
+"ADD" = "Add";
+"CHANGE" = "Change";
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
@@ -88,6 +91,11 @@
 
 // MARK: - List View
 "NO_ARTICLES_IN_LIST" = "There are no articles in this list.";
+"CHANGE_LIST_TITLE" = "Change Title";
+"CHANGE_LIST_SUBTITLE" = "Change Subtitle";
+"NEW_LIST_PROMPT" = "Tap the \"+\" to make a new list";
+"ADD_LIST_PROMPT" = "Add new List";
+"SUBTITLE_PLACEHOLDER" = "Hold to add subtitle";
 "LIST_ADD_GUIDE" = "Press the bookmark while reading an article to add it to a list.";
 "ALL_SAVED_ARTICLES" = "All Saved Articles";
 "NO_SAVED_ARTICLES" = "There are no saved articles.";

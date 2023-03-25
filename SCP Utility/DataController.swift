@@ -79,7 +79,7 @@ struct PersistenceController {
 
 
 // MARK:  - List Operations
-extension PersistenceController {
+extension PersistenceController { // Lists
     /// Retrieve all saved list entities.
     func getAllLists(context: NSManagedObjectContext? = nil) -> [SCPListItem]? {
         let context = context ?? container.viewContext
@@ -156,6 +156,40 @@ extension PersistenceController {
             try context.save()
         } catch let error {
             print(error.localizedDescription)
+        }
+    }
+    
+    /// Update list title.
+    func updateListTitle(newTitle: String, list: SCPList, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+
+        let request = NSFetchRequest<SCPListItem>(entityName: "SCPListItem")
+        request.predicate = NSPredicate(format: "identifier == %@", list.id)
+
+        do {
+            if let list = try context.fetch(request).first {
+                list.listid = newTitle
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
+    /// Update list subtitle.
+    func updateListSubtitle(newTitle: String, list: SCPList, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+
+        let request = NSFetchRequest<SCPListItem>(entityName: "SCPListItem")
+        request.predicate = NSPredicate(format: "identifier == %@", list.id)
+
+        do {
+            if let list = try context.fetch(request).first {
+                list.subtitle = newTitle
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
         }
     }
     

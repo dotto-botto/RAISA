@@ -12,29 +12,62 @@ import Foundation
 
 // MARK: - Many List View
 struct ListView: View {
-    @Environment(\.managedObjectContext) var Context
     @State var alertPresent: Bool = false
+    @State var listTitlePresent: Bool = false
+    @State var listSubtitlePresent: Bool = false
+    
     @State var query: String = ""
     @State var oneList: Bool = false
+    @State var currentList: SCPList = SCPList(listid: "Placeholder")
         
     var body: some View {
         let items = PersistenceController.shared.getAllLists()
-        let _ = PersistenceController(inMemory: false)
+        let con = PersistenceController.shared
         
         NavigationView {
             if items == nil {
-                (Text("Tap \"") + Text(Image(systemName: "plus")) + Text("\" to make a list")).foregroundColor(.gray)
+                Text("NEW_LIST_PROMPT").foregroundColor(.gray)
             } else {
                 List(items!) { item in
                     let newItem = SCPList(fromEntity: item)
                     
                     if (newItem != nil) {
-                        NavigationLink(newItem!.listid) { OneListView(list: newItem!) }
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    PersistenceController.shared.deleteListEntity(listitem: newItem!)
-                                } label: { Image(systemName: "trash") }
+                        NavigationLink(destination: OneListView(list: newItem!)) {
+                            VStack(alignment: .leading) {
+                                Text(newItem!.listid)
+                                    .lineLimit(1)
+                                if newItem!.subtitle != nil {
+                                    Text(newItem!.subtitle!)
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: 13))
+                                        .lineLimit(1)
+                                } else {
+                                    Text("SUBTITLE_PLACEHOLDER")
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: 13))
+                                        .lineLimit(1)
+                                }
                             }
+                        }
+                        .swipeActions(allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                con.deleteListEntity(listitem: newItem!)
+                            } label: { Image(systemName: "trash") }
+                        }
+                        .contextMenu {
+                            Button(action: {
+                                listTitlePresent = true
+                                currentList = newItem!
+                            }, label: {
+                                Label("CHANGE_LIST_TITLE", systemImage: "pencil")
+                            })
+                            Button(action: {
+                                listSubtitlePresent = true
+                                currentList = newItem!
+                            }, label: {
+                                Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
+                            })
+                        }
                     }
                 }
                 .navigationTitle("LIST_TITLE")
@@ -46,20 +79,50 @@ struct ListView: View {
                         }, label: {
                             Image(systemName: "plus")
                         })
-                        .alert("Add new List", isPresented: $alertPresent) {
+                        .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
                             TextField("", text: $query)
                             
-                            Button("Add") {
-                                PersistenceController.shared.createListEntity(list: SCPList(listid: query))
+                            Button("ADD") {
+                                con.createListEntity(list: SCPList(listid: query))
                                 alertPresent = false
+                                query = ""
                             }
-                            Button("Cancel", role: .cancel) {
+                            Button("CANCEL", role: .cancel) {
                                 alertPresent = false
+                                query = ""
                             }
                         }
                     }
                     ToolbarItem(placement: .secondaryAction) {
                         NavigationLink("ALL_SAVED_ARTICLES") { AllArticleView() }
+                    }
+                }
+                // Change List Title
+                .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
+                    TextField("", text: $query)
+                    
+                    Button("CHANGE") {
+                        con.updateListTitle(newTitle: query, list: currentList)
+                        listTitlePresent = false
+                        query = ""
+                    }
+                    Button("CANCEL", role: .cancel) {
+                        listTitlePresent = false
+                        query = ""
+                    }
+                }
+                // Change List Subtitle
+                .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
+                    TextField("", text: $query)
+                    
+                    Button("CHANGE") {
+                        con.updateListSubtitle(newTitle: query, list: currentList)
+                        listSubtitlePresent = false
+                        query = ""
+                    }
+                    Button("CANCEL", role: .cancel) {
+                        listSubtitlePresent = false
+                        query = ""
                     }
                 }
             }
