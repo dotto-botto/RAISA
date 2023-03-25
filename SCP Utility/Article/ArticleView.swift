@@ -11,39 +11,6 @@ import Foundation
 import Kingfisher
 import MarkdownUI
 #endif
-
-// TODO: - Optimize redundant checks
-func testValid(item: String) -> Bool {
-    switch item {
-    case "=====": return false
-    case "}": return false
-    case "> ----": return false
-        
-    case let str where str.contains("#page"): return false
-    case let str where str.contains("|") && !str.contains("||"): return false
-    case let str where str.contains("> **Title:**"): return false
-    case let str where str.contains("> **Author(s):**"): return false
-    case let str where str.contains("> **Release year:**"): return false
-    case let str where str.contains("> **Note:**"): return false
-    case let str where str.contains("> **Source:**"): return false
-    case let str where str.contains("> **License:**"): return false
-    case let str where str.contains("> **Author:**"): return false
-    case let str where str.contains("[[") && !str.contains("[[footnote]]"): return false
-    case let str where str.contains("]]") && !str.contains("[[footnote]]"): return false
-    case let str where str.contains("@@"): return false
-    case let str where str.contains("sup {"): return false
-    case let str where str.contains(":root{"): return false
-    case let str where str.contains("vertical-align:"): return false
-    case let str where str.contains("Filename:"): return false
-    case let str where str.contains("[!--:"): return false
-        
-    case let str where str.last == ";": return false
-    case let str where str.last == "{": return false
-    case let str where str.last == "}": return false
-
-    default: return true
-    }
-}
     
 // MARK: - View
 struct ArticleView: View {
@@ -52,8 +19,7 @@ struct ArticleView: View {
     
     let defaults = UserDefaults.standard
     var body: some View {
-        let document = scp.pagesource.components(separatedBy: CharacterSet.newlines)
-//        let document = scp.pagesource
+        let document = scp.pagesource
         
         let mode = defaults.integer(forKey: "articleViewSetting")
         #if os(iOS)
@@ -66,28 +32,14 @@ struct ArticleView: View {
             }
             #endif
     
-            VStack {
-                if mode == 0 || mode == 1 {
-                    ForEach(document, id: \.self) { item in
-                        if testValid(item: item) && mode == 0 {
-                            Text(.init(item
-                                .replacingOccurrences(of: "//", with: "_")
-                                .replacingOccurrences(of: "++ ==", with: "# ")
-                                .replacingOccurrences(of: ">", with: "")
-                                .replacingOccurrences(of: "--", with: "~~") // strikethrough
-
-                            ))
-                            .onTapGesture {
-//                                print("tapped")
-                            }
-                        } else if mode == 1 {
-                            Text(item)
-                        }
-                    }
-                } else if mode == 2 {
-
+            VStack(alignment: .leading) {
+                if mode == 0 { // Default
+                    Markdown(FilterToMarkdown(doc: document))
+                } else if mode == 1 { // Raw
+                   Text(document)
+                } else if mode == 2 { // Safari
+                    
                 }
-//                Markdown(FilterToMarkdown(doc: document))
             }
             .navigationTitle(scp.title)
         }
@@ -108,25 +60,55 @@ struct ArticleView: View {
 }
 
 func FilterToMarkdown(doc: String) -> String {
-    var document = doc
+    var text = doc
     
-    document = document.removeText(from: "[[module CSS]]", to: "[[/module]]")
-    document = document.removeText(from: "[[include", to: "]]")
-    
-    var oldLink = document.slice(from: "[[[", to: "]]]") // Links
-    if oldLink != nil {
-        oldLink = oldLink!.slice(from: "|", to: oldLink!.last!.description)
-        document = document.replacingOccurrences(of: "[[[]]]", with: oldLink!)
+    // Basic Divs
+    for _ in text.indicesOf(string: "[[include") {
+        text.removeText(from: "[[include", to: "]]")
     }
+    text.removeText(from: "[[div", to: "]]")
+    text.removeText(from: "[[/div", to: "]]")
+    text.removeText(from: "[[size", to: "]]")
+    text.removeText(from: "[[/size", to: "]]")
+    text.removeText(from: "[[module", to: "[[/module]]")
+    text.removeText(from: "[[>", to: "]]")
+    text.removeText(from: "[[/>", to: "]]")
+    text.removeText(from: "[[=", to: "/=]]")
+    text.removeText(from: "[!--", to: "--]")
     
-    document = document.replacingOccurrences(of: "@@@@", with: "\n")
-    document = document.replacingOccurrences(of: "[[>]]", with: "")
-    document = document.replacingOccurrences(of: "[[module Rate]]", with: "")
-    document = document.replacingOccurrences(of: "[[/>]]", with: "")
-    document = document.replacingOccurrences(of: "||", with: "|")
+    // Tables
+    for _ in text.indicesOf(string: "[[table") {
+        text.removeText(from: "[[table", to: "[[/table]]")
+    }
 
-    
-    return document
+    // Footnotes
+    for _ in text.indicesOf(string: "[[footnote") {
+        text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
+        text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
+    }
+
+    // Links
+    for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
+        var slicedElement: String? = text.slice(from: "[[[", to: "]]]")
+        if slicedElement != nil {
+            slicedElement = "[[[" + slicedElement! + "]]]"
+            let rawtext: String? = slicedElement!.slice(from: "|", to: "]]]")
+            
+            if rawtext != nil {
+                text = text.replacingOccurrences(of: slicedElement!, with: rawtext!)
+            }
+        }
+        
+        text = text.replacingOccurrences(of: "[[[", with: "")
+        text = text.replacingOccurrences(of: "]]]", with: "")
+    }
+
+    text = text.replacingOccurrences(of: "@@@@", with: "")
+    text = text.replacingOccurrences(of: "//", with: "*")
+    text = text.replacingOccurrences(of: "--", with: "~~")
+    text = text.replacingOccurrences(of: "||", with: "|")
+
+    return text
 }
 
 
@@ -163,20 +145,7 @@ struct WikidotTable: View {
     }
 }
 
-// MARK: - Text
-struct DotText: View {
-    @State var text: String
-    var body: some View {
-        Text(.init(text
-            .replacingOccurrences(of: "//", with: "_")
-            .replacingOccurrences(of: "++ ==", with: "# ")
-            .replacingOccurrences(of: ">", with: "")
-            .replacingOccurrences(of: "--", with: "~~") // strikethrough
-                  ))
-    }
-}
-
-// MARK: - Slice
+// MARK: - Extensions
 // https://stackoverflow.com/a/31727051
 extension String {
     func slice(from: String, to: String) -> String? {
@@ -187,19 +156,69 @@ extension String {
         }
     }
     
-    mutating func removeText(from: String, to: String) -> String {
+    mutating func removeText(from: String, to: String) {
         let toSlice = self.slice(from: from, to: to)
         if toSlice != nil {
-            return self.replacingOccurrences(of: toSlice!, with: "")
-        } else {
-            return self
+              self = self.replacingOccurrences(of: toSlice!, with: "")
+              self = self.replacingOccurrences(of: from + to, with: "")
         }
     }
+    
+    // https://stackoverflow.com/a/40413665/11248074
+    func indicesOf(string: String) -> [Int] {
+            var indices = [Int]()
+            var searchStartIndex = self.startIndex
+
+            while searchStartIndex < self.endIndex,
+                let range = self.range(of: string, range: searchStartIndex..<self.endIndex),
+                !range.isEmpty
+            {
+                let index = distance(from: self.startIndex, to: range.lowerBound)
+                indices.append(index)
+                searchStartIndex = range.upperBound
+            }
+
+            return indices
+        }
 }
 
 
 struct ArticleView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: "Lorem Ipsum"))
+        let example = """
+[[>]]
+[[module Rate]]
+[[/>]]
+
+[[module CSS]]
+some css...
+css that should not be visible...
+[[/module]]
+
+[[include :scp-wiki:component:anomaly-class-bar-source
+|item-number=5004
+|clearance=5
+|container-class=esoteric
+|secondary-class=thaumiel
+|secondary-icon=http://scp-wiki.wikidot.com/local--files/component:anomaly-class-bar/thaumiel-icon.svg
+|disruption-class=ekhi
+|risk-class=notice
+]]
+
+[[include theme:black-highlighter-theme]]
+[[include component:pride-highlighter inc-lgbt= --]]]
+[[include info:start]]
+**SCP-001: CODE NAME - Tufto:** The Scarlet King
+**Author:** [[*user Tufto]]. This work was originally posted as part of the Doomsday Contest for Team "End-of-the-Contest Scenario". More of Tufto's work can be found [[[tufto-personnel-file|here]]].
+[[include info:end]]
+
+**Item #:** SCP-001
+
+**Object Class:** --Keter-- Safe
+
+**Description:** SCP-001 is an entity ordinarily referred to as the [[[scp-231|Scarlet King]]]. SCP-001 is currently located in several alternate dimensions simultaneously, and is unable to enter into the prime dimension. However, it is believed to have been repeatedly attempting entry for a period of --several thousand-- under 300 years. SCP-001's physical, mental and conceptual properties are unknown to the Foundation; nevertheless, it continues to assert a strong influence on a number of individuals and events within the prime dimension.
+"""
+        
+        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example))
     }
 }
