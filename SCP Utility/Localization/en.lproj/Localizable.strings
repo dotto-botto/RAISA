@@ -59,6 +59,8 @@
 "CANCEL" = "Cancel";
 "ADD" = "Add";
 "CHANGE" = "Change";
+"ASSURANCE" = "Are You Sure?";
+"DELETE" = "Delete";
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
@@ -101,3 +103,4 @@
 "ALL_SAVED_ARTICLES" = "All Saved Articles";
 "NO_SAVED_ARTICLES" = "There are no saved articles.";
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
+"DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
