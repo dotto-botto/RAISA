@@ -12,7 +12,6 @@ struct HistoryView: View {
     var body: some View {
         NavigationView {
             var items = PersistenceController.shared.getAllHistory()
-            let _ = PersistenceController(inMemory: false)
             if items != nil {
                 let _ = items!.reverse()
                 List(items!) { item in

@@ -10,20 +10,33 @@ import Kingfisher
 
 struct HistoryRow: View {
     @State var item: History
+    
+    let defaults = UserDefaults.standard
     var body: some View {
         HStack {
-            VStack {
+            VStack(alignment: .leading) {
                 Text(item.articletitle)
+                    .lineLimit(1)
                 Text(item.date.formatted())
             }
             Spacer()
-            if item.thumbnail != nil { KFImage(item.thumbnail!) }
+            if item.thumbnail != nil && defaults.bool(forKey: "showImages") {
+                KFImage(item.thumbnail!)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .clipped()
+            }
         }
     }
 }
 
-//struct HistoryRow_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HistoryRow()
-//    }
-//}
+struct HistoryRow_Previews: PreviewProvider {
+    static var previews: some View {
+        HistoryRow(item: History(
+            title: "SCP-3000",
+            thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-3000/gaslight.png")
+        )
+        )
+    }
+}

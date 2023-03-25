@@ -500,6 +500,7 @@ extension PersistenceController {
         object.identifier = history.id
         object.articletitle = history.articletitle
         object.date = Date()
+        object.thumbnail = history.thumbnail
         
         do {
             try context.save()
