@@ -323,6 +323,29 @@ extension PersistenceController {
         return newObject
     }
     
+    /// Return all articles in a list.
+    func getAllListArticles(list: SCPList, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
+        let context = context ?? container.viewContext
+        guard list.contents != nil else {return nil}
+        
+        var articles = [ArticleItem]()
+        let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        for id in list.contents! {
+            object.predicate = NSPredicate(format: "identifier == %@", id)
+            do {
+                if let toAdd = try context.fetch(object).first {
+                    articles.append(toAdd)
+                }
+                
+                try context.save()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+            }
+        }
+        
+        return articles
+    }
+    
     /// Retrieve all saved article entities.
     func getAllArticles(context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
         let context = context ?? container.viewContext

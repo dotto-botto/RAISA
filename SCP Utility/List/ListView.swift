@@ -142,23 +142,13 @@ struct OneListView: View {
     @State var query: String = ""
     @State var sort: Int = 0
     
-    var searchResults: [String]? {
-        if query.isEmpty {
-            return list.contents
-        } else {
-            return list.contents?.filter { $0.contains(query) }
-        }
-    }
-    
     var body: some View {
-        let _ = PersistenceController(inMemory: false)
-        if searchResults != nil {
+        if list.contents != nil {     
+            let con = PersistenceController.shared
+            let articles = con.getAllListArticles(list: list)!
             List {
-                ForEach(searchResults!, id: \.self) { item in
-                    let passedArticle = PersistenceController.shared.getArticleByID(id: item)
-                    if passedArticle != nil {
-                        ArticleRow(passedSCP: Article(fromEntity: passedArticle!)!, localArticle: true)
-                    }
+                ForEach(articles.filter{ query.isEmpty ? true: $0.title?.contains(query) ?? false }, id: \.self) { article in
+                    ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
                 }
             }
             .navigationTitle(list.listid)
