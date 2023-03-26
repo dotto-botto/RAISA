@@ -8,12 +8,31 @@
 import SwiftUI
 
 struct AllArticleView: View {
+    @State var mode: Int? = 0
+    // 0 = default
+    // 1 = all read
+    // 2 = all unread
+    let con = PersistenceController.shared
     var body: some View {
-        let articles = PersistenceController.shared.getAllArticles()
+        let articles = con.getAllArticles()
         List {
             if articles != nil {
-                ForEach(articles!) { article in
-                    ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                if mode == 0 {
+                    ForEach(articles!) { article in
+                        ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                    }
+                } else if mode == 1 {
+                    ForEach(articles!) { article in
+                        if con.completionStatus(article: Article(fromEntity: article) ?? Article(title: "", pagesource: "")) {
+                            ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                        }
+                    }
+                } else if mode == 2 {
+                    ForEach(articles!) { article in
+                        if !con.completionStatus(article: Article(fromEntity: article) ?? Article(title: "", pagesource: "")) {
+                            ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                        }
+                    }
                 }
             } else {
                 #if os(iOS)

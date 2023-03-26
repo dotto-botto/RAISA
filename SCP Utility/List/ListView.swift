@@ -8,8 +8,6 @@
 import SwiftUI
 import Foundation
 
-// defining a list of article lists
-
 // MARK: - Many List View
 struct ListView: View {
     @State var alertPresent: Bool = false
@@ -93,8 +91,16 @@ struct ListView: View {
                             }
                         }
                     }
-                    ToolbarItem(placement: .secondaryAction) {
-                        NavigationLink("ALL_SAVED_ARTICLES") { AllArticleView() }
+                    ToolbarItemGroup(placement: .secondaryAction) {
+                        NavigationLink(destination: AllArticleView(mode: 0)) {
+                            Label("ALL_SAVED_ARTICLES", systemImage: "bookmark")
+                        }
+                        NavigationLink(destination: AllArticleView(mode: 1)) {
+                            Label("ALL_READ_ARTICLES", systemImage: "eye")
+                        }
+                        NavigationLink(destination: AllArticleView(mode: 2)) {
+                            Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
+                        }
                     }
                 }
                 // Change List Title
@@ -146,23 +152,6 @@ struct OneListView: View {
     
     var body: some View {
         let _ = PersistenceController(inMemory: false)
-//        HStack {
-//            Text("Subtitle")
-//                .foregroundColor(.gray)
-//                .padding(.leading)
-//            Spacer()
-//        }
-        // Custom search bar, to be able to display a subtitle
-        // Commented out becuase I think it looks better without
-//        HStack {
-//            Image(systemName: "magnifyingglass")
-//            TextField("Search", text: $query)
-//                .foregroundColor(.primary)
-//        }
-//        .padding(.vertical, 8)
-//        .padding(.horizontal, 5)
-//        .background(Color(.systemGray5))
-//        .cornerRadius(10)
         if searchResults != nil {
             List {
                 ForEach(searchResults!, id: \.self) { item in
