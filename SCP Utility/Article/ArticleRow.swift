@@ -13,24 +13,18 @@ import SwiftUI
 
 struct ArticleRow: View {
     @State var passedSCP: Article
-    @State var alertPresent: Bool = false
-    @State var toArticle: Bool = false
     @State var localArticle: Bool /// If the article comes from the core data store, or the Crom api
-
-    @State var esoSelection: EsotericClass?
-    
-    
     var body: some View {
         let con = PersistenceController.shared
-
-        if toArticle {
-            NavigationStack { ArticleView(scp: passedSCP) }
-        }
 
         NavigationLink(destination: ArticleView(scp: passedSCP)) {
             HStack {
                 Text(passedSCP.title)
-                    .lineLimit(2)
+                    .lineLimit(1)
+                if con.completionStatus(article: passedSCP) {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.accentColor)
+                }
                 Spacer()
                 ZStack {
                     Menu {
@@ -64,39 +58,19 @@ struct ArticleRow: View {
                             .frame(width: 30, height: 30)
                     }
                 }
-                ZStack {
-                    Menu {
-                        ForEach(RiskClass.allCases, id: \.self) { ris in
-                            Button {
-                                con.updateRiskClass(articleid: passedSCP.id, newattr: ris)
-                            } label: {
-                                Label(ris.toLocalString(), image: ris.toImage())
-                            }
-                        }
-                    } label: {
-                        Image(passedSCP.risk?.toImage() ?? "")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
-                    }
-                }
-                ZStack {
-                    Menu {
-                        ForEach(DisruptionClass.allCases, id: \.self) { dis in
-                            Button {
-                                con.updateDisruptionClass(articleid: passedSCP.id, newattr: dis)
-                            } label: {
-                                Label(dis.toLocalString(), image: dis.toImage())
-                            }
-                        }
-                    } label: {
-                        Image(passedSCP.disruption?.toImage() ?? "")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
-                    }
-                }
             }
+        }
+        .contextMenu {
+            Button(action: {
+                con.complete(status: true, article: passedSCP)
+            }, label: {
+                Label("MARK_READ", systemImage: "eye")
+            })
+            Button(action: {
+                con.complete(status: false, article: passedSCP)
+            }, label: {
+                Label("MARK_UNREAD", systemImage: "eye.slash")
+            })
         }
         .swipeActions(allowsFullSwipe: false) {
             Button(role: .destructive) {
@@ -112,21 +86,23 @@ struct ArticleRow: View {
 
 struct ArticleRow_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleRow(passedSCP: Article(
-            title: "Tufto's Proposal",
-            pagesource: "",
-            objclass: .keter,
-            esoteric: .thaumiel,
-            disruption: .amida,
-            risk: .danger
-        ), localArticle: true).previewDisplayName("Local")
-        ArticleRow(passedSCP: Article(
-            title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
-            pagesource: "",
-            objclass: .keter,
-            esoteric: .thaumiel,
-            disruption: .amida,
-            risk: .danger
-        ), localArticle: true).previewDisplayName("Online")
+        NavigationView {
+            ArticleRow(passedSCP: Article(
+                title: "Tufto's Proposal",
+                pagesource: "",
+                objclass: .keter,
+                esoteric: .thaumiel,
+                disruption: .amida,
+                risk: .danger
+            ), localArticle: true).previewDisplayName("Local")
+            ArticleRow(passedSCP: Article(
+                title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
+                pagesource: "",
+                objclass: .keter,
+                esoteric: .thaumiel,
+                disruption: .amida,
+                risk: .danger
+            ), localArticle: true).previewDisplayName("Online")
+        }
     }
 }

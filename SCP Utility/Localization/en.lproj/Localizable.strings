@@ -104,3 +104,7 @@
 "NO_SAVED_ARTICLES" = "There are no saved articles.";
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
+
+// MARK: - Article View
+"MARK_READ" = "Mark Read";
+"MARK_UNREAD" = "Mark Unread";

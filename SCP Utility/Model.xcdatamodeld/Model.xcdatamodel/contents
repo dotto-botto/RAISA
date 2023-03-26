@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ArticleItem" representedClassName=".ArticleItem" syncable="YES" codeGenerationType="class">
         <attribute name="clearance" optional="YES" attributeType="String"/>
+        <attribute name="completed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="currenttext" optional="YES" attributeType="String"/>
         <attribute name="disruption" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="esoteric" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
