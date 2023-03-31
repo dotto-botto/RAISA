@@ -16,6 +16,7 @@ import MarkdownUI
 struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
+    @Environment(\.dismiss) var dismiss
     
     let defaults = UserDefaults.standard
     var body: some View {
@@ -28,7 +29,9 @@ struct ArticleView: View {
         
         ScrollView {
             #if os(iOS)
-            if scp.thumbnail != nil && defaults.bool(forKey: "showImages") { KFImage(scp.thumbnail).frame(width: 425)
+            if scp.thumbnail != nil && defaults.bool(forKey: "showImages") { KFImage(scp.thumbnail)
+                    .resizable()
+                    .scaledToFit()
             }
             #endif
     
@@ -43,11 +46,19 @@ struct ArticleView: View {
             }
             .navigationTitle(scp.title)
         }
+        .frame(width: 400)
         .sheet(isPresented: $presentSheet) {
         } content: {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    dismiss()
+                }, label: {
+                    Text("Back")
+                })
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     presentSheet.toggle()
@@ -219,6 +230,6 @@ css that should not be visible...
 **Description:** SCP-001 is an entity ordinarily referred to as the [[[scp-231|Scarlet King]]]. SCP-001 is currently located in several alternate dimensions simultaneously, and is unable to enter into the prime dimension. However, it is believed to have been repeatedly attempting entry for a period of --several thousand-- under 300 years. SCP-001's physical, mental and conceptual properties are unknown to the Foundation; nevertheless, it continues to assert a strong influence on a number of individuals and events within the prime dimension.
 """
         
-        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example))
+        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example, thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")))
     }
 }

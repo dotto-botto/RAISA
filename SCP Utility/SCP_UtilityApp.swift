@@ -13,13 +13,13 @@ struct SCP_UtilityApp: App {
     @Environment(\.managedObjectContext) var Context
 
 
-    let persistenceController = PersistenceController.shared
+    let con = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            ContentView().environment(\.managedObjectContext, persistenceController.container.viewContext)
+            ContentView().environment(\.managedObjectContext, con.container.viewContext)
         }
         .onChange(of: scenePhase) { _ in
-            persistenceController.save()
+            con.save()
         }
     }
 }

@@ -110,3 +110,6 @@
 // MARK: - Article View
 "MARK_READ" = "Mark Read";
 "MARK_UNREAD" = "Mark Unread";
+// Bar
+"REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
+"DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself

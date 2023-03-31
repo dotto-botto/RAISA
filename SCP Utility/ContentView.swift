@@ -8,30 +8,40 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    enum Tab {
-        case home
-        case list
-        case history
-        case search
-        case settings
-    }
-    
-    @State private var selection: Tab = .home
-    
+    @State var toArticle = false
     var body: some View {
-        TabView(selection: $selection) {
-            ExploreView()
-            .tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }.tag(Tab.home)
-            ListView()
-            .tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }.tag(Tab.list)
-            SearchView()
-            .tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }.tag(Tab.search)
-            HistoryView()
-            .tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }.tag(Tab.history)
-            SettingsView()
-            .tabItem { Label("TABBAR_SETTINGS", systemImage: "gearshape")  }.tag(Tab.settings)
+        TabView {
+            VStack {
+                ExploreView()
+                Spacer()
+                ArticleBar().frame(height: 45)
+            }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
+            VStack {
+                ListView()
+                Spacer()
+                ArticleBar().frame(height: 45)
+            }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
+            VStack {
+                SearchView()
+                Spacer()
+                ArticleBar().frame(height: 45)
+            }.tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }
+            VStack {
+                HistoryView()
+                Spacer()
+                ArticleBar().frame(height: 45)
+            }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
+            VStack {
+                SettingsView()
+                Spacer()
+                ArticleBar().frame(height: 45)
+            }.tabItem { Label("TABBAR_SETTINGS", systemImage: "gearshape")}
         }
+//        .sheet(isPresented: $toArticle) {
+//            NavigationView {
+//                ArticleView(scp: Article(title: "Hello", pagesource: "content"))
+//            }
+//        }
     }
 }
 

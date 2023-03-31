@@ -264,11 +264,11 @@ extension PersistenceController {
     ///
     /// - Parameters:
     ///  - articleitem: The entity.
-    func deleteArticleEntity(articleitem: Article, context: NSManagedObjectContext? = nil) {
+    func deleteArticleEntity(id: String, context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext
         
         let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
-        object.predicate = NSPredicate(format: "identifier == %@", articleitem.id)
+        object.predicate = NSPredicate(format: "identifier == %@", id)
         
         do {
             let entities = try context.fetch(object)

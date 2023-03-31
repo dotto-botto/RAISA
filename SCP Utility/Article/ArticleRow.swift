@@ -5,21 +5,35 @@
 //  Created by Maximus Harding on 12/30/22.
 //
 
-/*
- Structure that defines how an article appears in a menu
- */
 import Foundation
 import SwiftUI
 
 struct ArticleRow: View {
     @State var passedSCP: Article
     @State var localArticle: Bool /// If the article comes from the core data store, or the Crom api
+    @State var showSheet: Bool = false // list add view
+    @State var showArticle: Bool = false // article view
+    @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
+    
     var body: some View {
         let con = PersistenceController.shared
-
-        NavigationLink(destination: ArticleView(scp: passedSCP)) {
+        let defaults = UserDefaults.standard
+        
+        Button(action: {
+            if localArticle {
+                if barIds != nil {
+                    barIds! += " " + passedSCP.id
+                    defaults.set(barIds, forKey: "articleBarIds")
+                } else {
+                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+                }
+            } else {
+                showArticle = true
+            }
+        }) {
             HStack {
                 Text(passedSCP.title)
+                    .foregroundColor(.primary)
                     .lineLimit(1)
                 if con.completionStatus(article: passedSCP) {
                     Image(systemName: "checkmark")
@@ -36,12 +50,14 @@ struct ArticleRow: View {
                             }
                         }
                     } label: {
-                        Image(passedSCP.esoteric?.toImage() ?? "")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
+                        if let im = passedSCP.esoteric?.toImage() {
+                            Image(im)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                        }
                     }
-                }
+                }.disabled(!localArticle)
                 ZStack {
                     Menu {
                         ForEach(ObjectClass.allCases, id: \.self) { obj in
@@ -52,11 +68,18 @@ struct ArticleRow: View {
                             }
                         }
                     } label: {
-                        Image(passedSCP.objclass?.toImage() ?? "")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
+                        if let im = passedSCP.objclass?.toImage() {
+                            Image(im)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                        }
                     }
+                }.disabled(!localArticle)
+                
+                if !localArticle {
+                    Image(systemName: "bookmark")
+                        .onTapGesture { showSheet = true }
                 }
             }
         }
@@ -74,35 +97,38 @@ struct ArticleRow: View {
         }
         .swipeActions(allowsFullSwipe: false) {
             Button(role: .destructive) {
-                con.deleteArticleEntity(articleitem: passedSCP)
+                con.deleteArticleEntity(id: passedSCP.id)
             } label: { Image(systemName: "trash") }
             Button {
                 
             } label: { Image(systemName: "ellipsis.circle") }
         }
-        .disabled(!localArticle)
+        .sheet(isPresented: $showSheet) {
+            ListAdd(isPresented: $showSheet, article: passedSCP)
+        }
+        .fullScreenCover(isPresented: $showArticle) {
+            NavigationView { ArticleView(scp: passedSCP) }
+        }
     }
 }
 
 struct ArticleRow_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            ArticleRow(passedSCP: Article(
-                title: "Tufto's Proposal",
-                pagesource: "",
-                objclass: .keter,
-                esoteric: .thaumiel,
-                disruption: .amida,
-                risk: .danger
-            ), localArticle: true).previewDisplayName("Local")
-            ArticleRow(passedSCP: Article(
-                title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
-                pagesource: "",
-                objclass: .keter,
-                esoteric: .thaumiel,
-                disruption: .amida,
-                risk: .danger
-            ), localArticle: true).previewDisplayName("Online")
-        }
+        ArticleRow(passedSCP: Article(
+            title: "Tufto's Proposal",
+            pagesource: "",
+            objclass: .keter,
+            esoteric: .thaumiel,
+            disruption: .amida,
+            risk: .danger
+        ), localArticle: true).previewDisplayName("Local")
+        ArticleRow(passedSCP: Article(
+            title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
+            pagesource: "",
+            objclass: .keter,
+            esoteric: .thaumiel,
+            disruption: .amida,
+            risk: .danger
+        ), localArticle: false).previewDisplayName("Online")
     }
 }

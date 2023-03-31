@@ -20,25 +20,10 @@ struct SearchView: View {
         NavigationView {
             List {
                 ForEach(articles) { article in
-                    NavigationLink(destination: ArticleView(scp: article)) {
-                        HStack {
-                            Text(article.title)
-                            Spacer()
-                            Image(systemName: "bookmark")
-                                .onTapGesture {
-                                    presentSheet = true
-                                    selectedArticle = article
-                                }
-
-                        }
-                    }
+                    ArticleRow(passedSCP: article, localArticle: false)
                 }
             }
             .navigationTitle("SEARCH_TITLE")
-        }
-        .sheet(isPresented: $presentSheet) {
-        } content: {
-            ListAdd(isPresented: $presentSheet, article: selectedArticle)
         }
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
