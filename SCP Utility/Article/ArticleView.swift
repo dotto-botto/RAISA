@@ -113,10 +113,12 @@ func FilterToMarkdown(doc: String) -> String {
         text = text.replacingOccurrences(of: "[[[", with: "")
         text = text.replacingOccurrences(of: "]]]", with: "")
     }
-
+    
+    text = text.replacingOccurrences(of: "------", with: "---")
     text = text.replacingOccurrences(of: "@@@@", with: "")
     text = text.replacingOccurrences(of: "//", with: "*")
-    text = text.replacingOccurrences(of: "--", with: "~~")
+    text = text.replacingOccurrences(of: " --", with: " ~~")
+    text = text.replacingOccurrences(of: "-- ", with: "~~ ")
     text = text.replacingOccurrences(of: "||", with: "|")
 
     return text
@@ -226,6 +228,8 @@ css that should not be visible...
 **Item #:** SCP-001
 
 **Object Class:** --Keter-- Safe
+
+------
 
 **Description:** SCP-001 is an entity ordinarily referred to as the [[[scp-231|Scarlet King]]]. SCP-001 is currently located in several alternate dimensions simultaneously, and is unable to enter into the prime dimension. However, it is believed to have been repeatedly attempting entry for a period of --several thousand-- under 300 years. SCP-001's physical, mental and conceptual properties are unknown to the Foundation; nevertheless, it continues to assert a strong influence on a number of individuals and events within the prime dimension.
 """
