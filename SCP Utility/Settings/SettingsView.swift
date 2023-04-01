@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State var allDataConf = false
 
     let con = PersistenceController.shared
+    let defaults = UserDefaults.standard
     var body: some View {
         Form {
             Section(header: Text("READER_OPTIONS")) {
@@ -27,6 +28,9 @@ struct SettingsView: View {
                     Text("SAFARI_SETTING").tag(2)
                 }
                 Toggle("SHOW_IMAGES", isOn: $showImages)
+                Button("Remove All Bar Items") {
+                    defaults.set("", forKey: "articleBarIds")
+                }
             }
             
             Section(header: Text("HISTORY_OPTIONS")) {
