@@ -27,11 +27,11 @@ func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) 
     }
 }
 
-var dataResponse = Data()
-func cromAPISearchFromURL(query: String, completion: @escaping (Article) -> Void) {
+func cromAPISearchFromURL(query: URL, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(query)") {
     page(url: $query) {
+    url
     wikidotInfo {
       title
       source
@@ -66,6 +66,7 @@ query Search($query: URL! = "\(query)") {
                 article = Article(
                     title: title.string ?? "Could not find title",
                     pagesource: source.string ?? "Could not find pagesource",
+                    url: query,
                     thumbnail: pic.url ?? nil
                 )
             }
@@ -78,6 +79,7 @@ func cromAPISearch(query: String, completion: @escaping ([Article]) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(query)") {
   searchPages(query: $query, filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+    url
     wikidotInfo {
       title
       source
@@ -107,11 +109,13 @@ query Search($query: String! = "\(query)") {
             for pages in responseJSON["data"]["searchPages"].arrayValue {
                 let title = pages["wikidotInfo"]["title"]
                 let source = pages["wikidotInfo"]["source"]
+                let url = pages["url"].url
                 let pic = pages["wikidotInfo"]["thumbnailUrl"]
 
                 articles.append(Article(
                     title: title.string ?? "Could not find title",
                     pagesource: source.string ?? "Could not find pagesource",
+                    url: url,
                     thumbnail: pic.url ?? nil
                 ))
             }

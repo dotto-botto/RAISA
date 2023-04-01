@@ -12,6 +12,7 @@
         <attribute name="risk" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="URI"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
     </entity>
     <entity name="HistoryItem" representedClassName=".HistoryItem" syncable="YES" codeGenerationType="class">
         <attribute name="articletitle" optional="YES" attributeType="String"/>

@@ -12,8 +12,10 @@ struct Article: Identifiable, Codable {
     
     let title: String
     let pagesource: String
+    var url: URL? = nil
     var thumbnail: URL? = nil
     var currenttext: String? = nil
+    var completed: Bool? = false
     
     var objclass: ObjectClass? = nil
     var esoteric: EsotericClass? = nil// aka secondary
@@ -24,6 +26,7 @@ struct Article: Identifiable, Codable {
     init(
         title: String,
         pagesource: String,
+        url: URL? = nil,
         thumbnail: URL? = nil,
         
         objclass: ObjectClass? = nil,
@@ -35,6 +38,7 @@ struct Article: Identifiable, Codable {
         self.id = UUID().uuidString
         self.title = title
         self.pagesource = pagesource
+        self.url = url ?? nil
         self.thumbnail = thumbnail ?? nil
         
         self.objclass = objclass ?? nil
@@ -53,8 +57,10 @@ struct Article: Identifiable, Codable {
         self.id = id
         self.title = entityTitle
         self.pagesource = entityPagesource
+        self.url = entity.url
         self.thumbnail = entity.thumbnail
         self.currenttext = entity.currenttext
+        self.completed = entity.completed
         self.objclass = ObjectClass(rawValue: entity.objclass)
         self.esoteric = EsotericClass(rawValue: entity.esoteric)
         self.clearance = entity.clearance
