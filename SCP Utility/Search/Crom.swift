@@ -27,6 +27,57 @@ func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) 
     }
 }
 
+func cromRandom(completion: @escaping (Article) -> Void) {
+    let graphQLQuery = """
+query Search {
+  randomPage(filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+    page {
+      url
+      wikidotInfo {
+      title
+      source
+      thumbnailUrl
+    }
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    var article = Article(title: "", pagesource: "")
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            let page = responseJSON["data"]["randomPage"]["page"]
+            let url = page["url"].url
+            let title = page["wikidotInfo"]["title"]
+            let source = page["wikidotInfo"]["source"]
+            let pic = page["wikidotInfo"]["thumbnailUrl"]
+
+            article = Article(
+                title: title.string ?? "Could not find title",
+                pagesource: source.string ?? "Could not find pagesource",
+                url: url,
+                thumbnail: pic.url ?? nil
+            )
+            
+            completion(article)
+        }
+    }
+}
+
 func cromAPISearchFromURL(query: URL, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(query)") {
