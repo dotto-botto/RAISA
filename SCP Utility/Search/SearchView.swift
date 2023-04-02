@@ -11,10 +11,7 @@ import Foundation
 
 struct SearchView: View {
     @State var query: String = ""
-    @State var callApi: Bool = false
     @State var articles: [Article] = []
-    @State var presentSheet: Bool = false
-    @State var selectedArticle: Article = Article(title: "", pagesource: "")
     
     var body: some View {
         NavigationView {

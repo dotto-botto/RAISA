@@ -49,36 +49,19 @@ struct ExploreView: View {
     @State var article3 = Article(title: "", pagesource: "")
     @State var article4 = Article(title: "", pagesource: "")
     var body: some View {
-        let news = parseHomePage()
-        
-        ScrollView {
-            VStack {
-                // MARK: - Site News
-                if news[0] != nil && news[1] != nil && news[2] != nil && news[3] != nil  {
-                    Text(news[0]!).bold().padding(.trailing)
-                    Text(news[1]!).padding(.trailing)
-                    Text(news[2]!).bold().padding(.trailing)
-                    Text(news[3]!).padding(.trailing)
-                }
-                
-                // MARK: - Spotlights
-                if news[4] != nil {
-                    Text("FEATURED_SCP").bold()
-                    let _ = cromAPISearchFromURL(query: news[4]!) { article in
-                        article1 = article
+//        let news = parseHomePage()
+        NavigationView {
+            ScrollView {
+                VStack {
+                    Grid(horizontalSpacing: 12, verticalSpacing: 12) {
+                        RandomCard()
                     }
-                    ArticleSpotlight(scp: article1)
+                    .padding([.horizontal, .bottom], 16)
+                    .cornerRadius(15)
                 }
-                Text("FEATURED_TALE").bold()
-                
-                Text("FEATURED_GOI").bold()
-                
-                Text("REVIEWER_SPOTLIGHT").bold()
-                
-                Text("FEATURED_ART").bold()
-                
+                .background(Color(uiColor: .systemGroupedBackground))
+                .navigationTitle("SITE_NEWS")
             }
-            .navigationTitle("SITE_NEWS")
         }
     }
 }

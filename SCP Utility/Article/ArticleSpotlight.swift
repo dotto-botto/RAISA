@@ -56,6 +56,7 @@ struct ArticleSpotlight: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .opacity(0.5)
+                        .frame(width: 400)
                     // https://stackoverflow.com/a/69092800
                         .mask(LinearGradient(gradient: Gradient(stops: [
                             .init(color: .black, location: 0),
