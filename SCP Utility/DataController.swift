@@ -217,6 +217,29 @@ extension PersistenceController { // Lists
         
     }
     
+    /// Returns true if id is in a list.
+    func isIdInList(listid: String, articleid id: String, context: NSManagedObjectContext? = nil) -> Bool {
+        let context = context ?? container.viewContext
+        
+        let object = NSFetchRequest<SCPListItem>(entityName: "SCPListItem")
+        object.predicate = NSPredicate(format: "identifier == %@", listid)
+        
+        do {
+            if let list = try context.fetch(object).first {
+                if let contents = list.contents {
+                    for listids in contents {
+                        if listids == id { return true }
+                    }
+                }
+            }
+            
+            try context.save()
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        return false
+    }
+    
     /// Delete all list items in core data.
     func deleteAllLists(context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext
@@ -377,6 +400,27 @@ extension PersistenceController {
         } catch let error {
             debugPrint(error.localizedDescription)
         }
+    }
+    
+    /// Returns the scroll variable from core data.
+    /// - Parameters:
+    ///   - id: The article's id
+    /// - Returns: The text stored in core data.
+    func getScroll(id: String, context: NSManagedObjectContext? = nil) -> String? {
+        let context = context ?? container.viewContext
+
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", id)
+
+        do {
+            if let article = try context.fetch(request).first {
+                return article.currenttext
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+        return nil
     }
     
     /// Update the object class of an article.
@@ -554,10 +598,23 @@ extension PersistenceController {
         return history
     }
     
-    /// Create a new History object for core data.
+    /// Create a new History object for core data if it hasnt been saved in the past 24 hours.
+    /// - Returns: true if successful
     @discardableResult
-    func createHistory(from history: History, context: NSManagedObjectContext? = nil) -> HistoryItem {
+    func createHistory(from history: History, context: NSManagedObjectContext? = nil) -> Bool {
         let context = context ?? container.viewContext
+        
+        if let allHistory = PersistenceController.shared.getAllHistory() {
+            for item in allHistory {
+                let newHistory = History(fromEntity: item)!
+                let timeInterval: TimeInterval = 86400 // 24 hours in seconds
+                if newHistory.date.timeIntervalSinceNow < timeInterval {
+                    if newHistory.articletitle == history.articletitle {
+                        return false
+                    }
+                }
+            }
+        }
         
         let object = HistoryItem(context: context)
         
@@ -572,7 +629,7 @@ extension PersistenceController {
             print(error.localizedDescription)
         }
         
-        return object
+        return true
     }
     
     /// Delete a specific history object from its id.

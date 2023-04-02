@@ -13,7 +13,8 @@ struct ListAdd: View {
     @State var article: Article
     
     var body: some View {
-        let items = PersistenceController.shared.getAllLists()
+        let con = PersistenceController.shared
+        let items = con.getAllLists()
         
         NavigationView {
             if items != nil {
@@ -21,10 +22,21 @@ struct ListAdd: View {
                     var newItem = SCPList(fromEntity: item)
                     
                     if (newItem != nil) {
-                        Button(newItem!.listid) {
+                        Button {
                             newItem!.addContent(Article: article)
                             isPresented = false
+                        } label: {
+                            if con.isIdInList(listid: newItem!.id, articleid: article.id) {
+                                HStack {
+                                    Text(newItem!.listid)
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                }
+                            } else {
+                                Text(newItem!.listid)
+                            }
                         }
+
                     }
                     
                 }
