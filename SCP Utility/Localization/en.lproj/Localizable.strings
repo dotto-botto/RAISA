@@ -61,6 +61,9 @@
 "CHANGE" = "Change";
 "ASSURANCE" = "Are You Sure?";
 "DELETE" = "Delete";
+"YES" = "Yes";
+"NO" = "No";
+"OK" = "Ok";
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
@@ -110,7 +113,13 @@
 // MARK: - Article View & Bar
 "LOADING_SAFARI" = "This article will open in safari.";
 "NO_ARTICLE_LINK" = "This article does not have a saved link";
+"RESUME_READING" = "Resume Reading?";
+"PLACE_SAVED" = "Place Saved!";
+"HOW_TO_SAVE" = "Tap on any text to save your place.";
 "MARK_READ" = "Mark Read";
 "MARK_UNREAD" = "Mark Unread";
 "REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
 "DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself
+
+// MARK: - Explore
+"RANDOM_CARD" = "Random Article";

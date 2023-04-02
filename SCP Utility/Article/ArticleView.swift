@@ -17,6 +17,8 @@ struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
+    @State private var resume: Bool = false
+    @State private var tooltip: Bool = false
     @Environment(\.dismiss) var dismiss
     
     let defaults = UserDefaults.standard
@@ -28,39 +30,78 @@ struct ArticleView: View {
         #if os(iOS)
         let _ = PersistenceController.shared.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
         #endif
-        
-        ScrollView {
-            #if os(iOS)
-            if scp.thumbnail != nil && defaults.bool(forKey: "showImages") && mode != 2 {
-                KFImage(scp.thumbnail)
-                    .resizable()
-                    .scaledToFit()
+        ScrollViewReader { value in
+            ScrollView {
+                #if os(iOS)
+                if scp.thumbnail != nil && defaults.bool(forKey: "showImages") && mode != 2 {
+                    KFImage(scp.thumbnail)
+                        .resizable()
+                        .scaledToFit()
+                    
+                }
+                #endif
                 
-            }
-            #endif
-    
-            VStack(alignment: .leading) {
-                if mode == 0 { // Default
-                    Markdown(FilterToMarkdown(doc: document))
-                } else if mode == 1 { // Raw
-                   Text(document)
-                } else if mode == 2 { // Safari
-                    if scp.url != nil {
-                        Text("LOADING_SAFARI")
-                        /*
-                         For some reason, if i just put showSafari.toggle()
-                         or showSafari = true, then the app never builds.
-                         this is a workaround
-                         */
-                        Text("").onAppear { showSafari = true }
-                    } else {
-                        Text("NO_ARTICLE_LINK")
-                            .font(.largeTitle)
-                            .foregroundColor(.gray)
+                VStack(alignment: .leading) {
+                    if mode == 0 { // Default
+                        let list = FilterToMarkdown(doc: document)
+                            .components(separatedBy: .newlines)
+                        ForEach(list, id: \.self) { item in
+                            Markdown(item)
+                                .padding(.bottom, 1)
+                                .id(item)
+                                .onTapGesture {
+                                    tooltip = true
+                                    con.setScroll(text: item, articleid: scp.id)
+                                }
+                        }
+                    } else if mode == 1 { // Raw
+                        let list = document.components(separatedBy: .newlines)
+                        ForEach(list, id: \.self) { item in
+                            Text(item)
+                                .padding(.bottom, 1)
+                                .id(item)
+                                .onTapGesture {
+                                    tooltip = true
+                                    con.setScroll(text: item, articleid: scp.id)
+                                }
+                        }
+                    } else if mode == 2 { // Safari
+                        if scp.url != nil {
+                            Text("LOADING_SAFARI")
+                            let _ = showSafari = true
+                        } else {
+                            Text("NO_ARTICLE_LINK")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    if scp.currenttext != nil {
+                        let _ = resume = true
                     }
                 }
+                .navigationTitle(scp.title)
             }
-            .navigationTitle(scp.title)
+            .alert("RESUME_READING", isPresented: $resume) {
+                Button("YES") {
+                    value.scrollTo(scp.currenttext!)
+                    resume = false
+                }
+                Button("NO", role: .cancel) {
+                    resume = false
+                }
+            } message: {
+                if scp.currenttext != nil {
+                    Markdown(FilterToMarkdown(doc: scp.currenttext!)).lineLimit(2)
+                }
+            }
+            .alert("PLACE_SAVED", isPresented: $tooltip) {
+                Button("OK") {
+                    tooltip = false
+                }
+            } message: {
+                Text("HOW_TO_SAVE")
+            }
         }
         .frame(width: 400)
         .sheet(isPresented: $presentSheet) {
@@ -104,15 +145,19 @@ func FilterToMarkdown(doc: String) -> String {
     for _ in text.indicesOf(string: "[[include") {
         text.removeText(from: "[[include", to: "]]")
     }
+    text.removeText(from: "[[module Rate", to: "]]")
     text.removeText(from: "[[div", to: "]]")
     text.removeText(from: "[[/div", to: "]]")
     text.removeText(from: "[[size", to: "]]")
     text.removeText(from: "[[/size", to: "]]")
-    text.removeText(from: "[[module", to: "[[/module]]")
     text.removeText(from: "[[>", to: "]]")
     text.removeText(from: "[[/>", to: "]]")
     text.removeText(from: "[[=", to: "/=]]")
     text.removeText(from: "[!--", to: "--]")
+    
+    for _ in text.indicesOf(string: "[[module") {
+        text.removeText(from: "[[module", to: "[[/module]]")
+    }
     
     // Tables
     for _ in text.indicesOf(string: "[[table") {
