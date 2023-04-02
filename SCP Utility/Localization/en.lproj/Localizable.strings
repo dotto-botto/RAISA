@@ -107,9 +107,10 @@
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
 
-// MARK: - Article View
+// MARK: - Article View & Bar
+"LOADING_SAFARI" = "This article will open in safari.";
+"NO_ARTICLE_LINK" = "This article does not have a saved link";
 "MARK_READ" = "Mark Read";
 "MARK_UNREAD" = "Mark Unread";
-// Bar
 "REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
 "DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself

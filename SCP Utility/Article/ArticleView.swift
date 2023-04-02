@@ -16,22 +16,26 @@ import MarkdownUI
 struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
+    @State var showSafari: Bool = false
     @Environment(\.dismiss) var dismiss
     
     let defaults = UserDefaults.standard
+    let con = PersistenceController.shared
     var body: some View {
         let document = scp.pagesource
         
-        let mode = defaults.integer(forKey: "articleViewSetting")
+        let mode: Int = defaults.integer(forKey: "articleViewSetting")
         #if os(iOS)
         let _ = PersistenceController.shared.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
         #endif
         
         ScrollView {
             #if os(iOS)
-            if scp.thumbnail != nil && defaults.bool(forKey: "showImages") { KFImage(scp.thumbnail)
+            if scp.thumbnail != nil && defaults.bool(forKey: "showImages") && mode != 2 {
+                KFImage(scp.thumbnail)
                     .resizable()
                     .scaledToFit()
+                
             }
             #endif
     
@@ -41,15 +45,29 @@ struct ArticleView: View {
                 } else if mode == 1 { // Raw
                    Text(document)
                 } else if mode == 2 { // Safari
-                    
+                    if scp.url != nil {
+                        Text("LOADING_SAFARI")
+                        /*
+                         For some reason, if i just put showSafari.toggle()
+                         or showSafari = true, then the app never builds.
+                         this is a workaround
+                         */
+                        Text("").onAppear { showSafari = true }
+                    } else {
+                        Text("NO_ARTICLE_LINK")
+                            .font(.largeTitle)
+                            .foregroundColor(.gray)
+                    }
                 }
             }
             .navigationTitle(scp.title)
         }
         .frame(width: 400)
         .sheet(isPresented: $presentSheet) {
-        } content: {
             ListAdd(isPresented: $presentSheet, article: scp)
+        }
+        .fullScreenCover(isPresented: $showSafari) {
+            SFSafariViewWrapper(url: scp.url!)
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -65,6 +83,15 @@ struct ArticleView: View {
                 }, label: {
                     Image(systemName: "bookmark")
                 })
+            }
+            ToolbarItem {
+                if scp.url != nil {
+                    Button(action: {
+                        showSafari.toggle()
+                    }, label: {
+                        Image(systemName: "safari")
+                    })
+                }
             }
         }
     }
@@ -100,18 +127,15 @@ func FilterToMarkdown(doc: String) -> String {
 
     // Links
     for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
-        var slicedElement: String? = text.slice(from: "[[[", to: "]]]")
-        if slicedElement != nil {
-            slicedElement = "[[[" + slicedElement! + "]]]"
-            let rawtext: String? = slicedElement!.slice(from: "|", to: "]]]")
-            
-            if rawtext != nil {
-                text = text.replacingOccurrences(of: slicedElement!, with: rawtext!)
+        if var slicedElement = text.slice(from: "[[[", to: "]]]") {
+            if slicedElement.contains("|") {
+                slicedElement = "[[[" + slicedElement + "]]]"
+                
+                if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
+                    text = text.replacingOccurrences(of: slicedElement, with: rawtext)
+                }
             }
         }
-        
-        text = text.replacingOccurrences(of: "[[[", with: "")
-        text = text.replacingOccurrences(of: "]]]", with: "")
     }
     
     text = text.replacingOccurrences(of: "------", with: "---")
@@ -145,16 +169,6 @@ struct Collapsable: View {
         if showed {
             Text(content)
         }
-    }
-}
-
-// MARK: - Table
-struct WikidotTable: View {
-    @State var text: String
-    
-    var body: some View {
-        let array = text.components(separatedBy: CharacterSet.newlines)
-
     }
 }
 
