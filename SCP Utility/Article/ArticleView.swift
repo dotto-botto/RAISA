@@ -134,6 +134,20 @@ struct ArticleView: View {
                     })
                 }
             }
+            ToolbarItem {
+                Button(action: {
+                    con.complete(status: !(scp.completed ?? false), article: scp)
+                    scp.completed = !(scp.completed ?? false)
+                }, label: {
+                    if scp.completed == true {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.secondary)
+                            .opacity(0.5)
+                    }
+                })
+            }
         }
     }
 }
