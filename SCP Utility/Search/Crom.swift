@@ -27,6 +27,65 @@ func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) 
     }
 }
 
+func cromInfo(url: URL, completion: @escaping (ArticleInfo) -> Void) {
+    let graphQLQuery = """
+query Search($query: URL! = "\(url)") {
+  page(url: $query) {
+    wikidotInfo {
+      rating
+      tags
+      createdAt
+      createdBy {
+        name
+        statistics {
+          rank
+          totalRating
+          meanRating
+          pageCount
+        }
+      }
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    var info = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            let page = responseJSON["data"]["page"]["wikidotInfo"]
+            let user = page["createdBy"]
+
+            info = ArticleInfo(
+                rating: page["rating"].intValue,
+                tags: page["tags"].arrayValue.map { $0.stringValue },
+                createdAt: page["createdAt"].stringValue,
+                createdBy: user["name"].stringValue,
+                userRank: user["statistics"]["rank"].intValue,
+                userTotalRating: user["statistics"]["totalRating"].intValue,
+                userMeanRating: user["statistics"]["meanRating"].intValue,
+                userPageCount: user["statistics"]["pageCount"].intValue
+            )
+            
+            completion(info)
+        }
+    }
+}
+
 func cromRandom(completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search {

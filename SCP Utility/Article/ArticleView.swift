@@ -45,7 +45,7 @@ struct ArticleView: View {
                 
                 VStack(alignment: .leading) {
                     if mode == 0 { // Default
-                        let filtered = FilterToMarkdown(doc: document)
+                        var filtered = FilterToMarkdown(doc: document)
                         let list = filtered.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
                             // Collapsible
@@ -62,6 +62,17 @@ struct ArticleView: View {
                                 )
 
                                 let _ = forbiddenLines += sliced
+                            }
+                            
+                            // Image
+                            if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") {
+                                if scp.url != nil {
+                                    ArticleImage(articleURL: scp.url!, content: item)
+                                } else {
+                                    Text("No url in article")
+                                }
+                                let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
+                                let _ = forbiddenLines += item
                             }
                             
                             // Text
@@ -177,9 +188,8 @@ func FilterToMarkdown(doc: String) -> String {
     var text = doc
     
     // Basic Divs
-    for _ in text.indicesOf(string: "[[include") {
-        text.removeText(from: "[[include", to: "]]")
-    }
+    text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
+    text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
     text.removeText(from: "[[module Rate", to: "]]")
     text.removeText(from: "[[div", to: "]]")
     text.removeText(from: "[[/div", to: "]]")
@@ -228,6 +238,7 @@ func FilterToMarkdown(doc: String) -> String {
     text = text.replacingOccurrences(of: " --", with: " ~~")
     text = text.replacingOccurrences(of: "-- ", with: "~~ ")
     text = text.replacingOccurrences(of: "||", with: "|")
+    text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
 
     return text
 }

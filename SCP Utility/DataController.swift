@@ -267,6 +267,7 @@ extension PersistenceController {
         object.pagesource = article.pagesource
         object.thumbnail = article.thumbnail
         object.currenttext = article.currenttext
+        object.url = article.url
         
         do {
             try context.save()
