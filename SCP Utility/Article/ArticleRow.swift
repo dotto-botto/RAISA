@@ -14,6 +14,7 @@ struct ArticleRow: View {
     @State var showSheet: Bool = false // list add view
     @State var showArticle: Bool = false // article view
     @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
+    @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     
     var body: some View {
         let con = PersistenceController.shared
@@ -21,11 +22,19 @@ struct ArticleRow: View {
         
         Button(action: {
             if localArticle {
-                if barIds != nil {
-                    barIds! += " " + passedSCP.id
-                    defaults.set(barIds, forKey: "articleBarIds")
-                } else {
-                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+                if open == 0 || open == 2 {
+                    if barIds != nil {
+                        barIds! += " " + passedSCP.id
+                        defaults.set(barIds, forKey: "articleBarIds")
+                    } else {
+                        defaults.set(passedSCP.id, forKey: "articleBarIds")
+                    }
+                    
+                    if open == 2 {
+                        showArticle = true
+                    }
+                } else if open == 1 {
+                    showArticle = true
                 }
             } else {
                 showArticle = true
@@ -84,16 +93,21 @@ struct ArticleRow: View {
             }
         }
         .contextMenu {
-            Button(action: {
-                con.complete(status: true, article: passedSCP)
-            }, label: {
-                Label("MARK_READ", systemImage: "eye")
-            })
-            Button(action: {
-                con.complete(status: false, article: passedSCP)
-            }, label: {
-                Label("MARK_UNREAD", systemImage: "eye.slash")
-            })
+            Button {
+                if barIds != nil {
+                    barIds! += " " + passedSCP.id
+                    defaults.set(barIds, forKey: "articleBarIds")
+                } else {
+                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+                }
+            } label: {
+                Label("Add to Bar", systemImage: "plus.circle")
+            }
+            Button {
+                showArticle = true
+            } label: {
+                Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+            }
         }
         .swipeActions(allowsFullSwipe: false) {
             Button(role: .destructive) {

@@ -64,6 +64,7 @@
 "YES" = "Yes";
 "NO" = "No";
 "OK" = "Ok";
+"BOTH" = "Both";
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
@@ -89,6 +90,8 @@
 "RAW_SOURCE_SETTING" = "Raw Page Source";
 "SAFARI_SETTING" = "Open In Safari";
 "SHOW_IMAGES" = "Display Images";
+"BAR_SETTING" = "Bar";
+"READER_SETTING" = "Reader";
 
 // MARK: - History View
 "NO_HISTORY" = "You seem to have no history.";

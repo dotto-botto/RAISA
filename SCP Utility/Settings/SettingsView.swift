@@ -11,6 +11,7 @@ struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("articleViewSetting") var articleViewSetting = 0
     @AppStorage("showImages") var showImages = true
+    @AppStorage("defaultOpen") var defaultOpen = 0
     
     @State var historyConf = false
     @State var listConf = false
@@ -22,6 +23,11 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section(header: Text("READER_OPTIONS")) {
+                Picker("Open Articles In", selection: $defaultOpen) {
+                    Text("BAR_SETTING").tag(0)
+                    Text("READER_SETTING").tag(1)
+                    Text("BOTH").tag(2)
+                }
                 Picker("DEFAULT_READER_SETTING", selection: $articleViewSetting) {
                     Text("PARSED_SOURCE_SETTING").tag(0)
                     Text("RAW_SOURCE_SETTING").tag(1)
