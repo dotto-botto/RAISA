@@ -41,18 +41,39 @@ struct ArticleView: View {
                 }
                 #endif
                 
+                var forbiddenLines: String = ""
+                
                 VStack(alignment: .leading) {
                     if mode == 0 { // Default
-                        let list = FilterToMarkdown(doc: document)
-                            .components(separatedBy: .newlines)
+                        let filtered = FilterToMarkdown(doc: document)
+                        let list = filtered.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
-                            Markdown(item)
-                                .padding(.bottom, 1)
-                                .id(item)
-                                .onTapGesture {
-                                    tooltip = true
-                                    con.setScroll(text: item, articleid: scp.id)
-                                }
+                            // Collapsible
+                            if item.contains("[[collapsible") {
+                                let sliced = item + (
+                                    filtered.slice(
+                                    from: item,
+                                    to: "[[/collapsible]]"
+                                    ) ?? "collapsible incorrect syntax") + "[[/collapsible]]"
+                                
+                                Collapsible(
+                                    articleID: scp.id,
+                                    text: sliced
+                                )
+
+                                let _ = forbiddenLines += sliced
+                            }
+                            
+                            // Text
+                            if !forbiddenLines.contains(item) {
+                                Markdown(item)
+                                    .padding(.bottom, 1)
+                                    .id(item)
+                                    .onTapGesture {
+                                        tooltip = true
+                                        con.setScroll(text: item, articleid: scp.id)
+                                    }
+                            }
                         }
                     } else if mode == 1 { // Raw
                         let list = document.components(separatedBy: .newlines)
@@ -115,7 +136,7 @@ struct ArticleView: View {
                 Button(action: {
                     dismiss()
                 }, label: {
-                    Text("Back")
+                    Image(systemName: "chevron.backward")
                 })
             }
             ToolbarItem(placement: .primaryAction) {
@@ -166,7 +187,8 @@ func FilterToMarkdown(doc: String) -> String {
     text.removeText(from: "[[/size", to: "]]")
     text.removeText(from: "[[>", to: "]]")
     text.removeText(from: "[[/>", to: "]]")
-    text.removeText(from: "[[=", to: "/=]]")
+    text.removeText(from: "[[=", to: "]]")
+    text.removeText(from: "[[/=", to: "]]")
     text.removeText(from: "[!--", to: "--]")
     
     for _ in text.indicesOf(string: "[[module") {
@@ -193,12 +215,15 @@ func FilterToMarkdown(doc: String) -> String {
                 if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
                     text = text.replacingOccurrences(of: slicedElement, with: rawtext)
                 }
+            } else {
+                text = text.replacingOccurrences(of: "[[[" + slicedElement + "]]]", with: slicedElement)
             }
         }
     }
     
     text = text.replacingOccurrences(of: "------", with: "---")
-    text = text.replacingOccurrences(of: "@@@@", with: "")
+    text = text.replacingOccurrences(of: "@@@@", with: "\n")
+    text = text.replacingOccurrences(of: "@@ @@", with: "\n")
     text = text.replacingOccurrences(of: "//", with: "*")
     text = text.replacingOccurrences(of: " --", with: " ~~")
     text = text.replacingOccurrences(of: "-- ", with: "~~ ")
@@ -207,33 +232,10 @@ func FilterToMarkdown(doc: String) -> String {
     return text
 }
 
-
-// MARK: - Collapsable
-struct Collapsable: View {
-    @State var show: String
-    @State var hide: String
-    @State var content: String
-    
-    @State var showed: Bool = false
-    
-    var body: some View {
-        Button(show) {
-            showed = true
-        }.disabled(!showed)
-        
-        Button(hide) {
-            showed = false
-        }.disabled(showed)
-        
-        if showed {
-            Text(content)
-        }
-    }
-}
-
 // MARK: - Extensions
 // https://stackoverflow.com/a/31727051
 extension String {
+    /// Slices from from string to first occurance of to string
     func slice(from: String, to: String) -> String? {
         return (range(of: from)?.upperBound).flatMap { substringFrom in
             (range(of: to, range: substringFrom..<endIndex)?.lowerBound).map { substringTo in
@@ -305,6 +307,24 @@ css that should not be visible...
 ------
 
 **Description:** SCP-001 is an entity ordinarily referred to as the [[[scp-231|Scarlet King]]]. SCP-001 is currently located in several alternate dimensions simultaneously, and is unable to enter into the prime dimension. However, it is believed to have been repeatedly attempting entry for a period of --several thousand-- under 300 years. SCP-001's physical, mental and conceptual properties are unknown to the Foundation; nevertheless, it continues to assert a strong influence on a number of individuals and events within the prime dimension.
+
+[[collapsible show="+ Open" hide="- Close"]]
+This text is in a collapsible.
+------
+2
+------
+3
+------
+4
+[[/collapsible]]
+
+[[collapsible show="+ Open2" hide="- Close2"]]
+This text is also in a collapsible.
+@@ @@
+@@ @@
+@@ @@
+Hello
+[[/collapsible]]
 """
         
         ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example, thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")))

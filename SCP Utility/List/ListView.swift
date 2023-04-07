@@ -15,7 +15,6 @@ struct ListView: View {
     @State var listSubtitlePresent: Bool = false
     
     @State var query: String = ""
-    @State var oneList: Bool = false
     @State var currentList: SCPList = SCPList(listid: "Placeholder")
         
     var body: some View {

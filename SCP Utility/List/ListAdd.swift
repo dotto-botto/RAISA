@@ -36,9 +36,7 @@ struct ListAdd: View {
                                 Text(newItem!.listid)
                             }
                         }
-
                     }
-                    
                 }
             }
         }
