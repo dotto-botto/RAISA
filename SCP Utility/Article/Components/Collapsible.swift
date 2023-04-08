@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if os(iOS)
 import MarkdownUI
+#endif
 
 struct Collapsible: View {
     @State var articleID: String
@@ -30,6 +32,7 @@ struct Collapsible: View {
                     if showed {
                         let list = content!.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
+                            #if os(iOS)
                             Markdown(FilterToMarkdown(doc: item))
                                 .padding(.bottom, 1)
                                 .id(item)
@@ -37,6 +40,15 @@ struct Collapsible: View {
                                     tooltip = true
                                     PersistenceController.shared.setScroll(text: item, articleid: articleID)
                                 }
+                            #else
+                            Text(FilterToMarkdown(doc: item))
+                                .padding(.bottom, 1)
+                                .id(item)
+                                .onTapGesture {
+                                    tooltip = true
+                                    PersistenceController.shared.setScroll(text: item, articleid: articleID)
+                                }
+                            #endif
                         }
                     }
                 }

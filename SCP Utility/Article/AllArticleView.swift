@@ -15,8 +15,8 @@ struct AllArticleView: View {
     let con = PersistenceController.shared
     var body: some View {
         let articles = con.getAllArticles()
-        List {
-            if articles != nil {
+        if !articles!.isEmpty {
+            List {
                 if mode == 0 {
                     ForEach(articles!) { article in
                         ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
@@ -34,13 +34,13 @@ struct AllArticleView: View {
                         }
                     }
                 }
-            } else {
-                #if os(iOS)
-                Text("NO_SAVED_ARTICLES")
-                #elseif os(watchOS)
-                Text("NO_SAVED_ARTICLES_WATCH")
-                #endif
             }
+        } else {
+            #if os(iOS)
+            Text("NO_SAVED_ARTICLES")
+            #elseif os(watchOS)
+            Text("NO_SAVED_ARTICLES_WATCH")
+            #endif
         }
     }
 }

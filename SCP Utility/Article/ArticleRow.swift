@@ -49,6 +49,7 @@ struct ArticleRow: View {
                         .foregroundColor(.accentColor)
                 }
                 Spacer()
+                #if os(iOS)
                 ZStack {
                     Menu {
                         ForEach(EsotericClass.allCases, id: \.self) { eso in
@@ -85,6 +86,7 @@ struct ArticleRow: View {
                         }
                     }
                 }.disabled(!localArticle)
+                #endif
                 
                 if !localArticle {
                     Image(systemName: "bookmark")

@@ -80,6 +80,9 @@
 "DELETE_ALL_ARTICLES" = "Delete All Saved Articles";
 "DELETE_ALL_DATA" = "Delete All Data";
 
+"ICLOUD" = "ICloud";
+"UPLOAD_ICLOUD" = "Upload Saved Articles to ICloud";
+
 "HISTORY_OPTIONS" = "History";
 "TRACK_HISTORY" = "Track History";
 "DELETE_ALL_HISTORY" = "Delete All History";

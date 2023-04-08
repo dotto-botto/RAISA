@@ -66,6 +66,7 @@ struct ArticleView: View {
                             }
                             
                             // Image
+                            #if os(iOS)
                             if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") {
                                 if scp.url != nil {
                                     ArticleImage(articleURL: scp.url!, content: item)
@@ -75,9 +76,11 @@ struct ArticleView: View {
                                 let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += item
                             }
+                            #endif
                             
                             // Text
                             if !forbiddenLines.contains(item) {
+                                #if os(iOS)
                                 Markdown(item)
                                     .padding(.bottom, 1)
                                     .id(item)
@@ -85,6 +88,15 @@ struct ArticleView: View {
                                         tooltip = true
                                         con.setScroll(text: item, articleid: scp.id)
                                     }
+                                #else
+                                Text(item)
+                                    .padding(.bottom, 1)
+                                    .id(item)
+                                    .onTapGesture {
+                                        tooltip = true
+                                        con.setScroll(text: item, articleid: scp.id)
+                                    }
+                                #endif
                             }
                         }
                     } else if mode == 1 { // Raw
@@ -125,7 +137,11 @@ struct ArticleView: View {
                 }
             } message: {
                 if scp.currenttext != nil {
+                    #if os(iOS)
                     Markdown(FilterToMarkdown(doc: scp.currenttext!)).lineLimit(2)
+                    #else
+                    Text(scp.currenttext!)
+                    #endif
                 }
             }
             .alert("PLACE_SAVED", isPresented: $tooltip) {
@@ -140,6 +156,7 @@ struct ArticleView: View {
         .sheet(isPresented: $presentSheet) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
+        #if os(iOS)
         .sheet(isPresented: $showInfo) {
             if scp.url != nil { ArticleInfoView(url: scp.url!) }
         }
@@ -210,6 +227,7 @@ struct ArticleView: View {
                 }
             }
         }
+        #endif
     }
 }
 

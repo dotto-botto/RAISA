@@ -12,6 +12,7 @@ struct SettingsView: View {
     @AppStorage("articleViewSetting") var articleViewSetting = 0
     @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 0
+    @AppStorage("storeIcloud") var storeIcloud = true
     
     @State var historyConf = false
     @State var listConf = false
@@ -22,6 +23,10 @@ struct SettingsView: View {
     let defaults = UserDefaults.standard
     var body: some View {
         Form {
+            Section(header: Text("ICLOUD")) {
+                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
+            }
+            
             Section(header: Text("READER_OPTIONS")) {
                 Picker("Open Articles In", selection: $defaultOpen) {
                     Text("BAR_SETTING").tag(0)
@@ -82,6 +87,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        NavigationView { SettingsView() }
     }
 }
