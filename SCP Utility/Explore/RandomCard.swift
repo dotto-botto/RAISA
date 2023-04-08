@@ -9,11 +9,8 @@ import SwiftUI
 
 struct RandomCard: View {
     @State var showArticle: Bool = false
+    @State var article = Article(title: "", pagesource: "")
     var body: some View {
-        var article = Article(title: "", pagesource: "")
-        let _ = cromRandom { scp in
-            article = scp
-        }
         Button {
             showArticle = true
         } label: {
@@ -25,9 +22,14 @@ struct RandomCard: View {
                         .padding(.leading)
                     Spacer()
                 }
-                Image(systemName: "dice.fill")
-                    .resizable()
-                    .scaledToFit()
+                HStack {
+                    if article.title != "" {
+                        Text(article.title).font(.monospaced(.largeTitle)())
+                        Image(systemName: "arrow.forward")
+                    } else {
+                        ProgressView()
+                    }
+                }
             }
         }
         .foregroundColor(.secondary)
@@ -36,7 +38,11 @@ struct RandomCard: View {
         .fullScreenCover(isPresented: $showArticle) {
             NavigationView { ArticleView(scp: article) }
         }
-        
+        .onAppear {
+            let _ = cromRandom { scp in
+                article = scp
+            }
+        }
     }
 }
 
