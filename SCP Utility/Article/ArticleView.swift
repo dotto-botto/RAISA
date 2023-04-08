@@ -20,6 +20,7 @@ struct ArticleView: View {
     @State private var showInfo: Bool = false
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
+    @State private var filtered: String = ""
     @Environment(\.dismiss) var dismiss
     
     let defaults = UserDefaults.standard
@@ -41,12 +42,14 @@ struct ArticleView: View {
                     
                 }
                 #endif
-                
-                var forbiddenLines: String = ""
+                if filtered == "" { ProgressView() }
                 
                 VStack(alignment: .leading) {
-                    if mode == 0 { // Default
-                        var filtered = FilterToMarkdown(doc: document)
+                    var forbiddenLines: String = ""
+                    let _ = FilterToMarkdown(doc: document) { str in
+                        filtered = str
+                    }
+                    if !(filtered == "") && mode == 0 { // Default
                         let list = filtered.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
                             // Collapsible
@@ -137,11 +140,7 @@ struct ArticleView: View {
                 }
             } message: {
                 if scp.currenttext != nil {
-                    #if os(iOS)
-                    Markdown(FilterToMarkdown(doc: scp.currenttext!)).lineLimit(2)
-                    #else
                     Text(scp.currenttext!)
-                    #endif
                 }
             }
             .alert("PLACE_SAVED", isPresented: $tooltip) {
@@ -231,63 +230,65 @@ struct ArticleView: View {
     }
 }
 
-func FilterToMarkdown(doc: String) -> String {
-    var text = doc
-    
-    // Basic Divs
-    text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
-    text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
-    text.removeText(from: "[[module Rate", to: "]]")
-    text.removeText(from: "[[div", to: "]]")
-    text.removeText(from: "[[/div", to: "]]")
-    text.removeText(from: "[[size", to: "]]")
-    text.removeText(from: "[[/size", to: "]]")
-    text.removeText(from: "[[>", to: "]]")
-    text.removeText(from: "[[/>", to: "]]")
-    text.removeText(from: "[[=", to: "]]")
-    text.removeText(from: "[[/=", to: "]]")
-    text.removeText(from: "[!--", to: "--]")
-    
-    for _ in text.indicesOf(string: "[[module") {
-        text.removeText(from: "[[module", to: "[[/module]]")
-    }
-    
-    // Tables
-    for _ in text.indicesOf(string: "[[table") {
-        text.removeText(from: "[[table", to: "[[/table]]")
-    }
-
-    // Footnotes
-    for _ in text.indicesOf(string: "[[footnote") {
-        text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
-        text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
-    }
-
-    // Links
-    for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
-        if var slicedElement = text.slice(from: "[[[", to: "]]]") {
-            if slicedElement.contains("|") {
-                slicedElement = "[[[" + slicedElement + "]]]"
-                
-                if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
-                    text = text.replacingOccurrences(of: slicedElement, with: rawtext)
+func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
+    DispatchQueue.main.async {
+        var text = doc
+        
+        // Basic Divs
+        text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
+        text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
+        text.removeText(from: "[[module Rate", to: "]]")
+        text.removeText(from: "[[div", to: "]]")
+        text.removeText(from: "[[/div", to: "]]")
+        text.removeText(from: "[[size", to: "]]")
+        text.removeText(from: "[[/size", to: "]]")
+        text.removeText(from: "[[>", to: "]]")
+        text.removeText(from: "[[/>", to: "]]")
+        text.removeText(from: "[[=", to: "]]")
+        text.removeText(from: "[[/=", to: "]]")
+        text.removeText(from: "[!--", to: "--]")
+        
+        for _ in text.indicesOf(string: "[[module") {
+            text.removeText(from: "[[module", to: "[[/module]]")
+        }
+        
+        // Tables
+        for _ in text.indicesOf(string: "[[table") {
+            text.removeText(from: "[[table", to: "[[/table]]")
+        }
+        
+        // Footnotes
+        for _ in text.indicesOf(string: "[[footnote") {
+            text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
+            text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
+        }
+        
+        // Links
+        for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
+            if var slicedElement = text.slice(from: "[[[", to: "]]]") {
+                if slicedElement.contains("|") {
+                    slicedElement = "[[[" + slicedElement + "]]]"
+                    
+                    if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
+                        text = text.replacingOccurrences(of: slicedElement, with: rawtext)
+                    }
+                } else {
+                    text = text.replacingOccurrences(of: "[[[" + slicedElement + "]]]", with: slicedElement)
                 }
-            } else {
-                text = text.replacingOccurrences(of: "[[[" + slicedElement + "]]]", with: slicedElement)
             }
         }
+        
+        text = text.replacingOccurrences(of: "------", with: "---")
+        text = text.replacingOccurrences(of: "@@@@", with: "\n")
+        text = text.replacingOccurrences(of: "@@ @@", with: "\n")
+        text = text.replacingOccurrences(of: "//", with: "*")
+        text = text.replacingOccurrences(of: " --", with: " ~~")
+        text = text.replacingOccurrences(of: "-- ", with: "~~ ")
+        text = text.replacingOccurrences(of: "||", with: "|")
+        text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
+        
+        completion(text)
     }
-    
-    text = text.replacingOccurrences(of: "------", with: "---")
-    text = text.replacingOccurrences(of: "@@@@", with: "\n")
-    text = text.replacingOccurrences(of: "@@ @@", with: "\n")
-    text = text.replacingOccurrences(of: "//", with: "*")
-    text = text.replacingOccurrences(of: " --", with: " ~~")
-    text = text.replacingOccurrences(of: "-- ", with: "~~ ")
-    text = text.replacingOccurrences(of: "||", with: "|")
-    text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
-
-    return text
 }
 
 // MARK: - Extensions

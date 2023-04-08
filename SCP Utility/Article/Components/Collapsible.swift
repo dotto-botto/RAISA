@@ -14,6 +14,7 @@ struct Collapsible: View {
     @State var articleID: String
     @State var text: String
     @State var showed: Bool = false
+    @State private var filtered = ""
     @State private var tooltip: Bool = false
     var body: some View {
         VStack {
@@ -22,6 +23,9 @@ struct Collapsible: View {
                 let hide = text.slice(from: "hide=\"", to: "\"]]")
                 
                 let content = text.slice(from: "\"]]", to: "[[/collapsible]]")
+                let _ = FilterToMarkdown(doc: content!) { str in
+                    filtered = str
+                }
                 if show != nil && hide != nil {
                     Button {
                         showed.toggle()
@@ -29,11 +33,11 @@ struct Collapsible: View {
                         let prompt = showed ? hide! : show!
                         Text(prompt).foregroundColor(.accentColor)
                     }
-                    if showed {
-                        let list = content!.components(separatedBy: .newlines)
+                    if showed && filtered != "" {
+                        let list = filtered.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
                             #if os(iOS)
-                            Markdown(FilterToMarkdown(doc: item))
+                            Markdown(item)
                                 .padding(.bottom, 1)
                                 .id(item)
                                 .onTapGesture {
@@ -41,7 +45,7 @@ struct Collapsible: View {
                                     PersistenceController.shared.setScroll(text: item, articleid: articleID)
                                 }
                             #else
-                            Text(FilterToMarkdown(doc: item))
+                            Text(item)
                                 .padding(.bottom, 1)
                                 .id(item)
                                 .onTapGesture {
