@@ -141,7 +141,6 @@ func cromAPISearchFromURL(query: URL, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(query)") {
     page(url: $query) {
-    url
     wikidotInfo {
       title
       source

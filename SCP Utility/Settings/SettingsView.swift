@@ -19,15 +19,31 @@ struct SettingsView: View {
     @State var articleConf = false
     @State var allDataConf = false
 
+    @State var raisaView = false
+    @State var cromView = false
     let con = PersistenceController.shared
     let defaults = UserDefaults.standard
     var body: some View {
         Form {
-            Section(header: Text("ICLOUD")) {
-                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
+            Section("Support") {
+                HStack {
+                    Button("Support the RAISA Creator") {
+                        raisaView = true
+                    }.foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Button("Support the CROM Creator") {
+                        cromView = true
+                    }.foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundColor(.secondary)
+                }
             }
             
-            Section(header: Text("READER_OPTIONS")) {
+            Section("READER_OPTIONS") {
                 Picker("Open Articles In", selection: $defaultOpen) {
                     Text("BAR_SETTING").tag(0)
                     Text("READER_SETTING").tag(1)
@@ -44,7 +60,11 @@ struct SettingsView: View {
                 }
             }
             
-            Section(header: Text("HISTORY_OPTIONS")) {
+            Section("ICLOUD") {
+                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
+            }
+            
+            Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)
                 Button("DELETE_ALL_HISTORY") {
                     historyConf = true
@@ -55,7 +75,7 @@ struct SettingsView: View {
                 }
             }
             
-            Section(header: Text("DATA_OPTIONS")) {
+            Section("DATA_OPTIONS") {
                 Button("DELETE_ALL_LISTS") {
                     listConf = true
                 }.confirmationDialog("DELETE_LIST_TOOLTIP", isPresented: $listConf, titleVisibility: .visible) {
@@ -81,6 +101,13 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("SETTINGS_TITLE")
+        .alert("You can't donate yet.", isPresented: $raisaView) {
+        } message: {
+            Text("Thank you for downloading the app!")
+        }
+        .fullScreenCover(isPresented: $cromView) {
+            SFSafariViewWrapper(url: URL(string: "https://www.patreon.com/crombird")!)
+        }
     }
 }
 
