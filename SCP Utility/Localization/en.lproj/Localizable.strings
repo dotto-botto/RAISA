@@ -113,16 +113,22 @@
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
 
-// MARK: - Article View & Bar
+// MARK: - Article View, Bar, and Info
 "LOADING_SAFARI" = "This article will open in safari.";
 "NO_ARTICLE_LINK" = "This article does not have a saved link";
 "RESUME_READING" = "Resume Reading?";
 "PLACE_SAVED" = "Place Saved!";
 "HOW_TO_SAVE" = "Tap on any text to save your place.";
+"UPVOTE" = "Upvote";
+"DOWNVOTE" = "Downvote";
 "MARK_READ" = "Mark Read";
 "MARK_UNREAD" = "Mark Unread";
 "REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
 "DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself
+"RATING" = "Rating";
+"RANK" = "Rank";
+"PAGES_CREATED" = "Pages Created";
+"TOTAL_VOTES" = "Total Votes";
 
 // MARK: - Explore
 "RANDOM_CARD" = "Random Article";

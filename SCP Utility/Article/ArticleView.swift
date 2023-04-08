@@ -17,6 +17,7 @@ struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
+    @State private var showInfo: Bool = false
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
     @Environment(\.dismiss) var dismiss
@@ -139,38 +140,25 @@ struct ArticleView: View {
         .sheet(isPresented: $presentSheet) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
+        .sheet(isPresented: $showInfo) {
+            if scp.url != nil { ArticleInfoView(url: scp.url!) }
+        }
         .fullScreenCover(isPresented: $showSafari) {
             SFSafariViewWrapper(url: scp.url!)
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
+                Button {
                     dismiss()
-                }, label: {
+                } label: {
                     Image(systemName: "chevron.backward")
-                })
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    presentSheet.toggle()
-                }, label: {
-                    Image(systemName: "bookmark")
-                })
-            }
-            ToolbarItem {
-                if scp.url != nil {
-                    Button(action: {
-                        showSafari.toggle()
-                    }, label: {
-                        Image(systemName: "safari")
-                    })
                 }
             }
             ToolbarItem {
-                Button(action: {
+                Button {
                     con.complete(status: !(scp.completed ?? false), article: scp)
                     scp.completed = !(scp.completed ?? false)
-                }, label: {
+                } label: {
                     if scp.completed == true {
                         Image(systemName: "checkmark")
                     } else {
@@ -178,7 +166,48 @@ struct ArticleView: View {
                             .foregroundColor(.secondary)
                             .opacity(0.5)
                     }
-                })
+                }
+            }
+            // Bottom
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button {
+                    presentSheet.toggle()
+                } label: {
+                    Image(systemName: "bookmark")
+                }
+                Spacer()
+                Button {
+                    showInfo.toggle()
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                Spacer()
+                
+                Menu {
+                    Button {
+                        
+                    } label: {
+                        Label("DOWNVOTE", systemImage: "arrow.down")
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Label("UPVOTE", systemImage: "arrow.up")
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                }
+                
+                
+                if scp.url != nil {
+                    Spacer()
+                    Button {
+                        showSafari.toggle()
+                    } label: {
+                        Image(systemName: "safari")
+                    }
+                }
             }
         }
     }
@@ -337,7 +366,8 @@ This text is also in a collapsible.
 Hello
 [[/collapsible]]
 """
-        
-        ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example, thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")))
+        NavigationView {
+            ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example, thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")))
+        }
     }
 }
