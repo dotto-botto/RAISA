@@ -37,11 +37,6 @@ struct ContentView: View {
                 ArticleBar().frame(height: 45)
             }.tabItem { Label("TABBAR_SETTINGS", systemImage: "gearshape")}
         }
-//        .sheet(isPresented: $toArticle) {
-//            NavigationView {
-//                ArticleView(scp: Article(title: "Hello", pagesource: "content"))
-//            }
-//        }
     }
 }
 

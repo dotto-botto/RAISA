@@ -46,8 +46,10 @@ struct ArticleView: View {
                 
                 VStack(alignment: .leading) {
                     var forbiddenLines: String = ""
-                    let _ = FilterToMarkdown(doc: document) { str in
-                        filtered = str
+                    if mode == 0 && filtered == "" {
+                        let _ = FilterToMarkdown(doc: document) { str in
+                            filtered = str
+                        }
                     }
                     if !(filtered == "") && mode == 0 { // Default
                         let list = filtered.components(separatedBy: .newlines)

@@ -38,7 +38,7 @@ struct ArticleImage: View {
         }
         
         VStack {
-            KFImage(URL(string: newURL))
+            KFImage(URL(string: newURL)!)
                 .resizable()
                 .scaledToFit()
             Text(caption ?? "")
@@ -50,11 +50,11 @@ struct ArticleImage: View {
 struct ArticleImage_Previews: PreviewProvider {
     static var previews: some View {
         ArticleImage(
-            articleURL: URL(string: "https://scp-wiki.wikidot.com/scp-5004")!,
+            articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-5004")!,
             content: "[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]"
         ).previewDisplayName("Old Format")
         ArticleImage(
-            articleURL: URL(string: "https://scp-wiki.wikidot.com/scp-049")!,
+            articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-049")!,
             content: """
                     [[include :scp-wiki:component:image-features-source |hover-enlarge=--]
                     |enlarge-amount=6
