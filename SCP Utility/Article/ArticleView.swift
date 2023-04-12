@@ -21,6 +21,7 @@ struct ArticleView: View {
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
     @State private var filtered: String = ""
+    @State private var bookmarkStatus: Bool = false
     @Environment(\.dismiss) var dismiss
     
     let defaults = UserDefaults.standard
@@ -178,15 +179,21 @@ struct ArticleView: View {
             }
             // Bottom
             ToolbarItemGroup(placement: .bottomBar) {
-                Button {
-                    presentSheet.toggle()
-                } label: {
-                    if scp.isSaved() {
+                Button {} label: {
+                    if scp.isSaved() || bookmarkStatus == true {
                         Image(systemName: "bookmark.fill")
+                            .onTapGesture { presentSheet.toggle() }
+                            .onLongPressGesture { presentSheet.toggle() }
                     } else {
                         Image(systemName: "bookmark")
+                            .onTapGesture {
+                                con.createArticleEntity(article: scp)
+                                bookmarkStatus = true
+                            }
+                            .onLongPressGesture { presentSheet.toggle() }
                     }
                 }
+                
                 Spacer()
                 Button {
                     showInfo.toggle()
