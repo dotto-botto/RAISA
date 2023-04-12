@@ -20,6 +20,7 @@ struct HistoryView: View {
                 List(items!) { item in
                     HistoryRow(item: History(fromEntity: item)!)
                 }
+                .listStyle(.plain)
                 .navigationTitle("HISTORY_TITLE")
                 .toolbar {
                     ToolbarItem(placement: .secondaryAction) {
