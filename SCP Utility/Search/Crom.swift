@@ -108,7 +108,7 @@ query Search {
 
     var responseJSON: JSON = JSON()
     
-    var article = Article(title: "", pagesource: "")
+    var article = Article(title: "", pagesource: "", url: placeholderURL)
     cromRequest(params: parameters) { data, error in
         if let error {
             print(error)
@@ -128,7 +128,7 @@ query Search {
             article = Article(
                 title: title.string ?? "Could not find title",
                 pagesource: source.string ?? "Could not find pagesource",
-                url: url,
+                url: url ?? placeholderURL,
                 thumbnail: pic.url ?? nil
             )
             
@@ -156,7 +156,7 @@ query Search($query: URL! = "\(query)") {
 
     var responseJSON: JSON = JSON()
     
-    var article = Article(title: "", pagesource: "")
+    var article = Article(title: "", pagesource: "", url: placeholderURL)
     cromRequest(params: parameters) { data, error in
         if let error {
             print(error)
@@ -224,7 +224,7 @@ query Search($query: String! = "\(query)") {
                 articles.append(Article(
                     title: title.string ?? "Could not find title",
                     pagesource: source.string ?? "Could not find pagesource",
-                    url: url,
+                    url: url ?? placeholderURL,
                     thumbnail: pic.url ?? nil
                 ))
             }

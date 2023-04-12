@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RandomCard: View {
     @State var showArticle: Bool = false
-    @State var article = Article(title: "", pagesource: "")
+    @State var article = Article(title: "", pagesource: "", url: placeholderURL)
     var body: some View {
         Button {
             showArticle = true

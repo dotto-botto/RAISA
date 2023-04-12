@@ -118,7 +118,6 @@
 
 // MARK: - Article View, Bar, and Info
 "LOADING_SAFARI" = "This article will open in safari.";
-"NO_ARTICLE_LINK" = "This article does not have a saved link";
 "RESUME_READING" = "Resume Reading?";
 "PLACE_SAVED" = "Place Saved!";
 "HOW_TO_SAVE" = "Tap on any text to save your place.";

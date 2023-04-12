@@ -75,6 +75,7 @@ struct ArticleSpotlight_Previews: PreviewProvider {
         ArticleSpotlight(scp: Article(
             title: "SCP-5004",
             pagesource: "Page source here...",
+            url: placeholderURL,
             thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-5004/header.png"),
             objclass: .esoteric,
             esoteric: .thaumiel,

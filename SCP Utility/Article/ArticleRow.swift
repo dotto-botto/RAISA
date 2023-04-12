@@ -171,6 +171,7 @@ struct ArticleRow_Previews: PreviewProvider {
         ArticleRow(passedSCP: Article(
             title: "Tufto's Proposal",
             pagesource: "this is a --> EXPLAINED <-- scp, it is also --> apollyon <-- !!!!",
+            url: placeholderURL,
             objclass: .keter,
             esoteric: .thaumiel,
             disruption: .amida,
@@ -179,6 +180,7 @@ struct ArticleRow_Previews: PreviewProvider {
         ArticleRow(passedSCP: Article(
             title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
             pagesource: "",
+            url: placeholderURL,
             objclass: .keter,
             esoteric: .thaumiel,
             disruption: .amida,

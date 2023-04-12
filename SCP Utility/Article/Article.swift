@@ -8,12 +8,13 @@
 import Foundation
 
 fileprivate let con = PersistenceController.shared
+let placeholderURL: URL = URL(string: "https://scp-wiki.wikidot.com/")!
 struct Article: Identifiable, Codable {
     let id: String
     
     let title: String
     let pagesource: String
-    var url: URL? = nil
+    var url: URL
     var thumbnail: URL? = nil
     var currenttext: String? = nil
     var completed: Bool? = false
@@ -27,7 +28,7 @@ struct Article: Identifiable, Codable {
     init(
         title: String,
         pagesource: String,
-        url: URL? = nil,
+        url: URL,
         thumbnail: URL? = nil,
         
         objclass: ObjectClass? = nil,
@@ -39,7 +40,7 @@ struct Article: Identifiable, Codable {
         self.id = UUID().uuidString
         self.title = title
         self.pagesource = pagesource
-        self.url = url ?? nil
+        self.url = url
         self.thumbnail = thumbnail ?? nil
         
         self.objclass = objclass ?? nil
@@ -58,7 +59,7 @@ struct Article: Identifiable, Codable {
         self.id = id
         self.title = entityTitle
         self.pagesource = entityPagesource
-        self.url = entity.url
+        self.url = entity.url ?? placeholderURL // backwards compatability
         self.thumbnail = entity.thumbnail
         self.currenttext = entity.currenttext
         self.completed = entity.completed
@@ -99,7 +100,7 @@ struct Article: Identifiable, Codable {
     }
     
     func isSaved() -> Bool {
-        return con.isArticleSaved(url: self.url ?? URL(string: "_.com")!) ?? false
+        return con.isArticleSaved(url: self.url) ?? false
     }
 }
 

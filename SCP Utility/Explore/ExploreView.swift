@@ -44,10 +44,6 @@ private func parseHomePage() -> [String?] {
 }
 
 struct ExploreView: View {
-    @State var article1 = Article(title: "", pagesource: "")
-    @State var article2 = Article(title: "", pagesource: "")
-    @State var article3 = Article(title: "", pagesource: "")
-    @State var article4 = Article(title: "", pagesource: "")
     var body: some View {
 //        let news = parseHomePage()
         NavigationView {

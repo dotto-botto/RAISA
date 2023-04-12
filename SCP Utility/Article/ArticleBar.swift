@@ -15,7 +15,7 @@ struct ArticleBar: View {
     var body: some View {
         let con = PersistenceController.shared
         
-        var selected: Article = Article(title: "Uh oh", pagesource: "an error occured")
+        var selected: Article = Article(title: "Uh oh", pagesource: "an error occured", url: placeholderURL)
         if !articles.isEmpty {
             HStack {
                 Spacer()

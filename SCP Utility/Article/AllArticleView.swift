@@ -23,13 +23,13 @@ struct AllArticleView: View {
                     }
                 } else if mode == 1 {
                     ForEach(articles!) { article in
-                        if con.completionStatus(article: Article(fromEntity: article) ?? Article(title: "", pagesource: "")) {
+                        if con.completionStatus(article: Article(fromEntity: article)!) {
                             ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
                         }
                     }
                 } else if mode == 2 {
                     ForEach(articles!) { article in
-                        if !con.completionStatus(article: Article(fromEntity: article) ?? Article(title: "", pagesource: "")) {
+                        if !con.completionStatus(article: Article(fromEntity: article)!) {
                             ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
                         }
                     }

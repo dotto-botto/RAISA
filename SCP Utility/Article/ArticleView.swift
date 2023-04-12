@@ -73,11 +73,7 @@ struct ArticleView: View {
                             // Image
                             #if os(iOS)
                             if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") {
-                                if scp.url != nil {
-                                    ArticleImage(articleURL: scp.url!, content: item)
-                                } else {
-                                    Text("No url in article")
-                                }
+                                ArticleImage(articleURL: scp.url, content: item)
                                 let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += item
                             }
@@ -116,14 +112,8 @@ struct ArticleView: View {
                                 }
                         }
                     } else if mode == 2 { // Safari
-                        if scp.url != nil {
-                            Text("LOADING_SAFARI")
-                            let _ = showSafari = true
-                        } else {
-                            Text("NO_ARTICLE_LINK")
-                                .font(.largeTitle)
-                                .foregroundColor(.gray)
-                        }
+                        Text("LOADING_SAFARI")
+                        let _ = showSafari = true
                     }
                     
                     if scp.currenttext != nil {
@@ -159,10 +149,10 @@ struct ArticleView: View {
         }
         #if os(iOS)
         .sheet(isPresented: $showInfo) {
-            if scp.url != nil { ArticleInfoView(url: scp.url!) }
+            ArticleInfoView(url: scp.url)
         }
         .fullScreenCover(isPresented: $showSafari) {
-            SFSafariViewWrapper(url: scp.url!)
+            SFSafariViewWrapper(url: scp.url)
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -221,14 +211,11 @@ struct ArticleView: View {
                     Image(systemName: "arrow.up.arrow.down")
                 }
                 
-                
-                if scp.url != nil {
-                    Spacer()
-                    Button {
-                        showSafari.toggle()
-                    } label: {
-                        Image(systemName: "safari")
-                    }
+                Spacer()
+                Button {
+                    showSafari.toggle()
+                } label: {
+                    Image(systemName: "safari")
                 }
             }
         }
@@ -382,6 +369,8 @@ This text is in a collapsible.
 4
 [[/collapsible]]
 
+[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]
+
 [[collapsible show="+ Open2" hide="- Close2"]]
 This text is also in a collapsible.
 @@ @@
@@ -391,7 +380,12 @@ Hello
 [[/collapsible]]
 """
         NavigationView {
-            ArticleView(scp: Article(title: "Tufto's Proposal", pagesource: example, thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")))
+            ArticleView(scp: Article(
+                title: "Tufto's Proposal",
+                pagesource: example,
+                url: placeholderURL,
+                thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")
+            ))
         }
     }
 }
