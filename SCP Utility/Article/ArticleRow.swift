@@ -20,7 +20,7 @@ struct ArticleRow: View {
         let con = PersistenceController.shared
         let defaults = UserDefaults.standard
         
-        Button(action: {
+        Button {
             if localArticle {
                 if open == 0 || open == 2 {
                     if barIds != nil {
@@ -39,7 +39,7 @@ struct ArticleRow: View {
             } else {
                 showArticle = true
             }
-        }) {
+        } label: {
             HStack {
                 Text(passedSCP.title)
                     .foregroundColor(.primary)
@@ -55,16 +55,19 @@ struct ArticleRow: View {
                         ForEach(EsotericClass.allCases, id: \.self) { eso in
                             Button {
                                 con.updateEsotericClass(articleid: passedSCP.id, newattr: eso)
+                                passedSCP.esoteric = eso
                             } label: {
                                 Label(eso.toLocalString(), image: eso.toImage())
                             }
                         }
                     } label: {
                         if let im = passedSCP.esoteric?.toImage() {
-                            Image(im)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 30, height: 30)
+                            if passedSCP.objclass == .esoteric {
+                                Image(im)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 30, height: 30)
+                            }
                         }
                     }
                 }.disabled(!localArticle)
@@ -73,6 +76,7 @@ struct ArticleRow: View {
                         ForEach(ObjectClass.allCases, id: \.self) { obj in
                             Button {
                                 con.updateObjectClass(articleid: passedSCP.id, newattr: obj)
+                                passedSCP.objclass = obj
                             } label: {
                                 Label(obj.toLocalString(), image: obj.toImage())
                             }
@@ -125,6 +129,37 @@ struct ArticleRow: View {
         .fullScreenCover(isPresented: $showArticle) {
             NavigationView { ArticleView(scp: passedSCP) }
         }
+        .onAppear {
+            // MARK: Article Scanning
+            DispatchQueue.main.async {
+                let doc = passedSCP.pagesource.lowercased()
+                
+                if passedSCP.objclass == .safe {
+                    var newObj: ObjectClass
+                    if doc.contains("keter") { newObj = .keter }
+                    else if doc.contains("euclid") { newObj = .euclid }
+                    else if doc.contains("neutralized") { newObj = .neutralized }
+                    else if doc.contains("pending") { newObj = .pending }
+                    else if doc.contains("explained") { newObj = .explained }
+                    else if doc.contains("safe") { newObj = .safe }
+                    else { newObj = .esoteric }
+                    passedSCP.updateAttribute(objectClass: newObj)
+                }
+                
+                if passedSCP.esoteric == .thaumiel {
+                    var newEso: EsotericClass
+                    if doc.contains("apollyon") { newEso = .apollyon }
+                    else if doc.contains("archon") { newEso = .archon }
+                    else if doc.contains("cernunnos") { newEso = .cernunnos }
+                    else if doc.contains("decommissioned") { newEso = .decommissioned }
+                    else if doc.contains("tiamat") { newEso = .tiamat }
+                    else if doc.contains("ticonderoga") { newEso = .ticonderoga }
+                    else if doc.contains("uncontained") { newEso = .uncontained }
+                    else { newEso = .thaumiel }
+                    passedSCP.updateAttribute(esotericClass: newEso)
+                }
+            }
+        }
     }
 }
 
@@ -132,7 +167,7 @@ struct ArticleRow_Previews: PreviewProvider {
     static var previews: some View {
         ArticleRow(passedSCP: Article(
             title: "Tufto's Proposal",
-            pagesource: "",
+            pagesource: "this is a --> EXPLAINED <-- scp, it is also --> apollyon <-- !!!!",
             objclass: .keter,
             esoteric: .thaumiel,
             disruption: .amida,

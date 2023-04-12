@@ -7,6 +7,7 @@
 
 import Foundation
 
+fileprivate let con = PersistenceController.shared
 struct Article: Identifiable, Codable {
     let id: String
     
@@ -71,21 +72,25 @@ struct Article: Identifiable, Codable {
     /// Update the specified attribute.
     mutating func updateAttribute(objectClass: ObjectClass) {
         self.objclass = objectClass
+        con.updateObjectClass(articleid: self.id, newattr: objectClass)
     }
     
     /// Update the specified attribute.
     mutating func updateAttribute(esotericClass: EsotericClass) {
         self.esoteric = esotericClass
+        con.updateEsotericClass(articleid: self.id, newattr: esotericClass)
     }
     
     /// Update the specified attribute.
     mutating func updateAttribute(disruptionClass: DisruptionClass) {
         self.disruption = disruptionClass
+        con.updateDisruptionClass(articleid: self.id, newattr: disruptionClass)
     }
     
     /// Update the specified attribute.
     mutating func updateAttribute(riskClass: RiskClass) {
         self.risk = riskClass
+        con.updateRiskClass(articleid: self.id, newattr: riskClass)
     }
     
     /// Update the specified attribute.
