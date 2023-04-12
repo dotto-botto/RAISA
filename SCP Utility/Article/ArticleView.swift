@@ -191,7 +191,11 @@ struct ArticleView: View {
                 Button {
                     presentSheet.toggle()
                 } label: {
-                    Image(systemName: "bookmark")
+                    if scp.isSaved() {
+                        Image(systemName: "bookmark.fill")
+                    } else {
+                        Image(systemName: "bookmark")
+                    }
                 }
                 Spacer()
                 Button {
@@ -286,7 +290,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: "//", with: "*")
         text = text.replacingOccurrences(of: " --", with: " ~~")
         text = text.replacingOccurrences(of: "-- ", with: "~~ ")
-        text = text.replacingOccurrences(of: "||", with: "|")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         
         completion(text)

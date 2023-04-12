@@ -572,6 +572,24 @@ extension PersistenceController {
             print(error)
         }
     }
+    
+    func isArticleSaved(url: URL, context: NSManagedObjectContext? = nil) -> Bool? {
+        let context = context ?? container.viewContext
+        
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "url == %@", url as CVarArg)
+        
+        do {
+            if try context.fetch(request).first != nil {
+                return true
+            }
+        } catch {
+            print(error)
+            return nil
+        }
+        
+        return false
+    }
 }
 
 // MARK: - History Operations

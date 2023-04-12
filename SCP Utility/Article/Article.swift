@@ -97,6 +97,10 @@ struct Article: Identifiable, Codable {
     mutating func updateAttribute(clearance: String) {
         self.clearance = clearance
     }
+    
+    func isSaved() -> Bool {
+        return con.isArticleSaved(url: self.url ?? URL(string: "_.com")!) ?? false
+    }
 }
 
 // MARK: - Atribute Enums

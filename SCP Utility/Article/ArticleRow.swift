@@ -93,8 +93,11 @@ struct ArticleRow: View {
                 #endif
                 
                 if !localArticle {
-                    Image(systemName: "bookmark")
-                        .onTapGesture { showSheet = true }
+                    if passedSCP.isSaved() {
+                        Image(systemName: "bookmark.fill")
+                    } else {
+                        Image(systemName: "bookmark")
+                    }
                 }
             }
         }
