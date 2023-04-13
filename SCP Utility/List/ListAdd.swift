@@ -11,29 +11,25 @@ import Foundation
 struct ListAdd: View {
     @Binding var isPresented: Bool
     @State var article: Article
+    @State private var items = PersistenceController.shared.getAllLists()
     
     var body: some View {
         let con = PersistenceController.shared
-        let items = con.getAllLists()
         
         NavigationView {
             if items != nil {
                 List(items!) { item in
-                    var newItem = SCPList(fromEntity: item)
-                    
-                    if (newItem != nil) {
+                    if var newItem = SCPList(fromEntity: item) {
                         Button {
-                            newItem!.addContent(Article: article)
+                            newItem.addContent(article: article)
                             isPresented = false
                         } label: {
-                            if con.isIdInList(listid: newItem!.id, articleid: article.id) {
-                                HStack {
-                                    Text(newItem!.listid)
-                                    Spacer()
+                            HStack {
+                                Text(newItem.listid)
+                                Spacer()
+                                if con.isIdInList(listid: newItem.id, articleid: article.id) {
                                     Image(systemName: "checkmark")
                                 }
-                            } else {
-                                Text(newItem!.listid)
                             }
                         }
                     }

@@ -590,6 +590,24 @@ extension PersistenceController {
         
         return false
     }
+    
+    func isArticleSaved(id: String, context: NSManagedObjectContext? = nil) -> Bool? {
+        let context = context ?? container.viewContext
+        
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", id)
+        
+        do {
+            if try context.fetch(request).first != nil {
+                return true
+            }
+        } catch {
+            print(error)
+            return nil
+        }
+        
+        return false
+    }
 }
 
 // MARK: - History Operations

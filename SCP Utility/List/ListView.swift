@@ -139,15 +139,27 @@ struct ListView: View {
 struct OneListView: View {
     @State var list: SCPList
     @State var query: String = ""
-    @State var sort: Int = 0
+    @State private var objFilter: ObjectClass? = nil
+    @State private var esoFilter: EsotericClass? = nil
     
     var body: some View {
-        if list.contents != nil {     
+        if list.contents != nil {
             let con = PersistenceController.shared
-            let articles = con.getAllListArticles(list: list)!
+            var articles = con.getAllListArticles(list: list)!
+            let _ = articles = articles.filter{ query.isEmpty ? true: $0.title?.contains(query) ?? false }
+            if objFilter != nil { let _ = articles = articles.filter{ $0.objclass == objFilter!.rawValue } }
+            if esoFilter != nil { let _ = articles = articles.filter{ $0.esoteric == esoFilter!.rawValue } }
+            
             List {
-                ForEach(articles.filter{ query.isEmpty ? true: $0.title?.contains(query) ?? false }, id: \.self) { article in
+                ForEach(articles, id: \.self) { article in
                     ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                
+                            } label: {
+                                Image(systemName: "text.badge.minus")
+                            }
+                        }
                 }
             }
             .navigationTitle(list.listid)
@@ -155,9 +167,29 @@ struct OneListView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
-                        Picker("Sort by...", selection: $sort) {
-                            Label("Alphabetically", systemImage: "abc").tag(0)
-                            Label("Date Added", systemImage: "clock").tag(1)
+                        Menu("Filter by Object Class") {
+                            Picker("", selection: $objFilter) {
+                                Label("SAFE", image: "safe-icon").tag(0)
+                                Label("EUCLID", image: "euclid-icon").tag(1)
+                                Label("KETER", image: "keter-icon").tag(2)
+                                Label("NEUTRALIZED", image: "neutralized-icon").tag(3)
+                                Label("PENDING", image: "pending-icon").tag(4)
+                                Label("EXPLAINED", image: "explained-icon").tag(5)
+                                Label("ESOTERIC", image: "esoteric-icon").tag(6)
+                            }
+                        }
+                        Menu("Filter by Esoteric Class") {
+                            Picker("", selection: $objFilter) {
+                                Label("APOLLYON", image: "apollyon-icon").tag(0)
+                                Label("ARCHON", image: "archon-icon").tag(1)
+                                Label("CERNUNNOS", image: "cernunnos-icon").tag(2)
+                                Label("DECOMMISSIONED", image: "decommissioned-icon").tag(3)
+                                Label("HIEMAL", image: "hiemal-icon").tag(4)
+                                Label("TIAMAT", image: "tiamat-icon").tag(5)
+                                Label("TICONDEROGA", image: "ticonderoga-icon").tag(6)
+                                Label("THAUMIEL", image: "thaumiel-icon").tag(7)
+                                Label("UNCONTAINED", image: "uncontained-icon").tag(8)
+                            }
                         }
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease")

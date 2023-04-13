@@ -9,8 +9,8 @@ import SwiftUI
 import Foundation
 import CoreData
 
+fileprivate let con = PersistenceController.shared
 struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
-    
     let id: String
     var listid: String
     var contents: [String]? // article id's
@@ -42,13 +42,16 @@ struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
         }
     }
 
-    mutating func addContent(Article article: Article) {
+    mutating func addContent(article: Article) {
         if self.contents != nil {
             self.contents!.append(article.id)
         } else {
             self.contents = [article.id]
         }
-        PersistenceController.shared.createArticleEntity(article: article)
-        PersistenceController.shared.addArticleToListFromId(listid: self.listid, article: article)
+        
+        if !(con.isArticleSaved(id: article.id) ?? false) {
+            con.createArticleEntity(article: article)
+        }
+        con.addArticleToListFromId(listid: self.listid, article: article)
     }
 }
