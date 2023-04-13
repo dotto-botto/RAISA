@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RandomCard: View {
-    @State var showArticle: Bool = false
-    @State var article = Article(title: "", pagesource: "", url: placeholderURL)
+    @State private var showArticle: Bool = false
+    @State private var article = Article(title: "", pagesource: "", url: placeholderURL)
     var body: some View {
         Button {
             showArticle = true
@@ -24,7 +24,9 @@ struct RandomCard: View {
                 }
                 HStack {
                     if article.title != "" {
-                        Text(article.title).font(.monospaced(.largeTitle)())
+                        Text(article.title)
+                            .font(.monospaced(.largeTitle)())
+                            .lineLimit(2)
                         Image(systemName: "arrow.forward")
                     } else {
                         ProgressView()
@@ -32,8 +34,7 @@ struct RandomCard: View {
                 }
             }
         }
-        .foregroundColor(.secondary)
-        .cornerRadius(15)
+        .foregroundColor(.primary)
         .frame(maxWidth: .infinity, maxHeight: 250)
         .fullScreenCover(isPresented: $showArticle) {
             NavigationView { ArticleView(scp: article) }

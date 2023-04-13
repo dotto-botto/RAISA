@@ -68,6 +68,7 @@
 
 // MARK: - Explore
 "SITE_NEWS" = "Site News";
+"RAISA_HEADER" = "RAISA";
 "FEATURED_SCP" = "Featured SCP";
 "FEATURED_TALE" = "Featured Tale";
 "FEATURED_GOI" = "Featured GOI Format";

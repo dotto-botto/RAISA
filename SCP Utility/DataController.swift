@@ -311,7 +311,7 @@ extension PersistenceController {
         var newObject: ArticleItem?
         
         do {
-            newObject = try context.fetch(object).first // first returns nil so array is empty
+            newObject = try context.fetch(object).first
             
             try context.save()
         } catch let error {
@@ -622,6 +622,22 @@ extension PersistenceController {
         
         do {
             history = try context.fetch(request)
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+        
+        return history
+    }
+    
+    /// Retrieve the latest logged history entry.
+    func getLatestHistory(context: NSManagedObjectContext? = nil) -> HistoryItem? {
+        let context = context ?? container.viewContext
+        
+        var history: HistoryItem?
+        let request = NSFetchRequest<HistoryItem>(entityName: "HistoryItem")
+        
+        do {
+            history = try context.fetch(request).last
         } catch let error {
             debugPrint(error.localizedDescription)
         }
