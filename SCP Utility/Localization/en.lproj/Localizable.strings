@@ -76,6 +76,9 @@
 "FEATURED_ART" = "Art Spotlight";
 
 // MARK: - Settings
+"GENERAL_OPTIONS" = "General";
+"OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
+
 "DATA_OPTIONS" = "Save Data";
 "DELETE_ALL_LISTS" = "Delete All Saved Lists";
 "DELETE_ALL_ARTICLES" = "Delete All Saved Articles";

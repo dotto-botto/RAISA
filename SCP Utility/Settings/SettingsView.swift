@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 0
     @AppStorage("storeIcloud") var storeIcloud = true
+    @AppStorage("autoOpen") var autoOpen = true
     
     @State var historyConf = false
     @State var listConf = false
@@ -41,6 +42,10 @@ struct SettingsView: View {
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
+            }
+            
+            Section("GENERAL_OPTIONS") {
+                Toggle("OPEN_LAST_READ_OPTION", isOn: $autoOpen)
             }
             
             Section("READER_OPTIONS") {
