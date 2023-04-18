@@ -35,11 +35,6 @@ struct ContentView: View {
                 Spacer()
                 ArticleBar().frame(height: 45)
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
-            VStack {
-                SettingsView()
-                Spacer()
-                ArticleBar().frame(height: 45)
-            }.tabItem { Label("TABBAR_SETTINGS", systemImage: "gearshape")}
         }
         .fullScreenCover(isPresented: $resumeReading) {
             if let history = con.getLatestHistory() {

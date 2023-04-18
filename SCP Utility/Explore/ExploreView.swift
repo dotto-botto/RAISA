@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ExploreView: View {
+    @State private var settings: Bool = false
     var body: some View {
         NavigationView {
             ScrollView {
@@ -17,6 +18,14 @@ struct ExploreView: View {
                 }
                 .frame(width: 400)
                 .navigationTitle("RAISA_HEADER")
+                .toolbar {
+                    Button {
+                        settings = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+                .fullScreenCover(isPresented: $settings) { NavigationView { SettingsView() } }
             }
         }
     }

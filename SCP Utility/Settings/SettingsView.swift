@@ -15,13 +15,14 @@ struct SettingsView: View {
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoOpen") var autoOpen = true
     
-    @State var historyConf = false
-    @State var listConf = false
-    @State var articleConf = false
-    @State var allDataConf = false
+    @State private var historyConf = false
+    @State private var listConf = false
+    @State private var articleConf = false
+    @State private var allDataConf = false
+    @State private var raisaView = false
+    @State private var cromView = false
+    @Environment(\.dismiss) private var dismiss
 
-    @State var raisaView = false
-    @State var cromView = false
     let con = PersistenceController.shared
     let defaults = UserDefaults.standard
     var body: some View {
@@ -109,6 +110,13 @@ struct SettingsView: View {
         .alert("You can't donate yet.", isPresented: $raisaView) {
         } message: {
             Text("Thank you for downloading the app!")
+        }
+        .toolbar {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+            }
         }
         .fullScreenCover(isPresented: $cromView) {
             SFSafariViewWrapper(url: URL(string: "https://www.patreon.com/crombird")!)
