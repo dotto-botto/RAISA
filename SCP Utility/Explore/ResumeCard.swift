@@ -12,6 +12,12 @@ struct ResumeCard: View {
     @State private var showSheet: Bool = false
     let con = PersistenceController.shared
     var body: some View {
+        var local = false
+        if let history = con.getLatestHistory() {
+            if (con.getArticleByTitle(title: history.articletitle ?? "") != nil) {
+                let _ = local = true
+            }
+        }
         if let history = con.getLatestHistory() {
             VStack {
                 HStack {
@@ -26,7 +32,7 @@ struct ResumeCard: View {
                     Text(history.articletitle!)
                         .font(.monospaced(.largeTitle)())
                         .lineLimit(2)
-                    Image(systemName: "arrow.forward")
+                    if local { Image(systemName: "arrow.forward") }
                 }
             }
             .padding(10)
@@ -44,7 +50,7 @@ struct ResumeCard: View {
                 }
             }
             .onTapGesture {
-                showSheet = true
+                if local { showSheet = true }
             }
         }
     }

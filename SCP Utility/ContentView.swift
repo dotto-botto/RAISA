@@ -44,8 +44,10 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            if con.getLatestHistory() != nil && defaults.bool(forKey: "autoOpen") {
-                resumeReading = true
+            if let history = con.getLatestHistory() {
+                if defaults.bool(forKey: "autoOpen") && (con.getArticleByTitle(title: history.articletitle ?? "") != nil) {
+                    resumeReading = true
+                }
             }
         }
     }
