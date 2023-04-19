@@ -15,6 +15,7 @@ struct ArticleRow: View {
     @State var showArticle: Bool = false // article view
     @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
+    @State private var bookmarkStatus: Bool = false
     
     var body: some View {
         let con = PersistenceController.shared
@@ -93,10 +94,17 @@ struct ArticleRow: View {
                 #endif
                 
                 if !localArticle {
-                    if passedSCP.isSaved() {
-                        Image(systemName: "bookmark.fill")
-                    } else {
-                        Image(systemName: "bookmark")
+                    Button {} label: {
+                        if passedSCP.isSaved() || bookmarkStatus == true {
+                            Image(systemName: "bookmark.fill")
+                                .onTapGesture { showSheet.toggle() }
+                        } else {
+                            Image(systemName: "bookmark")
+                                .onTapGesture {
+                                    con.createArticleEntity(article: passedSCP)
+                                    bookmarkStatus = true
+                                }
+                        }
                     }
                 }
             }
@@ -119,12 +127,11 @@ struct ArticleRow: View {
             }
         }
         .swipeActions(allowsFullSwipe: false) {
-            Button(role: .destructive) {
-                con.deleteArticleEntity(id: passedSCP.id)
-            } label: { Image(systemName: "trash") }
-            Button {
-                
-            } label: { Image(systemName: "ellipsis.circle") }
+            if localArticle {
+                Button(role: .destructive) {
+                    con.deleteArticleEntity(id: passedSCP.id)
+                } label: { Image(systemName: "trash") }
+            }
         }
         .sheet(isPresented: $showSheet) {
             ListAdd(isPresented: $showSheet, article: passedSCP)
