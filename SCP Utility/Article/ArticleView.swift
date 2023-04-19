@@ -237,6 +237,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         // Basic Divs
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
+        text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
         text.removeText(from: "[[module Rate", to: "]]")
         text.removeText(from: "[[div", to: "]]")
         text.removeText(from: "[[/div", to: "]]")
@@ -285,6 +286,11 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: " --", with: " ~~")
         text = text.replacingOccurrences(of: "-- ", with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
+        text = text.replacingOccurrences(of: "++++++ ", with: "###### ")
+        text = text.replacingOccurrences(of: "+++++ ", with: "##### ")
+        text = text.replacingOccurrences(of: "++++ ", with: "#### ")
+        text = text.replacingOccurrences(of: "+++ ", with: "### ")
+        text = text.replacingOccurrences(of: "++ ", with: "## ")
         
         completion(text)
     }
