@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct ArticleBar: View {
-//    @State var articles: [String] = UserDefaults.standard.stringArray(forKey: "articleBars") ?? []
     @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
     @State private var toArticle = false
     
     var body: some View {
         let con = PersistenceController.shared
         
-        var selected: Article = Article(title: "Uh oh", pagesource: "an error occured", url: placeholderURL)
         if !articles.isEmpty {
             HStack {
                 Spacer()
@@ -32,7 +30,6 @@ struct ArticleBar: View {
                                 .foregroundColor(.accentColor)
                         }
                         .onTapGesture {
-                            selected = article
                             toArticle = true
                         }
                         .contextMenu {
@@ -56,7 +53,7 @@ struct ArticleBar: View {
                 Spacer()
             }
             .fullScreenCover(isPresented: $toArticle) {
-                NavigationView { ArticleView(scp: selected) }
+                NavigationView { ArticleTabView() }
             }
         }
     }
