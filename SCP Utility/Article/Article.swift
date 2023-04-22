@@ -13,7 +13,7 @@ struct Article: Identifiable, Codable {
     let id: String
     
     let title: String
-    let pagesource: String
+    var pagesource: String
     var url: URL
     var thumbnail: URL? = nil
     var currenttext: String? = nil

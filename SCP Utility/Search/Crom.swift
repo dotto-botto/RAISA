@@ -86,6 +86,7 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
+/// Returns an article without its source
 func cromRandom(completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search {
@@ -93,10 +94,9 @@ query Search {
     page {
       url
       wikidotInfo {
-      title
-      source
-      thumbnailUrl
-    }
+        title
+        thumbnailUrl
+      }
     }
   }
 }
@@ -122,12 +122,11 @@ query Search {
             let page = responseJSON["data"]["randomPage"]["page"]
             let url = page["url"].url
             let title = page["wikidotInfo"]["title"]
-            let source = page["wikidotInfo"]["source"]
             let pic = page["wikidotInfo"]["thumbnailUrl"]
 
             article = Article(
                 title: title.string ?? "Could not find title",
-                pagesource: source.string ?? "Could not find pagesource",
+                pagesource: "",
                 url: url ?? placeholderURL,
                 thumbnail: pic.url ?? nil
             )
@@ -229,6 +228,40 @@ query Search($query: String! = "\(query)") {
                 ))
             }
             completion(articles)
+        }
+    }
+}
+
+/// Retruns an article's page source from its URL
+func cromGetSourceFromURL(url: URL, completion: @escaping (String) -> Void) {
+    let graphQLQuery = """
+query Search($query: URL! = "\(url)") {
+  page(url: $query) {
+    wikidotInfo {
+      source
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            let source = responseJSON["data"]["page"]["wikidotInfo"]["source"].string
+            completion(source ?? "Could not find source")
         }
     }
 }

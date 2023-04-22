@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct RandomCard: View {
     @State private var showArticle: Bool = false
     @State private var article = Article(title: "", pagesource: "", url: placeholderURL)
     var body: some View {
         Button {
-            showArticle = true
+            cromGetSourceFromURL(url: article.url) { source in
+                article.pagesource = source
+                showArticle = true
+            }
         } label: {
             VStack {
                 HStack {
@@ -39,8 +43,14 @@ struct RandomCard: View {
         .fullScreenCover(isPresented: $showArticle) {
             NavigationStack { ArticleView(scp: article) }
         }
+        .background {
+            KFImage(article.thumbnail)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .opacity(0.5)
+        }
         .onAppear {
-            let _ = cromRandom { scp in
+            cromRandom { scp in
                 article = scp
             }
         }

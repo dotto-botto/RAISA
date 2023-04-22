@@ -13,7 +13,7 @@ struct ExploreView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 40) {
-                    RandomCard()
+                    RandomCard().clipped()
                     ResumeCard().clipped()
                 }
                 .frame(width: 400)
