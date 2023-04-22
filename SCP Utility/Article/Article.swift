@@ -106,6 +106,11 @@ struct Article: Identifiable, Codable {
         con.setScroll(text: text, articleid: self.id)
     }
     
+    /// Updates sources without saving it to core data.
+    mutating func updateSource(_ text: String) {
+        self.pagesource = text
+    }
+    
     func isSaved() -> Bool {
         return con.isArticleSaved(url: self.url) ?? false
     }

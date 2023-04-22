@@ -38,7 +38,10 @@ struct ArticleRow: View {
                     showArticle = true
                 }
             } else {
-                showArticle = true
+                cromGetSourceFromURL(url: passedSCP.url) { source in
+                    passedSCP.updateSource(source)
+                    showArticle = true
+                }
             }
         } label: {
             HStack {
@@ -140,33 +143,35 @@ struct ArticleRow: View {
             NavigationStack { ArticleView(scp: passedSCP) }
         }
         .onAppear {
-            // MARK: Article Scanning
-            DispatchQueue.main.async {
-                let doc = passedSCP.pagesource.lowercased()
-                
-                if passedSCP.objclass == .safe {
-                    var newObj: ObjectClass
-                    if doc.contains("keter") { newObj = .keter }
-                    else if doc.contains("euclid") { newObj = .euclid }
-                    else if doc.contains("neutralized") { newObj = .neutralized }
-                    else if doc.contains("pending") { newObj = .pending }
-                    else if doc.contains("explained") { newObj = .explained }
-                    else if doc.contains("safe") { newObj = .safe }
-                    else { newObj = .esoteric }
-                    passedSCP.updateAttribute(objectClass: newObj)
-                }
-                
-                if passedSCP.esoteric == .thaumiel {
-                    var newEso: EsotericClass
-                    if doc.contains("apollyon") { newEso = .apollyon }
-                    else if doc.contains("archon") { newEso = .archon }
-                    else if doc.contains("cernunnos") { newEso = .cernunnos }
-                    else if doc.contains("decommissioned") { newEso = .decommissioned }
-                    else if doc.contains("tiamat") { newEso = .tiamat }
-                    else if doc.contains("ticonderoga") { newEso = .ticonderoga }
-                    else if doc.contains("uncontained") { newEso = .uncontained }
-                    else { newEso = .thaumiel }
-                    passedSCP.updateAttribute(esotericClass: newEso)
+            if localArticle {
+                // MARK: Article Scanning
+                DispatchQueue.main.async {
+                    let doc = passedSCP.pagesource.lowercased()
+                    
+                    if passedSCP.objclass == .safe {
+                        var newObj: ObjectClass
+                        if doc.contains("keter") { newObj = .keter }
+                        else if doc.contains("euclid") { newObj = .euclid }
+                        else if doc.contains("neutralized") { newObj = .neutralized }
+                        else if doc.contains("pending") { newObj = .pending }
+                        else if doc.contains("explained") { newObj = .explained }
+                        else if doc.contains("safe") { newObj = .safe }
+                        else { newObj = .esoteric }
+                        passedSCP.updateAttribute(objectClass: newObj)
+                    }
+                    
+                    if passedSCP.esoteric == .thaumiel {
+                        var newEso: EsotericClass
+                        if doc.contains("apollyon") { newEso = .apollyon }
+                        else if doc.contains("archon") { newEso = .archon }
+                        else if doc.contains("cernunnos") { newEso = .cernunnos }
+                        else if doc.contains("decommissioned") { newEso = .decommissioned }
+                        else if doc.contains("tiamat") { newEso = .tiamat }
+                        else if doc.contains("ticonderoga") { newEso = .ticonderoga }
+                        else if doc.contains("uncontained") { newEso = .uncontained }
+                        else { newEso = .thaumiel }
+                        passedSCP.updateAttribute(esotericClass: newEso)
+                    }
                 }
             }
         }

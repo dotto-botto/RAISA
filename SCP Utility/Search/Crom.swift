@@ -183,6 +183,7 @@ query Search($query: URL! = "\(query)") {
     }
 }
 
+/// Returns a list of articles without source with given query.
 func cromAPISearch(query: String, completion: @escaping ([Article]) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(query)") {
@@ -190,8 +191,6 @@ query Search($query: String! = "\(query)") {
     url
     wikidotInfo {
       title
-      source
-      thumbnailUrl
     }
   }
 }
@@ -216,15 +215,12 @@ query Search($query: String! = "\(query)") {
 
             for pages in responseJSON["data"]["searchPages"].arrayValue {
                 let title = pages["wikidotInfo"]["title"]
-                let source = pages["wikidotInfo"]["source"]
                 let url = pages["url"].url
-                let pic = pages["wikidotInfo"]["thumbnailUrl"]
 
                 articles.append(Article(
                     title: title.string ?? "Could not find title",
-                    pagesource: source.string ?? "Could not find pagesource",
-                    url: url ?? placeholderURL,
-                    thumbnail: pic.url ?? nil
+                    pagesource: "",
+                    url: url ?? placeholderURL
                 ))
             }
             completion(articles)
