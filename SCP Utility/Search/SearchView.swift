@@ -14,7 +14,7 @@ struct SearchView: View {
     @State var articles: [Article] = []
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(articles) { article in
                     ArticleRow(passedSCP: article, localArticle: false)

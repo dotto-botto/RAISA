@@ -39,7 +39,7 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $resumeReading) {
             if let history = con.getLatestHistory() {
                 if let article = con.getArticleByTitle(title: history.articletitle ?? "") {
-                    NavigationView { ArticleView(scp: Article(fromEntity: article)!) }
+                    NavigationStack { ArticleView(scp: Article(fromEntity: article)!) }
                 }
             }
         }

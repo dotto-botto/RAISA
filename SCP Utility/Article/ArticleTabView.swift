@@ -35,7 +35,7 @@ struct ArticleTabView: View {
             }
             Spacer()
             if let articleItem = con.getArticleByID(id: selectedID) {
-                NavigationView { ArticleView(scp: Article(fromEntity: articleItem)!)
+                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!)
                         .onDisappear { selectedID = "" }
                 }
             } else {

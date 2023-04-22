@@ -53,7 +53,7 @@ struct ArticleBar: View {
                 Spacer()
             }
             .fullScreenCover(isPresented: $toArticle) {
-                NavigationView { ArticleTabView() }
+                NavigationStack { ArticleTabView() }
             }
         }
     }

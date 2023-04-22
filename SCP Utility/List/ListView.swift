@@ -21,119 +21,114 @@ struct ListView: View {
         let items = PersistenceController.shared.getAllLists()
         let con = PersistenceController.shared
         
-        NavigationView {
-            if items == nil {
-                Text("NEW_LIST_PROMPT").foregroundColor(.gray)
-            } else {
-                List(items!) { item in
-                    let newItem = SCPList(fromEntity: item)
-                    
-                    if (newItem != nil) {
-                        NavigationLink(destination: OneListView(list: newItem!)) {
-                            VStack(alignment: .leading) {
-                                Text(newItem!.listid)
+        NavigationStack {
+            List(items!) { item in
+                if let newItem = SCPList(fromEntity: item) {
+                    NavigationLink(destination: OneListView(list: newItem)) {
+                        VStack(alignment: .leading) {
+                            Text(newItem.listid)
+                                .lineLimit(1)
+                            if newItem.subtitle != nil {
+                                Text(newItem.subtitle!)
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 13))
                                     .lineLimit(1)
-                                if newItem!.subtitle != nil {
-                                    Text(newItem!.subtitle!)
-                                        .foregroundColor(.gray)
-                                        .font(.system(size: 13))
-                                        .lineLimit(1)
-                                } else {
-                                    Text("SUBTITLE_PLACEHOLDER")
-                                        .foregroundColor(.gray)
-                                        .font(.system(size: 13))
-                                        .lineLimit(1)
-                                }
-                            }
-                        }
-                        .swipeActions(allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                con.deleteListEntity(listitem: newItem!)
-                            } label: { Image(systemName: "trash") }
-                        }
-                        .contextMenu {
-                            Button(action: {
-                                listTitlePresent = true
-                                currentList = newItem!
-                            }, label: {
-                                Label("CHANGE_LIST_TITLE", systemImage: "pencil")
-                            })
-                            Button(action: {
-                                listSubtitlePresent = true
-                                currentList = newItem!
-                            }, label: {
-                                Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
-                            })
-                        }
-                    }
-                }
-                .navigationTitle("LIST_TITLE")
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button(action: {
-                            alertPresent = true
-                            
-                        }, label: {
-                            Image(systemName: "plus")
-                        })
-                        .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
-                            TextField("", text: $query)
-                            
-                            Button("ADD") {
-                                con.createListEntity(list: SCPList(listid: query))
-                                alertPresent = false
-                                query = ""
-                            }
-                            Button("CANCEL", role: .cancel) {
-                                alertPresent = false
-                                query = ""
+                            } else {
+                                Text("SUBTITLE_PLACEHOLDER")
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 13))
+                                    .lineLimit(1)
                             }
                         }
                     }
-                    ToolbarItemGroup(placement: .secondaryAction) {
-                        NavigationLink(destination: AllArticleView(mode: 0)) {
-                            Label("ALL_SAVED_ARTICLES", systemImage: "bookmark")
+                    .swipeActions(allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            con.deleteListEntity(listitem: newItem)
+                        } label: { Image(systemName: "trash") }
+                    }
+                    .contextMenu {
+                        Button {
+                            listTitlePresent = true
+                            currentList = newItem
+                        } label: {
+                            Label("CHANGE_LIST_TITLE", systemImage: "pencil")
                         }
-                        NavigationLink(destination: AllArticleView(mode: 1)) {
-                            Label("ALL_READ_ARTICLES", systemImage: "eye")
-                        }
-                        NavigationLink(destination: AllArticleView(mode: 2)) {
-                            Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
+                        Button {
+                            listSubtitlePresent = true
+                            currentList = newItem
+                        } label: {
+                            Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
                         }
                     }
                 }
-                // Change List Title
-                .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
-                    TextField("", text: $query)
-                    
-                    Button("CHANGE") {
-                        con.updateListTitle(newTitle: query, list: currentList)
-                        listTitlePresent = false
-                        query = ""
+            }
+            .navigationTitle("LIST_TITLE")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        alertPresent = true
+                        
+                    } label: {
+                        Image(systemName: "plus")
                     }
-                    Button("CANCEL", role: .cancel) {
-                        listTitlePresent = false
-                        query = ""
+                    .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
+                        TextField("", text: $query)
+                        
+                        Button("ADD") {
+                            con.createListEntity(list: SCPList(listid: query))
+                            alertPresent = false
+                            query = ""
+                        }
+                        Button("CANCEL", role: .cancel) {
+                            alertPresent = false
+                            query = ""
+                        }
                     }
                 }
-                // Change List Subtitle
-                .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
-                    TextField("", text: $query)
-                    
-                    Button("CHANGE") {
-                        con.updateListSubtitle(newTitle: query, list: currentList)
-                        listSubtitlePresent = false
-                        query = ""
+                ToolbarItemGroup(placement: .secondaryAction) {
+                    NavigationLink(destination: AllArticleView(mode: 0)) {
+                        Label("ALL_SAVED_ARTICLES", systemImage: "bookmark")
                     }
-                    Button("CANCEL", role: .cancel) {
-                        listSubtitlePresent = false
-                        query = ""
+                    NavigationLink(destination: AllArticleView(mode: 1)) {
+                        Label("ALL_READ_ARTICLES", systemImage: "eye")
                     }
+                    NavigationLink(destination: AllArticleView(mode: 2)) {
+                        Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
+                    }
+                }
+            }
+            // Change List Title
+            .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
+                TextField("", text: $query)
+                
+                Button("CHANGE") {
+                    con.updateListTitle(newTitle: query, list: currentList)
+                    listTitlePresent = false
+                    query = ""
+                }
+                Button("CANCEL", role: .cancel) {
+                    listTitlePresent = false
+                    query = ""
+                }
+            }
+            // Change List Subtitle
+            .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
+                TextField("", text: $query)
+                
+                Button("CHANGE") {
+                    con.updateListSubtitle(newTitle: query, list: currentList)
+                    listSubtitlePresent = false
+                    query = ""
+                }
+                Button("CANCEL", role: .cancel) {
+                    listSubtitlePresent = false
+                    query = ""
                 }
             }
         }
     }
 }
+
 
 // MARK: - Single List View
 struct OneListView: View {

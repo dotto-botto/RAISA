@@ -37,7 +37,7 @@ struct RandomCard: View {
         .foregroundColor(.primary)
         .frame(maxWidth: .infinity, maxHeight: 250)
         .fullScreenCover(isPresented: $showArticle) {
-            NavigationView { ArticleView(scp: article) }
+            NavigationStack { ArticleView(scp: article) }
         }
         .onAppear {
             let _ = cromRandom { scp in

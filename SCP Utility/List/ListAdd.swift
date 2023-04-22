@@ -16,7 +16,7 @@ struct ListAdd: View {
     var body: some View {
         let con = PersistenceController.shared
         
-        NavigationView {
+        NavigationStack {
             if items != nil {
                 List(items!) { item in
                     if var newItem = SCPList(fromEntity: item) {

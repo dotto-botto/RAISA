@@ -448,7 +448,7 @@ Hello
 [[/table]]
 end
 """
-        NavigationView {
+        NavigationStack {
             ArticleView(scp: Article(
                 title: "Tufto's Proposal",
                 pagesource: example,

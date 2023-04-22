@@ -10,7 +10,7 @@ import SwiftUI
 struct ExploreView: View {
     @State private var settings: Bool = false
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 40) {
                     RandomCard()
@@ -25,7 +25,7 @@ struct ExploreView: View {
                         Image(systemName: "gear")
                     }
                 }
-                .fullScreenCover(isPresented: $settings) { NavigationView { SettingsView() } }
+                .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
             }
         }
     }

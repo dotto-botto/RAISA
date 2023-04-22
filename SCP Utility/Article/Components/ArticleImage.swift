@@ -15,30 +15,28 @@ struct ArticleImage: View {
     var body: some View {
         var newURL = ""
         var caption: String? = ""
-        // New format
+        // New Format
         if content.contains(":scp-wiki:component:image-features-source") {
             let stringURL = articleURL.formatted()
-            let stringLast = stringURL.last!.description
             if let tempURL = content.slice(from: "|url=", to: "|") {
-                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + stringURL.slice(from: "http://scp-wiki.wikidot.com/", to: stringLast)! + stringLast + "/" + tempURL
+                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + tempURL
             }
-            let _ = caption = content.slice(from: "|caption=", to: "|")
-            if caption == nil {
-                let _ = caption = content.slice(from: "|caption=", to: "]]")
-            }
+            let _ = caption = content.slice(from: "|caption=", to: "|") ?? content.slice(from: "|caption=", to: "]]")
         } else if content.contains(":image-block") {
             // Old Format
             let stringURL = articleURL.formatted()
-            let stringLast = stringURL.last!.description
-            let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + stringURL.slice(from: "http://scp-wiki.wikidot.com/", to: stringLast)! + stringLast + "/" + content.slice(from: "name=", to: "|")!
-            let _ = caption = content.slice(from: "caption=", to: "|")
-            if caption == nil {
-                let _ = caption = content.slice(from: "caption=", to: "]]")
+            let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "name=", to: "|") ?? "")
+            let _ = caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
+        } else if content.contains("[[image") {
+            if content.contains("http") { let _ = newURL = content.slice(with: "http", and: " ") }
+            else {
+                let stringURL = articleURL.formatted()
+                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + (content.slice(from: " ", to: " ") ?? "")
             }
         }
         
         VStack {
-            KFImage(URL(string: newURL)!)
+            KFImage(URL(string: newURL))
                 .resizable()
                 .scaledToFit()
             Text(caption ?? "")
@@ -67,5 +65,9 @@ struct ArticleImage_Previews: PreviewProvider {
                     ]]
                     """
         ).previewDisplayName("New Format")
+        ArticleImage(
+            articleURL: URL(string: "https://scp-wiki.wikidot.com/scp-179")!,
+            content: "[[image SCPArchiveLogo.png width=\"140px\"]]"
+        ).previewDisplayName("Compact Format")
     }
 }

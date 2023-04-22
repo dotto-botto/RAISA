@@ -45,7 +45,7 @@ struct ResumeCard: View {
             .fullScreenCover(isPresented: $showSheet) {
                 if let title = history.articletitle {
                     if let article = con.getArticleByTitle(title: title) {
-                        NavigationView { ArticleView(scp: Article(fromEntity: article)!) }
+                        NavigationStack { ArticleView(scp: Article(fromEntity: article)!) }
                     }
                 }
             }

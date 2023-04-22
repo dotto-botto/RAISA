@@ -137,7 +137,7 @@ struct ArticleRow: View {
             ListAdd(isPresented: $showSheet, article: passedSCP)
         }
         .fullScreenCover(isPresented: $showArticle) {
-            NavigationView { ArticleView(scp: passedSCP) }
+            NavigationStack { ArticleView(scp: passedSCP) }
         }
         .onAppear {
             // MARK: Article Scanning

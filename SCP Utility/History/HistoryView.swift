@@ -13,7 +13,7 @@ struct HistoryView: View {
     
     let con = PersistenceController.shared
     var body: some View {
-        NavigationView {
+        NavigationStack {
             var items = PersistenceController.shared.getAllHistory()
             if items != nil {
                 let _ = items!.reverse()
