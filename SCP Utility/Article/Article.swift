@@ -99,6 +99,13 @@ struct Article: Identifiable, Codable {
         self.clearance = clearance
     }
     
+    /// Sets scroll variable of article to given string.
+    /// - Parameter text: The text to set the current text to.
+    mutating func setScroll(_ text: String) {
+        self.currenttext = text
+        con.setScroll(text: text, articleid: self.id)
+    }
+    
     func isSaved() -> Bool {
         return con.isArticleSaved(url: self.url) ?? false
     }

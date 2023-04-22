@@ -35,14 +35,6 @@ struct ArticleView: View {
         #endif
         ScrollViewReader { value in
             ScrollView {
-                #if os(iOS)
-                if scp.thumbnail != nil && defaults.bool(forKey: "showImages") && mode != 2 {
-                    KFImage(scp.thumbnail)
-                        .resizable()
-                        .scaledToFit()
-                    
-                }
-                #endif
                 if filtered == "" { ProgressView() }
                 
                 VStack(alignment: .leading) {
@@ -59,15 +51,15 @@ struct ArticleView: View {
                             if item.contains("[[collapsible") {
                                 let sliced = item + (
                                     filtered.slice(
-                                    from: item,
-                                    to: "[[/collapsible]]"
+                                        from: item,
+                                        to: "[[/collapsible]]"
                                     ) ?? "collapsible incorrect syntax") + "[[/collapsible]]"
                                 
                                 Collapsible(
                                     articleID: scp.id,
                                     text: sliced
                                 )
-
+                                
                                 let _ = forbiddenLines += sliced
                             }
                             
@@ -80,7 +72,6 @@ struct ArticleView: View {
                             } else if item.contains(":image-block") {
                                 ArticleImage(articleURL: scp.url, content: filtered.slice(with: item, and: "]]")
                                 )
-                                let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += item
                             }
                             #endif
@@ -90,9 +81,8 @@ struct ArticleView: View {
                                 let tableSlice = filtered.slice(with: "[[table", and: "[[/table]]")
                                 let _ = print(tableSlice)
                                 ArticleTable(doc: tableSlice)
-                                let _ = filtered = filtered.replacingOccurrences(of: tableSlice, with: "")
                             }
-                        
+                            
                             // Text
                             if !forbiddenLines.contains(item) {
                                 #if os(iOS)
@@ -101,7 +91,7 @@ struct ArticleView: View {
                                     .id(item)
                                     .onTapGesture {
                                         tooltip = true
-                                        con.setScroll(text: item, articleid: scp.id)
+                                        scp.setScroll(item)
                                     }
                                 #else
                                 Text(item)
@@ -109,7 +99,7 @@ struct ArticleView: View {
                                     .id(item)
                                     .onTapGesture {
                                         tooltip = true
-                                        con.setScroll(text: item, articleid: scp.id)
+                                        scp.setScroll(item)
                                     }
                                 #endif
                             }
@@ -122,19 +112,18 @@ struct ArticleView: View {
                                 .id(item)
                                 .onTapGesture {
                                     tooltip = true
-                                    con.setScroll(text: item, articleid: scp.id)
+                                    scp.setScroll(item)
                                 }
                         }
                     } else if mode == 2 { // Safari
                         Text("LOADING_SAFARI")
                         let _ = showSafari = true
                     }
-                    
-                    if scp.currenttext != nil {
-                        let _ = resume = true
-                    }
                 }
                 .navigationTitle(scp.title)
+                .onAppear {
+                    if scp.currenttext != nil { resume = true }
+                }
             }
             .alert("RESUME_READING", isPresented: $resume) {
                 Button("YES") {
