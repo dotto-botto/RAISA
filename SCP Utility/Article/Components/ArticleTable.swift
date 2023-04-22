@@ -6,41 +6,92 @@
 //
 
 import SwiftUI
-import MarkdownUI
 
 struct ArticleTable: View {
     @State var doc: String
     var body: some View {
-        var content = doc
-        var rows: [[String]] = []
-        
-        if content.contains("[[table") && content.contains("[[/table]]") {
-            ForEach(content.indicesOf(string: "[[row"), id: \.self) { _ in
-                var row = content.slice(from: "[[row", to: "[[/row]]")!
-                var cells: [String] = []
-                ForEach(row.indicesOf(string: "[[cell"), id: \.self) { _ in
-                    let cell = row.slice(from: "\"]]", to: "[[/cell]]")!
-                    let _ = cells.append(cell)
-                    let _ = row = row.replacingOccurrences(of: cell, with: "")
-                    let _ = row.removeText(from: "[[cell", to: "[[/cell]]")
-                }
-                let _ = rows.append(cells)
-                let _ = content = content.replacingOccurrences(of: row, with: "")
-                let _ = content.replacingOccurrences(of: "[[row[[/row]]", with: "")
-            }
-            
-            ForEach(rows, id: \.self) { row in
+        let headers: [String] = findHeaders(doc)
+        let rows: [[String]] = parseTableContent(doc)
+    
+        ForEach(rows, id: \.self) { row in
+            var headerIndex = 0
+            VStack {
                 ForEach(row, id: \.self) { cell in
-                    Markdown(cell).padding(.all)
+                    HStack {
+                        Text(headers[headerIndex]).bold()
+                        Spacer()
+                        Text(cell)
+                    }
+                    let _ = (headerIndex == headers.count - 1) ? (headerIndex = 0) : (headerIndex += 1)
                 }
             }
-        } else if content.contains("||") {
-            
-        } else {
-            Text("Table is in incorrect format").font(.caption2)
-            Text(content)
         }
     }
+}
+
+fileprivate func findHeaders(_ doc: String) -> [String] {
+    var headers: [String] = []
+    let content = doc
+    
+    if doc.contains("[[table") && doc.contains("[[/table]]") {
+        var firstRow = content.slice(with: "[[row", and: "[[/row]]")
+        for _ in firstRow.indicesOf(string: "[[cell") {
+            if let header = firstRow.slice(from: "\"]]", to: "[[/cell]]") {
+                headers.append(header)
+                firstRow.removeText(from: "[[cell", to: "[[/cell]]")
+            }
+        }
+    } else if doc.contains("||") {
+        var firstRow = content.slice(with: "||", and: "||\n")
+        for _ in firstRow.indicesOf(string: "||") {
+            if let header = firstRow.slice(from: "||", to: "||") {
+                headers.append(header.replacingOccurrences(of: "\n", with: ""))
+                firstRow = firstRow.replacingOccurrences(of: header, with: "")
+            }
+        }
+    }
+    
+    return headers
+}
+
+fileprivate func parseTableContent(_ doc: String) -> [[String]] {
+    var rows: [[String]] = []
+    
+    if doc.contains("[[table") && doc.contains("[[/table]]") {
+        // Remove first row
+        var content = doc.replacingOccurrences(of: doc.slice(with: "[[row", and: "[[/row]]"), with: "")
+        for _ in content.indicesOf(string: "[[row") {
+            var madeRow: [String] = []
+            if var stringRow = content.slice(from: "[[row]]", to: "[[/row]]") {
+                for _ in stringRow.indicesOf(string: "[[cell") {
+                    if let cell = stringRow.slice(from: "\"]]", to: "[[/cell]]") {
+                        madeRow.append(cell)
+                        stringRow.removeText(from: "[[cell", to: "[[/cell]]")
+                    }
+                }
+            }
+            rows.append(madeRow)
+            content.removeText(from: "[[row", to: "[[/row]]")
+        }
+    } else if doc.contains("||") {
+        // Remove first row
+        var content = doc.replacingOccurrences(of: doc.slice(with: "||", and: "||\n"), with: "")
+        for _ in content.indicesOf(string: "||\n") {
+            var madeRow: [String] = []
+            if var stringRow = content.slice(from: "||", to: "||\n") {
+                for _ in stringRow.indicesOf(string: "||") {
+                    if let cell = stringRow.slice(from: "||", to: "||") {
+                        madeRow.append(cell)
+                        stringRow = stringRow.replacingOccurrences(of: cell, with: "")
+                    }
+                }
+            }
+            rows.append(madeRow)
+            content.removeText(from: "||", to: "||\n")
+        }
+    }
+    
+    return rows
 }
 
 struct ArticleTable_Previews: PreviewProvider {

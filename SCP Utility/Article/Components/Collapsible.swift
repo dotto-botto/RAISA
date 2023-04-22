@@ -23,7 +23,7 @@ struct Collapsible: View {
                 let hide = text.slice(from: "hide=\"", to: "\"]]")
                 
                 let content = text.slice(from: "\"]]", to: "[[/collapsible]]")
-                let _ = FilterToMarkdown(doc: content!) { str in
+                let _ = FilterToMarkdown(doc: content ?? "") { str in
                     filtered = str
                 }
                 if show != nil && hide != nil {

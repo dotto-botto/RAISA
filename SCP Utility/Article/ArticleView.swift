@@ -73,13 +73,26 @@ struct ArticleView: View {
                             
                             // Image
                             #if os(iOS)
-                            if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") {
+                            if item.contains(":scp-wiki:component:image-features-source") {
                                 ArticleImage(articleURL: scp.url, content: item)
+                                let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
+                                let _ = forbiddenLines += item
+                            } else if item.contains(":image-block") {
+                                ArticleImage(articleURL: scp.url, content: filtered.slice(with: item, and: "]]")
+                                )
                                 let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += item
                             }
                             #endif
                             
+                            // Table
+                            if item.contains("[[table") {
+                                let tableSlice = filtered.slice(with: "[[table", and: "[[/table]]")
+                                let _ = print(tableSlice)
+                                ArticleTable(doc: tableSlice)
+                                let _ = filtered = filtered.replacingOccurrences(of: tableSlice, with: "")
+                            }
+                        
                             // Text
                             if !forbiddenLines.contains(item) {
                                 #if os(iOS)
@@ -253,11 +266,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: "[[module", to: "[[/module]]")
         }
         
-        // Tables
-        for _ in text.indicesOf(string: "[[table") {
-            text.removeText(from: "[[table", to: "[[/table]]")
-        }
-        
         // Footnotes
         for _ in text.indicesOf(string: "[[footnote") {
             text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
@@ -299,13 +307,29 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
 // MARK: - Extensions
 // https://stackoverflow.com/a/31727051
 extension String {
-    /// Slices from from string to first occurance of to string
+    /// Slices from "from" string to first occurance of "to" string.
     func slice(from: String, to: String) -> String? {
         return (range(of: from)?.upperBound).flatMap { substringFrom in
             (range(of: to, range: substringFrom..<endIndex)?.lowerBound).map { substringTo in
                 String(self[substringFrom..<substringTo])
             }
         }
+    }
+    
+    /// Slices from "from" string to end of string.
+    func slice(from: String) -> String? {
+        return (range(of: from)?.upperBound).flatMap { substringFrom in
+            String(self[substringFrom..<endIndex])
+        }
+    }
+    
+    /// Slices from "with" string to first occurance of "and" string and returns sliced text including the strings.
+    func slice(with from: String, and to: String) -> String {
+        return from + ((range(of: from)?.upperBound).flatMap { substringFrom in
+            (range(of: to, range: substringFrom..<endIndex)?.lowerBound).map { substringTo in
+                String(self[substringFrom..<substringTo])
+            }
+        } ?? "") + to
     }
     
     mutating func removeText(from: String, to: String) {
@@ -391,6 +415,38 @@ This text is also in a collapsible.
 @@ @@
 Hello
 [[/collapsible]]
+
+[[table style="width: 100%;"]]
+[[row]]
+[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 90%]]**Assigned Site**[[/size]
+[[/cell]]
+[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 90%]]**Site Director**[[/size]]
+[[/cell]]
+[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 90%]]**Research Head**[[/size]]
+[[/cell]]
+[[cell style="border-bottom: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 90%]]**Assigned Task Force**[[/size]]
+[[/cell]]
+[[/row]]
+[[row]]
+[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 80%]]USMILA Site-19[[/size]]
+[[/cell]]
+[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 80%]]Tilda Moose[[/size]]
+[[/cell]]
+[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
+[[size 80%]]Everett Mann, M.D.[[/size]]
+[[/cell]]
+[[cell style="text-align: center; width: 25%;"]]
+[[size 80%]]MTF A-14 "Dishwashers"[[/size]]
+[[/cell]]
+[[/row]]
+[[/table]]
+end
 """
         NavigationView {
             ArticleView(scp: Article(

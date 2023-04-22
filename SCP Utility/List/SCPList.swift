@@ -7,10 +7,9 @@
 
 import SwiftUI
 import Foundation
-import CoreData
 
 fileprivate let con = PersistenceController.shared
-struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
+struct SCPList: Identifiable {
     let id: String
     var listid: String
     var contents: [String]? // article id's
@@ -30,16 +29,6 @@ struct SCPList: Identifiable, Sequence, IteratorProtocol, Codable {
         self.listid = entitylistid
         self.contents = entity.contents
         self.subtitle = entity.subtitle
-    }
-
-    mutating func next() -> Int? {
-        var count: Int = 0
-        if count == 0 {
-            return nil
-        } else {
-            do { count -= 1 }
-            return count
-        }
     }
 
     mutating func addContent(article: Article) {
