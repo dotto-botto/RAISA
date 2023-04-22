@@ -38,7 +38,7 @@ struct ArticleView: View {
                 if filtered == "" { ProgressView() }
                 
                 VStack(alignment: .leading) {
-                    var forbiddenLines: String = ""
+                    var forbiddenLines: [String] = []
                     if mode == 0 && filtered == "" {
                         let _ = FilterToMarkdown(doc: document) { str in
                             filtered = str
@@ -60,7 +60,7 @@ struct ArticleView: View {
                                     text: sliced
                                 )
                                 
-                                let _ = forbiddenLines += sliced
+                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
                             }
                             
                             // Image
@@ -68,11 +68,10 @@ struct ArticleView: View {
                             if item.contains(":scp-wiki:component:image-features-source") {
                                 ArticleImage(articleURL: scp.url, content: item)
                                 let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
-                                let _ = forbiddenLines += item
+                                let _ = forbiddenLines += [item]
                             } else if item.contains(":image-block") {
-                                ArticleImage(articleURL: scp.url, content: filtered.slice(with: item, and: "]]")
-                                )
-                                let _ = forbiddenLines += item
+                                ArticleImage(articleURL: scp.url, content: item)
+                                let _ = forbiddenLines += [item]
                             }
                             #endif
                             
