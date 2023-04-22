@@ -22,9 +22,11 @@ struct ArticleInfoView: View {
                 Guide()
                 Text(String(info.rating)).foregroundColor(.green)
             }
-            HStack {
-                ForEach(info.tags, id: \.self) { tag in
-                    Text(tag).font(.caption2)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(info.tags, id: \.self) { tag in
+                        Text(tag).font(.caption2)
+                    }
                 }
             }
             Text(info.createdBy)
