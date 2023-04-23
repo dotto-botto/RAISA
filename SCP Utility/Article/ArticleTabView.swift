@@ -18,7 +18,6 @@ struct ArticleTabView: View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    Button { dismiss() } label: { Image(systemName: "xmark") }
                     ForEach(ids, id: \.self) { id in
                         VStack {
                             if let articleItem = con.getArticleByID(id: id) {
@@ -33,11 +32,8 @@ struct ArticleTabView: View {
                     }
                 }
             }
-            Spacer()
             if let articleItem = con.getArticleByID(id: selectedID) {
-                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!)
-                        .onDisappear { selectedID = "" }
-                }
+                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!) }
             } else {
                 VStack {
                     Spacer()

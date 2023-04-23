@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-import Foundation
 #if os(iOS)
 import Kingfisher
 import MarkdownUI
 #endif
     
 // MARK: - View
+fileprivate var filteredText = ""
 struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
@@ -20,66 +20,64 @@ struct ArticleView: View {
     @State private var showInfo: Bool = false
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
-    @State private var filtered: String = ""
     @State private var bookmarkStatus: Bool = false
+    @State private var filtered: Bool = false
     @Environment(\.dismiss) var dismiss
-    
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
         let document = scp.pagesource
-        
         let mode: Int = defaults.integer(forKey: "articleViewSetting")
-        #if os(iOS)
-        let _ = PersistenceController.shared.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-        #endif
         ScrollViewReader { value in
             ScrollView {
-                if filtered == "" { ProgressView() }
-                
                 VStack(alignment: .leading) {
-                    var forbiddenLines: [String] = []
-                    if mode == 0 && filtered == "" {
+                    if mode == 0 && !filtered {
+                        ProgressView()
                         let _ = FilterToMarkdown(doc: document) { str in
-                            filtered = str
+                            filteredText = str
+                            filtered = true
                         }
                     }
-                    if !(filtered == "") && mode == 0 { // Default
-                        let list = filtered.components(separatedBy: .newlines)
+                    if filtered && mode == 0 { // Default
+                        var forbiddenLines: [String] = []
+                        let list = filteredText.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
                             // Collapsible
                             if item.contains("[[collapsible") {
-                                let sliced = item + (
-                                    filtered.slice(
-                                        from: item,
-                                        to: "[[/collapsible]]"
-                                    ) ?? "collapsible incorrect syntax") + "[[/collapsible]]"
+                                let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
                                 
                                 Collapsible(
                                     articleID: scp.id,
                                     text: sliced
                                 )
-                                
+                                let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
                                 let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
                             }
                             
                             // Image
                             #if os(iOS)
                             if item.contains(":scp-wiki:component:image-features-source") {
-                                ArticleImage(articleURL: scp.url, content: item)
-                                let _ = filtered = filtered.replacingOccurrences(of: item, with: "")
-                                let _ = forbiddenLines += [item]
+                                let slice = filteredText.slice(with: item, and: "]]")
+                                ArticleImage(articleURL: scp.url, content: slice)
+                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
+                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             } else if item.contains(":image-block") {
-                                ArticleImage(articleURL: scp.url, content: item)
+                                let slice = filteredText.slice(with: "[[include component:image-block", and: "]]")
+                                ArticleImage(
+                                    articleURL: scp.url,
+                                    content: item
+                                )
+                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += [item]
                             }
                             #endif
                             
                             // Table
                             if item.contains("[[table") {
-                                let tableSlice = filtered.slice(with: "[[table", and: "[[/table]]")
-                                let _ = print(tableSlice)
+                                let tableSlice = filteredText.slice(with: "[[table", and: "[[/table]]")
                                 ArticleTable(doc: tableSlice)
+                                let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
+                                let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
                             }
                             
                             // Text
@@ -88,19 +86,30 @@ struct ArticleView: View {
                                 Markdown(item)
                                     .padding(.bottom, 1)
                                     .id(item)
-                                    .onTapGesture {
-                                        tooltip = true
-                                        scp.setScroll(item)
+                                    .contextMenu {
+                                        Button {
+                                            scp.setScroll(item)
+                                        } label: {
+                                            Label("Save Position", systemImage: "bookmark")
+                                        }
                                     }
                                 #else
                                 Text(item)
                                     .padding(.bottom, 1)
                                     .id(item)
-                                    .onTapGesture {
-                                        tooltip = true
-                                        scp.setScroll(item)
+                                    .contextMenu {
+                                        Button {
+                                            scp.setScroll(item)
+                                        } label: {
+                                            Label("Save Position", systemImage: "bookmark")
+                                        }
                                     }
                                 #endif
+                            }
+                        }
+                        .onAppear {
+                            if scp.currenttext != nil {
+                                value.scrollTo(scp.currenttext!)
                             }
                         }
                     } else if mode == 1 { // Raw
@@ -109,9 +118,13 @@ struct ArticleView: View {
                             Text(item)
                                 .padding(.bottom, 1)
                                 .id(item)
-                                .onTapGesture {
-                                    tooltip = true
-                                    scp.setScroll(item)
+                                .contextMenu {
+                                    Button {
+                                        scp.setScroll(item)
+                                        print(item)
+                                    } label: {
+                                        Label("Save Position", systemImage: "bookmark")
+                                    }
                                 }
                         }
                     } else if mode == 2 { // Safari
@@ -121,28 +134,10 @@ struct ArticleView: View {
                 }
                 .navigationTitle(scp.title)
                 .onAppear {
-                    if scp.currenttext != nil { resume = true }
+                    #if os(iOS)
+                    con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
+                    #endif
                 }
-            }
-            .alert("RESUME_READING", isPresented: $resume) {
-                Button("YES") {
-                    value.scrollTo(scp.currenttext!)
-                    resume = false
-                }
-                Button("NO", role: .cancel) {
-                    resume = false
-                }
-            } message: {
-                if scp.currenttext != nil {
-                    Text(scp.currenttext!)
-                }
-            }
-            .alert("PLACE_SAVED", isPresented: $tooltip) {
-                Button("OK") {
-                    tooltip = false
-                }
-            } message: {
-                Text("HOW_TO_SAVE")
             }
         }
         .frame(width: 400)
@@ -236,12 +231,17 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
+        for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
+        text.removeText(from: "[[include component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
+        text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[module Rate", to: "]]")
-        text.removeText(from: "[[div", to: "]]")
-        text.removeText(from: "[[/div", to: "]]")
+        for _ in text.indicesOf(string: "[[div") {
+            text.removeText(from: "[[div", to: "]]")
+            text.removeText(from: "[[/div", to: "]]")
+        }
         text.removeText(from: "[[size", to: "]]")
         text.removeText(from: "[[/size", to: "]]")
         text.removeText(from: "[[>", to: "]]")
@@ -249,10 +249,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[=", to: "]]")
         text.removeText(from: "[[/=", to: "]]")
         text.removeText(from: "[!--", to: "--]")
-        
-        for _ in text.indicesOf(string: "[[module") {
-            text.removeText(from: "[[module", to: "[[/module]]")
-        }
+        for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
         // Footnotes
         for _ in text.indicesOf(string: "[[footnote") {

@@ -19,10 +19,10 @@ struct Collapsible: View {
     var body: some View {
         VStack {
             if text.contains("[[collapsible") && text.contains("[[/collapsible]]") {
-                let show = text.slice(from: "[[collapsible show=\"", to: "\" hide=")
-                let hide = text.slice(from: "hide=\"", to: "\"]]")
+                let show = text.slice(from: " show=\"", to: "\"")
+                let hide = text.slice(from: " hide=\"", to: "\"")
                 
-                let content = text.slice(from: "\"]]", to: "[[/collapsible]]")
+                let content = text.slice(from: "]]", to: "[[/collapsible]]")
                 let _ = FilterToMarkdown(doc: content ?? "") { str in
                     filtered = str
                 }
@@ -77,6 +77,15 @@ struct Collapsible_Previews: PreviewProvider {
             text: """
 [[collapsible show="+ Open" hide="- Close"]]
 This text is in a collapsible.
+[[/collapsible]]
+"""
+        )
+        
+        Collapsible(
+            articleID: "",
+            text: """
+[[collapsible hide="SECURITY MEMETIC: WE DID NOT FAIL THEM" show="Incident Report 2001-19██-A: LEVEL 4 CLEARANCE REQUIRED" hideLocation=both]]
+This text is also in a collapsible.
 [[/collapsible]]
 """
         )

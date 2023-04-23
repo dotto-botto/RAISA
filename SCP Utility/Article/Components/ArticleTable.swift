@@ -10,7 +10,8 @@ import SwiftUI
 struct ArticleTable: View {
     @State var doc: String
     var body: some View {
-        let headers: [String] = findHeaders(doc)
+        var headers: [String] = findHeaders(doc)
+        if headers == [] { let _ = headers = [""] }
         let rows: [[String]] = parseTableContent(doc)
     
         ForEach(rows, id: \.self) { row in

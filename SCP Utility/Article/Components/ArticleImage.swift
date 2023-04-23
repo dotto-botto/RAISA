@@ -35,13 +35,16 @@ struct ArticleImage: View {
             }
         }
         
-        VStack {
-            KFImage(URL(string: newURL))
-                .resizable()
-                .scaledToFit()
-            Text(caption ?? "")
-                .font(.headline)
-        }.padding(.vertical)
+        if UserDefaults.standard.bool(forKey: "showImages") {
+            VStack {
+                KFImage(URL(string: newURL))
+                    .resizable()
+                    .scaledToFit()
+                Text(caption ?? "")
+                    .font(.headline)
+            }
+            .padding(.vertical)
+        }
     }
 }
 

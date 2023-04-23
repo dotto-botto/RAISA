@@ -269,6 +269,11 @@ extension PersistenceController {
         object.currenttext = article.currenttext
         object.url = article.url
         
+        object.objclass = article.objclass?.rawValue ?? ObjectClass.unknown.rawValue
+        object.esoteric = article.esoteric?.rawValue ?? EsotericClass.unknown.rawValue
+        object.disruption = article.disruption?.rawValue ?? DisruptionClass.unknown.rawValue
+        object.risk = article.risk?.rawValue ?? RiskClass.unknown.rawValue
+        
         do {
             try context.save()
         } catch let error {
@@ -435,6 +440,7 @@ extension PersistenceController {
                 case .pending: article.objclass = 4
                 case .explained: article.objclass = 5
                 case .esoteric: article.objclass = 6
+                case .unknown: return
                 }
             }
             try context.save()
@@ -462,6 +468,7 @@ extension PersistenceController {
                 case .ticonderoga: article.esoteric = 6
                 case .thaumiel: article.esoteric = 7
                 case .uncontained: article.esoteric = 8
+                case .unknown: return
                 }
             }
             try context.save()
@@ -485,6 +492,7 @@ extension PersistenceController {
                 case .keneq: article.disruption = 2
                 case .ekhi: article.disruption = 3
                 case .amida: article.disruption = 4
+                case .unknown: return
                 }
             }
             try context.save()
@@ -508,6 +516,7 @@ extension PersistenceController {
                 case .warning: article.risk = 2
                 case .danger: article.risk = 3
                 case .critical: article.risk = 4
+                case .unknown: return
                 }
             }
             try context.save()
