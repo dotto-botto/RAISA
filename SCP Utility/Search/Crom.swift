@@ -262,3 +262,35 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
+func cromGetTags(url: URL, completion: @escaping ([String]) -> Void) {
+    let graphQLQuery = """
+query Search($query: URL! = "\(url)") {
+  page(url: $query) {
+    wikidotInfo {
+      tags
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            let source = responseJSON["data"]["page"]["wikidotInfo"]["tags"].arrayValue.map { $0.stringValue }
+            completion(source)
+        }
+    }
+}

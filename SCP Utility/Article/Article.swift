@@ -19,11 +19,11 @@ struct Article: Identifiable, Codable {
     var currenttext: String? = nil
     var completed: Bool? = false
     
-    var objclass: ObjectClass? = nil
-    var esoteric: EsotericClass? = nil// aka secondary
+    var objclass: ObjectClass? = .unknown
+    var esoteric: EsotericClass? = .unknown// aka secondary
     var clearance: String? = nil
-    var disruption: DisruptionClass? = nil
-    var risk: RiskClass? = nil
+    var disruption: DisruptionClass? = .unknown
+    var risk: RiskClass? = .unknown
     
     init(
         title: String,
@@ -31,11 +31,11 @@ struct Article: Identifiable, Codable {
         url: URL,
         thumbnail: URL? = nil,
         
-        objclass: ObjectClass? = nil,
-        esoteric: EsotericClass? = nil,
+        objclass: ObjectClass? = .unknown,
+        esoteric: EsotericClass? = .unknown,
         clearance: String? = nil,
-        disruption: DisruptionClass? = nil,
-        risk: RiskClass? = nil
+        disruption: DisruptionClass? = .unknown,
+        risk: RiskClass? = .unknown
     ) {
         self.id = UUID().uuidString
         self.title = title
@@ -43,11 +43,11 @@ struct Article: Identifiable, Codable {
         self.url = url
         self.thumbnail = thumbnail ?? nil
         
-        self.objclass = objclass ?? nil
-        self.esoteric = esoteric ?? nil
+        self.objclass = objclass ?? .unknown
+        self.esoteric = esoteric ?? .unknown
         self.clearance = clearance ?? nil
-        self.disruption = disruption ?? nil
-        self.risk = risk ?? nil
+        self.disruption = disruption ?? .unknown
+        self.risk = risk ?? .unknown
     }
     
     /// Create an article from core data object.
@@ -125,6 +125,7 @@ enum ObjectClass: Int16, Codable, CaseIterable {
     case pending = 4
     case explained = 5
     case esoteric = 6
+    case unknown = 7
     
     /// Return a string of the corresponding image.
     func toImage() -> String {
@@ -136,6 +137,7 @@ enum ObjectClass: Int16, Codable, CaseIterable {
         case .pending: return "pending-icon"
         case .explained: return "explained-icon"
         case .esoteric: return "esoteric-icon"
+        case .unknown: return ""
         }
     }
     
@@ -148,6 +150,7 @@ enum ObjectClass: Int16, Codable, CaseIterable {
         case .pending: return NSLocalizedString("PENDING", comment: "")
         case .explained: return NSLocalizedString("EXPLAINED", comment: "")
         case .esoteric: return NSLocalizedString("ESOTERIC", comment: "")
+        case .unknown: return ""
         }
     }
 }
@@ -162,6 +165,7 @@ enum EsotericClass: Int16, Codable, CaseIterable {
     case ticonderoga = 6
     case thaumiel = 7
     case uncontained = 8
+    case unknown = 9
     
     /// Return a string of the corresponding image.
     func toImage() -> String {
@@ -175,6 +179,7 @@ enum EsotericClass: Int16, Codable, CaseIterable {
         case .ticonderoga: return "ticonderoga-icon"
         case .thaumiel: return "thaumiel-icon"
         case .uncontained: return "uncontained-icon"
+        case .unknown: return ""
         }
     }
     
@@ -189,6 +194,7 @@ enum EsotericClass: Int16, Codable, CaseIterable {
         case .ticonderoga: return NSLocalizedString("TICONDEROGA", comment: "")
         case .thaumiel: return NSLocalizedString("THAUMIEL", comment: "")
         case .uncontained: return NSLocalizedString("UNCONTAINED", comment: "")
+        case .unknown: return ""
         }
     }
 }
@@ -199,6 +205,7 @@ enum DisruptionClass: Int16, Codable, CaseIterable {
     case keneq = 2
     case ekhi = 3
     case amida = 4
+    case unknown = 5
     
     /// Return a string of the corresponding image.
     func toImage() -> String {
@@ -208,6 +215,7 @@ enum DisruptionClass: Int16, Codable, CaseIterable {
         case .keneq: return "keneq-icon"
         case .ekhi: return "ekhi-icon"
         case .amida: return "amida-icon"
+        case .unknown: return ""
         }
     }
     
@@ -218,6 +226,7 @@ enum DisruptionClass: Int16, Codable, CaseIterable {
         case .keneq: return NSLocalizedString("KENEQ", comment: "")
         case .ekhi: return NSLocalizedString("EKHI", comment: "")
         case .amida: return NSLocalizedString("AMIDA", comment: "")
+        case .unknown: return ""
         }
     }
 }
@@ -228,6 +237,7 @@ enum RiskClass: Int16, Codable, CaseIterable {
     case warning = 2
     case danger = 3
     case critical = 4
+    case unknown = 5
     
     /// Return a string of the corresponding image.
     func toImage() -> String {
@@ -237,6 +247,7 @@ enum RiskClass: Int16, Codable, CaseIterable {
         case .warning: return "warning-icon"
         case .danger: return "danger-icon"
         case .critical: return "critical-icon"
+        case .unknown: return ""
         }
     }
     
@@ -247,6 +258,7 @@ enum RiskClass: Int16, Codable, CaseIterable {
         case .warning: return NSLocalizedString("WARNING", comment: "")
         case .danger: return NSLocalizedString("DANGER", comment: "")
         case .critical: return NSLocalizedString("CRITICAL", comment: "")
+        case .unknown: return ""
         }
     }
 }

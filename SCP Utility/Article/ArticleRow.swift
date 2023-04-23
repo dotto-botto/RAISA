@@ -55,78 +55,43 @@ struct ArticleRow: View {
                 Spacer()
                 #if os(iOS)
                 ZStack {
-                    Menu {
-                        ForEach(EsotericClass.allCases, id: \.self) { eso in
-                            Button {
-                                con.updateEsotericClass(articleid: passedSCP.id, newattr: eso)
-                                passedSCP.esoteric = eso
-                            } label: {
-                                Label(eso.toLocalString(), image: eso.toImage())
-                            }
-                        }
-                    } label: {
-                        if let im = passedSCP.esoteric?.toImage() {
-                            if passedSCP.objclass == .esoteric {
-                                Image(im)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 30, height: 30)
-                            }
-                        }
-                    }
-                }.disabled(!localArticle)
-                ZStack {
-                    Menu {
-                        ForEach(ObjectClass.allCases, id: \.self) { obj in
-                            Button {
-                                con.updateObjectClass(articleid: passedSCP.id, newattr: obj)
-                                passedSCP.objclass = obj
-                            } label: {
-                                Label(obj.toLocalString(), image: obj.toImage())
-                            }
-                        }
-                    } label: {
-                        if let im = passedSCP.objclass?.toImage() {
+                    if let im = passedSCP.esoteric?.toImage(), im != "" {
+                        if passedSCP.objclass == .esoteric {
                             Image(im)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 30, height: 30)
                         }
                     }
-                }.disabled(!localArticle)
-                #endif
-                
-                if !localArticle {
-                    Button {} label: {
-                        if passedSCP.isSaved() || bookmarkStatus == true {
-                            Image(systemName: "bookmark.fill")
-                                .onTapGesture { showSheet.toggle() }
-                        } else {
-                            Image(systemName: "bookmark")
-                                .onTapGesture {
-                                    con.createArticleEntity(article: passedSCP)
-                                    bookmarkStatus = true
-                                }
-                        }
+                }
+                ZStack {
+                    if let im = passedSCP.objclass?.toImage(), im != "" {
+                        Image(im)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
                     }
                 }
+                #endif
             }
         }
         .contextMenu {
-            Button {
-                if barIds != nil {
-                    barIds! += " " + passedSCP.id
-                    defaults.set(barIds, forKey: "articleBarIds")
-                } else {
-                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+            if localArticle {
+                Button {
+                    if barIds != nil {
+                        barIds! += " " + passedSCP.id
+                        defaults.set(barIds, forKey: "articleBarIds")
+                    } else {
+                        defaults.set(passedSCP.id, forKey: "articleBarIds")
+                    }
+                } label: {
+                    Label("Add to Bar", systemImage: "plus.circle")
                 }
-            } label: {
-                Label("Add to Bar", systemImage: "plus.circle")
-            }
-            Button {
-                showArticle = true
-            } label: {
-                Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+                Button {
+                    showArticle = true
+                } label: {
+                    Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+                }
             }
         }
         .swipeActions(allowsFullSwipe: false) {
@@ -143,34 +108,38 @@ struct ArticleRow: View {
             NavigationStack { ArticleView(scp: passedSCP) }
         }
         .onAppear {
-            if localArticle {
+            if localArticle && passedSCP.objclass == .unknown {
                 // MARK: Article Scanning
                 DispatchQueue.main.async {
-                    let doc = passedSCP.pagesource.lowercased()
-                    
-                    if passedSCP.objclass == .safe {
-                        var newObj: ObjectClass
-                        if doc.contains("keter") { newObj = .keter }
-                        else if doc.contains("euclid") { newObj = .euclid }
-                        else if doc.contains("neutralized") { newObj = .neutralized }
-                        else if doc.contains("pending") { newObj = .pending }
-                        else if doc.contains("explained") { newObj = .explained }
-                        else if doc.contains("safe") { newObj = .safe }
-                        else { newObj = .esoteric }
-                        passedSCP.updateAttribute(objectClass: newObj)
+                    cromGetTags(url: passedSCP.url) { tags in
+                        for tag in tags {
+                            switch tag {
+                            case "keter": passedSCP.updateAttribute(objectClass: .keter); break
+                            case "euclid": passedSCP.updateAttribute(objectClass: .euclid); break
+                            case "safe": passedSCP.updateAttribute(objectClass: .safe); break
+                            case "neutralized": passedSCP.updateAttribute(objectClass: .neutralized); break
+                            case "pending": passedSCP.updateAttribute(objectClass: .pending); break
+                            case "explained": passedSCP.updateAttribute(objectClass: .explained); break
+                            case "esoteric-class": passedSCP.updateAttribute(objectClass: .esoteric); break
+                            default: return
+                            }
+                        }
                     }
                     
-                    if passedSCP.esoteric == .thaumiel {
-                        var newEso: EsotericClass
+                    if passedSCP.objclass == .esoteric && passedSCP.esoteric == .unknown{
+                        var newEso: EsotericClass? = nil
+                        let doc = passedSCP.pagesource.lowercased()
                         if doc.contains("apollyon") { newEso = .apollyon }
                         else if doc.contains("archon") { newEso = .archon }
                         else if doc.contains("cernunnos") { newEso = .cernunnos }
                         else if doc.contains("decommissioned") { newEso = .decommissioned }
+                        else if doc.contains("hiemal") { newEso = .hiemal }
                         else if doc.contains("tiamat") { newEso = .tiamat }
                         else if doc.contains("ticonderoga") { newEso = .ticonderoga }
+                        else if doc.contains("thaumiel") { newEso = .thaumiel }
                         else if doc.contains("uncontained") { newEso = .uncontained }
-                        else { newEso = .thaumiel }
-                        passedSCP.updateAttribute(esotericClass: newEso)
+                        
+                        if newEso != nil { passedSCP.updateAttribute(esotericClass: newEso!) }
                     }
                 }
             }
