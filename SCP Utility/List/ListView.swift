@@ -10,12 +10,13 @@ import Foundation
 
 // MARK: - Many List View
 struct ListView: View {
-    @State var alertPresent: Bool = false
-    @State var listTitlePresent: Bool = false
-    @State var listSubtitlePresent: Bool = false
-    
-    @State var query: String = ""
-    @State var currentList: SCPList = SCPList(listid: "Placeholder")
+    @State private var alertPresent: Bool = false
+    @State private var listTitlePresent: Bool = false
+    @State private var listSubtitlePresent: Bool = false
+    @State private var presentSheet: Bool = false
+    @State private var mode: Int = 0
+    @State private var query: String = ""
+    @State private var currentList: SCPList = SCPList(listid: "Placeholder")
         
     var body: some View {
         let items = PersistenceController.shared.getAllLists()
@@ -64,10 +65,18 @@ struct ListView: View {
             }
             .navigationTitle("LIST_TITLE")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        mode = 0
+                        if mode == 0 { presentSheet = true }
+                    } label: {
+                        Label("ALL_SAVED_ARTICLES", systemImage: "magnifyingglass")
+                    }
+                }
+                
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         alertPresent = true
-                        
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -86,20 +95,23 @@ struct ListView: View {
                     }
                 }
                 ToolbarItemGroup(placement: .secondaryAction) {
-                    NavigationLink(destination: AllArticleView(mode: 0)) {
-                        Label("ALL_SAVED_ARTICLES", systemImage: "bookmark")
-                    }
-                    NavigationLink(destination: AllArticleView(mode: 1)) {
+                    Button {
+                        mode = 1
+                        if mode == 1 { presentSheet = true }
+                    } label: {
                         Label("ALL_READ_ARTICLES", systemImage: "eye")
                     }
-                    NavigationLink(destination: AllArticleView(mode: 2)) {
+                    Button {
+                        mode = 2
+                        if mode == 2 { presentSheet = true }
+                    } label: {
                         Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
                     }
                 }
             }
             // Change List Title
             .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
-                TextField("", text: $query)
+                TextField(currentList.listid, text: $query)
                 
                 Button("CHANGE") {
                     con.updateListTitle(newTitle: query, list: currentList)
@@ -113,7 +125,7 @@ struct ListView: View {
             }
             // Change List Subtitle
             .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
-                TextField("", text: $query)
+                TextField(currentList.subtitle ?? "", text: $query)
                 
                 Button("CHANGE") {
                     con.updateListSubtitle(newTitle: query, list: currentList)
@@ -125,6 +137,7 @@ struct ListView: View {
                     query = ""
                 }
             }
+            .sheet(isPresented: $presentSheet) { AllArticleView(mode: mode) }
         }
     }
 }
@@ -133,7 +146,7 @@ struct ListView: View {
 // MARK: - Single List View
 struct OneListView: View {
     @State var list: SCPList
-    @State var query: String = ""
+    @State private var query: String = ""
     @State private var objFilter: ObjectClass? = nil
     @State private var esoFilter: EsotericClass? = nil
     
@@ -141,7 +154,7 @@ struct OneListView: View {
         if list.contents != nil {
             let con = PersistenceController.shared
             var articles = con.getAllListArticles(list: list)!
-            let _ = articles = articles.filter{ query.isEmpty ? true: $0.title?.contains(query) ?? false }
+            let _ = articles = articles.filter{ query.isEmpty ? true: $0.title?.lowercased().contains(query.lowercased()) ?? false }
             if objFilter != nil { let _ = articles = articles.filter{ $0.objclass == objFilter!.rawValue } }
             if esoFilter != nil { let _ = articles = articles.filter{ $0.esoteric == esoFilter!.rawValue } }
             

@@ -12,10 +12,11 @@ struct AllArticleView: View {
     // 0 = default
     // 1 = all read
     // 2 = all unread
+    @State private var query: String = ""
     let con = PersistenceController.shared
     var body: some View {
-        let articles = con.getAllArticles()
-        if !articles!.isEmpty {
+        let articles = con.getAllArticles()?.filter{ query.isEmpty ? true: $0.title?.lowercased().contains(query.lowercased()) ?? false }
+        NavigationStack {
             List {
                 if mode == 0 {
                     ForEach(articles!) { article in
@@ -35,13 +36,8 @@ struct AllArticleView: View {
                     }
                 }
             }
-        } else {
-            #if os(iOS)
-            Text("NO_SAVED_ARTICLES")
-            #elseif os(watchOS)
-            Text("NO_SAVED_ARTICLES_WATCH")
-            #endif
         }
+        .searchable(text: $query)
     }
 }
 
