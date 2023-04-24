@@ -663,12 +663,7 @@ extension PersistenceController {
         if let allHistory = PersistenceController.shared.getAllHistory() {
             for item in allHistory {
                 let newHistory = History(fromEntity: item)!
-                let timeInterval: TimeInterval = 86400 // 24 hours in seconds
-                if newHistory.date.timeIntervalSinceNow < timeInterval {
-                    if newHistory.articletitle == history.articletitle {
-                        return false
-                    }
-                }
+                if newHistory.articletitle == history.articletitle { return false }
             }
         }
         

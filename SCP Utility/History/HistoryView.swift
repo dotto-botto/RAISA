@@ -10,13 +10,12 @@ import Foundation
 
 struct HistoryView: View {
     @State var clearConfirmation: Bool = false
+    @State private var items: [HistoryItem]? = nil
     
     let con = PersistenceController.shared
     var body: some View {
         NavigationStack {
-            var items = PersistenceController.shared.getAllHistory()
             if items != nil {
-                let _ = items!.reverse()
                 List(items!) { item in
                     HistoryRow(item: History(fromEntity: item)!)
                 }
@@ -40,6 +39,9 @@ struct HistoryView: View {
             } else {
                 Text("NO_HISTORY")
             }
+        }
+        .onAppear {
+            items = con.getAllHistory()?.reversed()
         }
     }
 }
