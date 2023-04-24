@@ -98,6 +98,7 @@
 "SHOW_IMAGES" = "Display Images";
 "BAR_SETTING" = "Bar";
 "READER_SETTING" = "Reader";
+"AUTO_SCROLL_SETTING" = "Open Reader to Bookmarked Text";
 
 // MARK: - History View
 "NO_HISTORY" = "You seem to have no history.";

@@ -108,7 +108,7 @@ struct ArticleView: View {
                             }
                         }
                         .onAppear {
-                            if scp.currenttext != nil {
+                            if scp.currenttext != nil && defaults.bool(forKey: "autoScroll") {
                                 value.scrollTo(scp.currenttext!)
                             }
                         }

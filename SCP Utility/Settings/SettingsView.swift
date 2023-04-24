@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("defaultOpen") var defaultOpen = 0
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoOpen") var autoOpen = true
+    @AppStorage("autoScroll") var autoScroll = true
     
     @State private var historyConf = false
     @State private var listConf = false
@@ -61,6 +62,7 @@ struct SettingsView: View {
                     Text("SAFARI_SETTING").tag(2)
                 }
                 Toggle("SHOW_IMAGES", isOn: $showImages)
+                Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
                 Button("Remove All Bar Items") {
                     defaults.set("", forKey: "articleBarIds")
                 }
