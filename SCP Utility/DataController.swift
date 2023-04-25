@@ -346,6 +346,25 @@ extension PersistenceController {
         return newObject
     }
     
+    func getArticleByURL(url: URL, context: NSManagedObjectContext? = nil) -> ArticleItem? {
+        let context = context ?? container.viewContext
+        
+        let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        object.predicate = NSPredicate(format: "url == %@", url as CVarArg)
+
+        var newObject: ArticleItem?
+        
+        do {
+            newObject = try context.fetch(object).first
+            
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+        
+        return newObject
+    }
+    
     /// Return all articles in a list.
     func getAllListArticles(list: SCPList, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
         let context = context ?? container.viewContext

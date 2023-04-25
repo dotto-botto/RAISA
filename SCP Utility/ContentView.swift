@@ -10,9 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var toArticle: Bool = false
     @State private var resumeReading: Bool = false
-    
     let con = PersistenceController.shared
     let defaults = UserDefaults.standard
+    let url = UserDefaults.standard.url(forKey: "lastReadUrl")
     var body: some View {
         TabView {
             VStack {
@@ -37,15 +37,13 @@ struct ContentView: View {
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
         }
         .fullScreenCover(isPresented: $resumeReading) {
-            if let history = con.getLatestHistory() {
-                if let article = con.getArticleByTitle(title: history.articletitle ?? "") {
-                    NavigationStack { ArticleView(scp: Article(fromEntity: article)!) }
-                }
+            if let articleItem = con.getArticleByURL(url: url!) {
+                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!) }
             }
         }
         .onAppear {
-            if let history = con.getLatestHistory() {
-                if defaults.bool(forKey: "autoOpen") && (con.getArticleByTitle(title: history.articletitle ?? "") != nil) {
+            if url != nil {
+                if defaults.bool(forKey: "autoOpen") && (con.isArticleSaved(url: url!) ?? false) {
                     resumeReading = true
                 }
             }

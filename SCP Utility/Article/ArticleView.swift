@@ -137,6 +137,7 @@ struct ArticleView: View {
                     #if os(iOS)
                     con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
                     #endif
+                    defaults.set(scp.url, forKey: "lastReadUrl")
                 }
             }
         }
