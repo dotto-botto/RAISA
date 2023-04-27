@@ -12,11 +12,11 @@ import MarkdownUI
 #endif
     
 // MARK: - View
-fileprivate var filteredText = ""
 struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
+    @State private var filteredText = ""
     @State private var showInfo: Bool = false
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
@@ -33,10 +33,12 @@ struct ArticleView: View {
                 VStack(alignment: .leading) {
                     if mode == 0 && !filtered {
                         ProgressView()
-                        let _ = FilterToMarkdown(doc: document) { str in
-                            filteredText = str
-                            filtered = true
-                        }
+                            .onAppear {
+                                FilterToMarkdown(doc: document) { str in
+                                    filteredText = str
+                                    filtered = true
+                                }
+                            }
                     }
                     if filtered && mode == 0 { // Default
                         var forbiddenLines: [String] = []
@@ -58,7 +60,10 @@ struct ArticleView: View {
                             #if os(iOS)
                             if item.contains(":scp-wiki:component:image-features-source") {
                                 let slice = filteredText.slice(with: item, and: "]]")
-                                ArticleImage(articleURL: scp.url, content: slice)
+                                ArticleImage(
+                                    articleURL: scp.url,
+                                    content: slice
+                                )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             } else if item.contains(":image-block") {
@@ -75,7 +80,9 @@ struct ArticleView: View {
                             // Table
                             if item.contains("[[table") {
                                 let tableSlice = filteredText.slice(with: "[[table", and: "[[/table]]")
-                                ArticleTable(doc: tableSlice)
+                                ArticleTable(
+                                    doc: tableSlice
+                                )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
                                 let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
                             }
@@ -121,7 +128,6 @@ struct ArticleView: View {
                                 .contextMenu {
                                     Button {
                                         scp.setScroll(item)
-                                        print(item)
                                     } label: {
                                         Label("Save Position", systemImage: "bookmark")
                                     }
