@@ -6,185 +6,69 @@
 //
 
 import SwiftUI
-#if os(iOS)
-import MarkdownUI
-#endif
     
 // MARK: - View
 struct ArticleView: View {
     @State var scp: Article
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
-    @State private var filteredText = ""
     @State private var showInfo: Bool = false
     @State private var resume: Bool = false
     @State private var tooltip: Bool = false
     @State private var bookmarkStatus: Bool = false
-    @State private var filtered: Bool = false
-    @State private var forbidden: Bool = false
+    @State private var forbidden: Bool = true
     @State private var forbiddenComponents: [String] = []
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
-        let document = scp.pagesource
         let mode: Int = defaults.integer(forKey: "articleViewSetting")
-        ScrollViewReader { value in
-            ScrollView {
-                VStack(alignment: .leading) {
-                    if mode == 0 && !filtered && !forbidden {
-                        ProgressView()
-                            .onAppear {
-                                if let list = scp.findForbiddenComponents(), showComponentPrompt {
-                                    forbiddenComponents = list
-                                    forbidden = true
-                                } else {
-                                    FilterToMarkdown(doc: document) { str in
-                                        filteredText = str
-                                        filtered = true
-                                    }
-                                }
-                            }
+        VStack(alignment: .leading) {
+            if forbidden && showComponentPrompt {
+                VStack {
+                    Text("This article contains unsupported components, it may not display correctly.")
+                        .foregroundColor(.gray)
+                        .font(.largeTitle)
+                        .padding(.bottom, 20)
+                    
+                    Text("Unsupported Components:").foregroundColor(.gray)
+                    ForEach(forbiddenComponents, id: \.self) { comp in
+                        Text(comp).foregroundColor(.gray)
                     }
                     
-                    if forbidden && showComponentPrompt {
-                        VStack {
-                            Text("This article contains unsupported components, it may not display correctly.")
-                                .foregroundColor(.gray)
-                                .font(.largeTitle)
-                                .padding(.bottom, 20)
-                            
-                            Text("Unsupported Components:").foregroundColor(.gray)
-                            ForEach(forbiddenComponents, id: \.self) { comp in
-                                Text(comp).foregroundColor(.gray)
-                            }
-                            
-                            HStack {
-                                Button("Display As Is") {
-                                    FilterToMarkdown(doc: document) { str in
-                                        filteredText = str
-                                        filtered = true
-                                        forbidden = false
-                                    }
-                                }
-                                Text("or").foregroundColor(.gray)
-                                Button("Open In Safari") {
-                                    showSafari = true
-                                }
-                            }
-                            .padding(.vertical, 10)
-                            
-                            Text("You can turn this warning off in settings.").foregroundColor(.gray)
+                    HStack {
+                        Button("Display As Is") {
+                            forbidden = false
+                        }
+                        Text("or").foregroundColor(.gray)
+                        Button("Open In Safari") {
+                            showSafari = true
                         }
                     }
+                    .padding(.vertical, 10)
                     
-                    if filtered && (!forbidden || !showComponentPrompt) && mode == 0 { // Default
-                        var forbiddenLines: [String] = []
-                        let list = filteredText.components(separatedBy: .newlines)
-                        ForEach(list, id: \.self) { item in
-                            // Collapsible
-                            if item.contains("[[collapsible") {
-                                let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
-                                
-                                Collapsible(
-                                    articleID: scp.id,
-                                    text: sliced
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
-                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
-                            }
-                            
-                            // Image
-                            #if os(iOS)
-                            if item.contains(":scp-wiki:component:image-features-source") {
-                                let slice = filteredText.slice(with: item, and: "]]")
-                                ArticleImage(
-                                    articleURL: scp.url,
-                                    content: slice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
-                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-                            } else if item.contains(":image-block") {
-                                var slice = ""
-                                if item.contains("]]") { let _ = slice = item }
-                                else { let _ = slice = filteredText.slice(with: item, and: "]]") }
-                                ArticleImage(
-                                    articleURL: scp.url,
-                                    content: slice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
-                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-                            }
-                            #endif
-                            
-                            // Table
-                            if item.contains("[[table") {
-                                let tableSlice = filteredText.slice(with: "[[table", and: "[[/table]]")
-                                ArticleTable(
-                                    doc: tableSlice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
-                                let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
-                            }
-                            
-                            // Text
-                            if !forbiddenLines.contains(item) {
-                                #if os(iOS)
-                                Markdown(item)
-                                    .padding(.bottom, 1)
-                                    .id(item)
-                                    .contextMenu {
-                                        Button {
-                                            scp.setScroll(item)
-                                        } label: {
-                                            Label("Save Position", systemImage: "bookmark")
-                                        }
-                                    }
-                                #else
-                                Text(item)
-                                    .padding(.bottom, 1)
-                                    .id(item)
-                                    .contextMenu {
-                                        Button {
-                                            scp.setScroll(item)
-                                        } label: {
-                                            Label("Save Position", systemImage: "bookmark")
-                                        }
-                                    }
-                                #endif
-                            }
-                        }
-                        .onAppear {
-                            if scp.currenttext != nil && defaults.bool(forKey: "autoScroll") {
-                                value.scrollTo(scp.currenttext!)
-                            }
-                        }
-                    } else if mode == 1 { // Raw
-                        let list = document.components(separatedBy: .newlines)
-                        ForEach(list, id: \.self) { item in
-                            Text(item)
-                                .padding(.bottom, 1)
-                                .id(item)
-                                .contextMenu {
-                                    Button {
-                                        scp.setScroll(item)
-                                    } label: {
-                                        Label("Save Position", systemImage: "bookmark")
-                                    }
-                                }
-                        }
-                    } else if mode == 2 { // Safari
-                        Text("LOADING_SAFARI")
-                        let _ = showSafari = true
-                    }
+                    Text("You can turn this warning off in settings.").foregroundColor(.gray)
                 }
-                .navigationTitle(scp.title)
-                .onAppear {
-                    #if os(iOS)
-                    con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-                    #endif
-                    defaults.set(scp.url, forKey: "lastReadUrl")
+            }
+            
+            if !forbidden {
+                RAISAText(article: scp)
+            }
+        }
+        .navigationTitle(scp.title)
+        .onAppear {
+            #if os(iOS)
+            con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
+            #endif
+            defaults.set(scp.url, forKey: "lastReadUrl")
+            
+            if mode == 0 && forbidden {
+                if let list = scp.findForbiddenComponents(), showComponentPrompt {
+                    forbiddenComponents = list
+                    forbidden = true
+                } else {
+                    forbidden = false
                 }
             }
         }
@@ -271,69 +155,6 @@ struct ArticleView: View {
             }
         }
         #endif
-    }
-}
-
-func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
-    DispatchQueue.main.async {
-        var text = doc
-        
-        // Basic Divs
-        for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
-        text.removeText(from: "[[include component:info-ayers", to: "]]")
-        text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
-        text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
-        text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
-        text.removeText(from: "[[include info:start", to: "include info:end]]")
-        text.removeText(from: "[[module Rate", to: "]]")
-        for _ in text.indicesOf(string: "[[div") {
-            text.removeText(from: "[[div", to: "]]")
-            text.removeText(from: "[[/div", to: "]]")
-        }
-        text.removeText(from: "[[size", to: "]]")
-        text.removeText(from: "[[/size", to: "]]")
-        text.removeText(from: "[[>", to: "]]")
-        text.removeText(from: "[[/>", to: "]]")
-        text.removeText(from: "[[=", to: "]]")
-        text.removeText(from: "[[/=", to: "]]")
-        text.removeText(from: "[!--", to: "--]")
-        for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
-        
-        // Footnotes
-        for _ in text.indicesOf(string: "[[footnote") {
-            text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
-            text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
-        }
-        
-        // Links
-        for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
-            if var slicedElement = text.slice(from: "[[[", to: "]]]") {
-                if slicedElement.contains("|") {
-                    slicedElement = "[[[" + slicedElement + "]]]"
-                    
-                    if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
-                        text = text.replacingOccurrences(of: slicedElement, with: rawtext)
-                    }
-                } else {
-                    text = text.replacingOccurrences(of: "[[[" + slicedElement + "]]]", with: slicedElement)
-                }
-            }
-        }
-        
-        text = text.replacingOccurrences(of: "------", with: "---")
-        text = text.replacingOccurrences(of: "@@@@", with: "\n")
-        text = text.replacingOccurrences(of: "@@ @@", with: "\n")
-        text = text.replacingOccurrences(of: "//", with: "*")
-        text = text.replacingOccurrences(of: " --", with: " ~~")
-        text = text.replacingOccurrences(of: "-- ", with: "~~ ")
-        text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
-        text = text.replacingOccurrences(of: "++++++ ", with: "###### ")
-        text = text.replacingOccurrences(of: "+++++ ", with: "##### ")
-        text = text.replacingOccurrences(of: "++++ ", with: "#### ")
-        text = text.replacingOccurrences(of: "+++ ", with: "### ")
-        text = text.replacingOccurrences(of: "++ ", with: "## ")
-        
-        completion(text)
     }
 }
 
