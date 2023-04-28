@@ -25,7 +25,14 @@ struct ArticleImage: View {
         } else if content.contains(":image-block") {
             // Old Format
             let stringURL = articleURL.formatted()
-            let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "name=", to: "|") ?? "")
+            let name = content.slice(from: "name=", to: "|") ?? ""
+            if name.contains("http") {
+                let _ = newURL = name
+                    .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
+                    .replacingOccurrences(of: "http", with: "https")
+            } else {
+                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + name
+            }
             let _ = caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
         } else if content.contains("[[image") {
             if content.contains("http") { let _ = newURL = content.slice(with: "http", and: " ") }
