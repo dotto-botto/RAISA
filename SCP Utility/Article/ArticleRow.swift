@@ -121,12 +121,13 @@ struct ArticleRow: View {
                             case "pending": passedSCP.updateAttribute(objectClass: .pending); break
                             case "explained": passedSCP.updateAttribute(objectClass: .explained); break
                             case "esoteric-class": passedSCP.updateAttribute(objectClass: .esoteric); break
-                            default: return
+                            case "thaumiel": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .thaumiel); break
+                            default: continue
                             }
                         }
                     }
                     
-                    if passedSCP.objclass == .esoteric && passedSCP.esoteric == .unknown{
+                    if passedSCP.objclass == .esoteric && passedSCP.esoteric == .unknown {
                         var newEso: EsotericClass? = nil
                         let doc = passedSCP.pagesource.lowercased()
                         if doc.contains("apollyon") { newEso = .apollyon }
@@ -140,6 +141,7 @@ struct ArticleRow: View {
                         else if doc.contains("uncontained") { newEso = .uncontained }
                         
                         if newEso != nil { passedSCP.updateAttribute(esotericClass: newEso!) }
+                        else { passedSCP.updateAttribute(esotericClass: .thaumiel) }
                     }
                 }
             }

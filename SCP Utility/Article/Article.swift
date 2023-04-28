@@ -63,11 +63,11 @@ struct Article: Identifiable, Codable {
         self.thumbnail = entity.thumbnail
         self.currenttext = entity.currenttext
         self.completed = entity.completed
-        self.objclass = ObjectClass(rawValue: entity.objclass)
-        self.esoteric = EsotericClass(rawValue: entity.esoteric)
+        self.objclass = ObjectClass(rawValue: entity.objclass) ?? ObjectClass.unknown
+        self.esoteric = EsotericClass(rawValue: entity.esoteric) ?? EsotericClass.unknown
         self.clearance = entity.clearance
-        self.disruption = DisruptionClass(rawValue: entity.disruption)
-        self.risk = RiskClass(rawValue: entity.risk)
+        self.disruption = DisruptionClass(rawValue: entity.disruption) ?? DisruptionClass.unknown
+        self.risk = RiskClass(rawValue: entity.risk) ?? RiskClass.unknown
     }
     
     /// Update the specified attribute.
