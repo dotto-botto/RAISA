@@ -114,6 +114,24 @@ struct Article: Identifiable, Codable {
     func isSaved() -> Bool {
         return con.isArticleSaved(url: self.url) ?? false
     }
+    
+    /// Checks page source for unsupported components and returns the components.
+    func findForbiddenComponents() -> [String]? {
+        let forbidden: [String:String] = [
+            "Fragments" : "category=\"fragment\"",
+            "Audio Players": "[[include :snippets:html5player",
+            "HTML": "[[html"
+        ]
+        
+        var values: [String] = []
+        for key in forbidden.keys {
+            if self.pagesource.contains(forbidden[key]!) {
+                values.append(key)
+            }
+        }
+        if values == [] { return nil }
+        else { return values }
+    }
 }
 
 // MARK: - Atribute Enums

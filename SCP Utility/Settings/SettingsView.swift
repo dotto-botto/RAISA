@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoOpen") var autoOpen = true
     @AppStorage("autoScroll") var autoScroll = true
+    @AppStorage("showComponentPrompt") var showComponentPrompt = true
     
     @State private var historyConf = false
     @State private var listConf = false
@@ -63,6 +64,7 @@ struct SettingsView: View {
                 }
                 Toggle("SHOW_IMAGES", isOn: $showImages)
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
+                Toggle("Detect Unsupported Components", isOn: $showComponentPrompt)
                 Button("Remove All Bar Items") {
                     defaults.set("", forKey: "articleBarIds")
                 }

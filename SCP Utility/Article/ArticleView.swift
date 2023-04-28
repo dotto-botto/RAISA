@@ -7,7 +7,6 @@
 
 import SwiftUI
 #if os(iOS)
-import Kingfisher
 import MarkdownUI
 #endif
     
@@ -22,7 +21,10 @@ struct ArticleView: View {
     @State private var tooltip: Bool = false
     @State private var bookmarkStatus: Bool = false
     @State private var filtered: Bool = false
+    @State private var forbidden: Bool = false
+    @State private var forbiddenComponents: [String] = []
     @Environment(\.dismiss) var dismiss
+    @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
@@ -31,16 +33,53 @@ struct ArticleView: View {
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading) {
-                    if mode == 0 && !filtered {
+                    if mode == 0 && !filtered && !forbidden {
                         ProgressView()
                             .onAppear {
-                                FilterToMarkdown(doc: document) { str in
-                                    filteredText = str
-                                    filtered = true
+                                if let list = scp.findForbiddenComponents(), showComponentPrompt {
+                                    forbiddenComponents = list
+                                    forbidden = true
+                                } else {
+                                    FilterToMarkdown(doc: document) { str in
+                                        filteredText = str
+                                        filtered = true
+                                    }
                                 }
                             }
                     }
-                    if filtered && mode == 0 { // Default
+                    
+                    if forbidden && showComponentPrompt {
+                        VStack {
+                            Text("This article contains unsupported components, it may not display correctly.")
+                                .foregroundColor(.gray)
+                                .font(.largeTitle)
+                                .padding(.bottom, 20)
+                            
+                            Text("Unsupported Components:").foregroundColor(.gray)
+                            ForEach(forbiddenComponents, id: \.self) { comp in
+                                Text(comp).foregroundColor(.gray)
+                            }
+                            
+                            HStack {
+                                Button("Display As Is") {
+                                    FilterToMarkdown(doc: document) { str in
+                                        filteredText = str
+                                        filtered = true
+                                        forbidden = false
+                                    }
+                                }
+                                Text("or").foregroundColor(.gray)
+                                Button("Open In Safari") {
+                                    showSafari = true
+                                }
+                            }
+                            .padding(.vertical, 10)
+                            
+                            Text("You can turn this warning off in settings.").foregroundColor(.gray)
+                        }
+                    }
+                    
+                    if filtered && (!forbidden || !showComponentPrompt) && mode == 0 { // Default
                         var forbiddenLines: [String] = []
                         let list = filteredText.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
@@ -67,13 +106,15 @@ struct ArticleView: View {
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             } else if item.contains(":image-block") {
-                                let slice = filteredText.slice(with: "[[include component:image-block", and: "]]")
+                                var slice = ""
+                                if item.contains("]]") { let _ = slice = item }
+                                else { let _ = slice = filteredText.slice(with: item, and: "]]") }
                                 ArticleImage(
                                     articleURL: scp.url,
-                                    content: item
+                                    content: slice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
-                                let _ = forbiddenLines += [item]
+                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             }
                             #endif
                             
@@ -447,6 +488,15 @@ end
                 url: placeholderURL,
                 thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")
             ))
-        }
+        }.previewDisplayName("Normal")
+        
+        NavigationStack {
+            ArticleView(scp: Article(
+                title: "Tufto's Proposal",
+                pagesource: "[[html",
+                url: placeholderURL,
+                thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")
+            ))
+        }.previewDisplayName("Forbidden")
     }
 }
