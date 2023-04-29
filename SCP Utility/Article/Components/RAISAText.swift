@@ -88,6 +88,16 @@ struct RAISAText: View {
                                 let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
                             }
                             
+                            // Link
+                            if item.contains("[[[") {
+                                let content = item.replacingOccurrences(of: "://*", with: "://")
+                                InlineButton(
+                                    article: article,
+                                    content: content
+                                )
+                                let _ = forbiddenLines += [item]
+                            }
+                            
                             // Text
                             if !forbiddenLines.contains(item) {
                                 #if os(iOS)
@@ -154,6 +164,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
+        text.removeText(from: "[[include :scp-wiki:theme", to: "]]")
         text.removeText(from: "[[module Rate", to: "]]")
         for _ in text.indicesOf(string: "[[div") {
             text.removeText(from: "[[div", to: "]]")
@@ -174,26 +185,11 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
         }
         
-        // Links
-        text.removeText(from: "<< [[[", to: "]]] >>")
-        for _ in text.indicesOf(string: "[[[") { // Only used for links if i am correct
-            if var slicedElement = text.slice(from: "[[[", to: "]]]") {
-                if slicedElement.contains("|") {
-                    slicedElement = "[[[" + slicedElement + "]]]"
-                    
-                    if let rawtext = slicedElement.slice(from: "|", to: "]]]") {
-                        text = text.replacingOccurrences(of: slicedElement, with: rawtext)
-                    }
-                } else {
-                    text = text.replacingOccurrences(of: "[[[" + slicedElement + "]]]", with: slicedElement)
-                }
-            }
-        }
-        
         text = text.replacingOccurrences(of: "------", with: "---")
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
         text = text.replacingOccurrences(of: "@@ @@", with: "\n")
         text = text.replacingOccurrences(of: "//", with: "*")
+        text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
         text = text.replacingOccurrences(of: " --", with: " ~~")
         text = text.replacingOccurrences(of: "-- ", with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")

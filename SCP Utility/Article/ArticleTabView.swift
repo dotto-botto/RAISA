@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ArticleTabView: View {
-    @State private var selectedID: String = ""
+    @State var selectedID: String = ""
     @Environment(\.dismiss) var dismiss
-
     @AppStorage("articleBarIds") var barIDS = ""
     let con = PersistenceController.shared
     var body: some View {
@@ -19,21 +18,17 @@ struct ArticleTabView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(ids, id: \.self) { id in
-                        VStack {
-                            if let articleItem = con.getArticleByID(id: id) {
-                                let article = Article(fromEntity: articleItem)!
-                                Text(article.title)
-                                    .lineLimit(1)
-                                    .foregroundColor(.accentColor)
-                            }
+                        if let articleItem = con.getArticleByID(id: id) {
+                            let article = Article(fromEntity: articleItem)!
+                            Button(article.title) { selectedID = id }
                         }
-                        .id(id)
-                        .onTapGesture { selectedID = id }
                     }
                 }
             }
             if let articleItem = con.getArticleByID(id: selectedID) {
-                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!) }
+                NavigationStack {
+                    ArticleView(scp: Article(fromEntity: articleItem)!)
+                }
             } else {
                 VStack {
                     Spacer()
@@ -42,6 +37,7 @@ struct ArticleTabView: View {
                         .font(.largeTitle)
                         .lineLimit(1)
                         .padding(.bottom)
+                    Button("Back") { dismiss() }
                     Spacer()
                 }
             }
