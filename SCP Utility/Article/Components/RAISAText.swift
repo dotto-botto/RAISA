@@ -192,6 +192,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
         text = text.replacingOccurrences(of: " --", with: " ~~")
         text = text.replacingOccurrences(of: "-- ", with: "~~ ")
+        text = text.replacingOccurrences(of: "\n--", with: "\n~~")
+        text = text.replacingOccurrences(of: "--\n", with: "~~\n")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         text = text.replacingOccurrences(of: "++++++ ", with: "###### ")
         text = text.replacingOccurrences(of: "+++++ ", with: "##### ")
