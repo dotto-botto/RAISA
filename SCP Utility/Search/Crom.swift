@@ -262,6 +262,55 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
+/// Retruns an article from a title
+func cromGetSourceFromTitle(title: String, completion: @escaping (Article) -> Void) {
+    let graphQLQuery = """
+query Search($query: String! = "\(title)") {
+  searchPages(query: $query, filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+    url
+    wikidotInfo {
+      title
+      source
+      thumbnailUrl
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+            
+            let article = responseJSON["data"]["searchPages"].array!.first!
+            
+            let title = article["wikidotInfo"]["title"].string
+            let source = article["wikidotInfo"]["source"].string
+            let url = article["url"].url
+            let thumbnail = article["wikidotInfo"]["thumbnailUrl"].url
+            completion(
+                Article(
+                    title: title ?? "Could not find title",
+                    pagesource: source ?? "Could not find source",
+                    url: url ?? placeholderURL,
+                    thumbnail: thumbnail
+                )
+            )
+        }
+    }
+}
+
 func cromGetTags(url: URL, completion: @escaping ([String]) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(url)") {
