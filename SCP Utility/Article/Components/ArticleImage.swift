@@ -29,7 +29,7 @@ struct ArticleImage: View {
             if name.contains("http") {
                 let _ = newURL = name
                     .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
-                    .replacingOccurrences(of: "http", with: "https")
+                    .replacingOccurrences(of: "http:", with: "https:")
             } else {
                 let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + name
             }
