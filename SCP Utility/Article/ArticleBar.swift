@@ -10,51 +10,51 @@ import SwiftUI
 struct ArticleBar: View {
     @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
     @State private var toArticle = false
-    
+    let con = PersistenceController.shared
     var body: some View {
-        let con = PersistenceController.shared
-        
-        if !articles.isEmpty {
-            HStack {
-                Spacer()
+        var selectedID = ""
+        HStack {
+            Spacer()
+            if !articles.isEmpty {
                 ForEach(articles.components(separatedBy: .whitespaces), id: \.self) { id in
-                    let articleItem = con.getArticleByID(id: id)
-                    if articleItem != nil {
-                        let article = Article(fromEntity: articleItem!)!
-                        VStack {
-                            Rectangle()
-                                .foregroundColor(.accentColor)
-                                .frame(height: 2)
-                            Text(article.title)
-                                .lineLimit(1)
-                                .foregroundColor(.accentColor)
-                        }
-                        .onTapGesture {
+                    if let articleItem = con.getArticleByID(id: id) {
+                        let article = Article(fromEntity: articleItem)!
+                        Button {
+                            selectedID = id
                             toArticle = true
+                        } label: {
+                            VStack {
+                                Rectangle()
+                                    .foregroundColor(.accentColor)
+                                    .frame(height: 2)
+                                Text(article.title.replacingOccurrences(of: "SCP-", with: ""))
+                                    .lineLimit(1)
+                                    .foregroundColor(.accentColor)
+                            }
                         }
                         .contextMenu {
                             Button {
-                                let _ = articles = articles.replacingOccurrences(of: " " + id, with: "")
-                                let _ = articles = articles.replacingOccurrences(of: id, with: "")
+                                articles = articles.replacingOccurrences(of: " " + id, with: "")
+                                articles = articles.replacingOccurrences(of: id, with: "")
                             } label: {
                                 Label("REMOVE_FROM_BAR", systemImage: "minus.circle")
                             }
                             Button(role: .destructive) {
+                                articles = articles.replacingOccurrences(of: " " + id, with: "")
+                                articles = articles.replacingOccurrences(of: id, with: "")
                                 con.deleteArticleEntity(id: id)
                             } label: {
                                 Label("DELETE_FROM_BAR", systemImage: "trash")
                             }
                         }
-                    } else {
-                        let _ = articles = articles.replacingOccurrences(of: " " + id, with: "")
-                        let _ = articles = articles.replacingOccurrences(of: id, with: "")
                     }
                 }
                 Spacer()
             }
-            .fullScreenCover(isPresented: $toArticle) {
-                NavigationStack { ArticleTabView() }
-            }
+        }
+        .frame(height: 40)
+        .fullScreenCover(isPresented: $toArticle) {
+            NavigationStack { ArticleTabView(selectedID: selectedID) }
         }
     }
 }

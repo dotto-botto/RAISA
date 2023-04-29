@@ -18,22 +18,22 @@ struct ContentView: View {
             VStack {
                 ExploreView()
                 Spacer()
-                ArticleBar().frame(height: 45)
+                ArticleBar()
             }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
             VStack {
                 ListView()
                 Spacer()
-                ArticleBar().frame(height: 45)
+                ArticleBar()
             }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
             VStack {
                 SearchView()
                 Spacer()
-                ArticleBar().frame(height: 45)
+                ArticleBar()
             }.tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }
             VStack {
                 HistoryView()
                 Spacer()
-                ArticleBar().frame(height: 45)
+                ArticleBar()
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
         }
         .fullScreenCover(isPresented: $resumeReading) {

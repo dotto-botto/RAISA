@@ -8,38 +8,34 @@
 import SwiftUI
 
 struct ArticleTabView: View {
-    @State var selectedID: String = ""
+    @State var selectedID: String? = nil
     @Environment(\.dismiss) var dismiss
     @AppStorage("articleBarIds") var barIDS = ""
     let con = PersistenceController.shared
     var body: some View {
         let ids = barIDS.components(separatedBy: .whitespaces)
         VStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(ids, id: \.self) { id in
-                        if let articleItem = con.getArticleByID(id: id) {
-                            let article = Article(fromEntity: articleItem)!
-                            Button(article.title) { selectedID = id }
-                        }
+            ForEach(ids, id: \.self) { id in
+                if id == selectedID {
+                    if let articleItem = con.getArticleByID(id: selectedID!) {
+                        ArticleView(scp: Article(fromEntity: articleItem)!)
                     }
                 }
             }
-            if let articleItem = con.getArticleByID(id: selectedID) {
-                NavigationStack {
-                    ArticleView(scp: Article(fromEntity: articleItem)!)
+            Spacer()
+            HStack {
+                Image(systemName: "chevron.left.2").foregroundColor(.secondary)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(ids, id: \.self) { id in
+                            if let articleItem = con.getArticleByID(id: id) {
+                                let article = Article(fromEntity: articleItem)!
+                                Button(article.title) { selectedID = id }
+                            }
+                        }
+                    }
                 }
-            } else {
-                VStack {
-                    Spacer()
-                    Text("Select an Article")
-                        .foregroundColor(.gray)
-                        .font(.largeTitle)
-                        .lineLimit(1)
-                        .padding(.bottom)
-                    Button("Back") { dismiss() }
-                    Spacer()
-                }
+                Image(systemName: "chevron.right.2").foregroundColor(.secondary)
             }
         }
     }
