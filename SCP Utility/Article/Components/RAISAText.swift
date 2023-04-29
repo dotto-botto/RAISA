@@ -36,6 +36,17 @@ struct RAISAText: View {
                         var forbiddenLines: [String] = []
                         let list = filteredText.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
+                            // Tab View
+                            if item.contains("[[tabview") {
+                                let sliced = filteredText.slice(with: item, and: "[[/tabview]]")
+                                TabViewComponent(
+                                    article: article,
+                                    text: sliced
+                                )
+                                let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
+                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
+                            }
+                            
                             // Collapsible
                             if item.contains("[[collapsible") {
                                 let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")

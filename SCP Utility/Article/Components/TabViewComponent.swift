@@ -9,25 +9,34 @@ import SwiftUI
 import MarkdownUI
 
 struct TabViewComponent: View {
-    @State var doc: String
-    @State private var tabContent: String = ""
+    @State var article: Article
+    @State var text: String
+    @State var currentKey: String = ""
+    @State private var showText: Bool = false
     var body: some View {
-        let content = parseTabView(doc)
+        let content = parseTabView(text)
         
         VStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(Array(content.keys), id: \.self) { key in
-                        Button(key) {
-                            FilterToMarkdown(doc: content[key] ?? "Select Tab") { str in
-                                tabContent = str
+            HStack {
+                Image(systemName: "chevron.left.2").foregroundColor(.secondary)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(content.sorted(by: >), id: \.key) { key, value in
+                            Button(key) {
+                                currentKey = key
+                                showText = true
                             }
                         }
                     }
                 }
+                Image(systemName: "chevron.right.2").foregroundColor(.secondary)
             }
             
-            Markdown(tabContent)
+            ForEach(content.sorted(by: >), id: \.key) { key, value in
+                if key == currentKey {
+                    RAISAText(article: article, text: value)
+                }
+            }
         }
     }
 }
@@ -51,7 +60,7 @@ fileprivate func parseTabView(_ doc: String) -> [String:String] {
 
 struct TabViewComponent_Previews: PreviewProvider {
     static var previews: some View {
-        TabViewComponent(doc: """
+        TabViewComponent(article: placeHolderArticle, text: """
 [[tabview]]
 [[tab Scenarios With Multiple Uses]]
 Each of these letter combinations have been used at least twice on the wiki. They are presented alphabetically by K-Class followed by non-K designations and oddities. (GH gets to be special by seniority).
