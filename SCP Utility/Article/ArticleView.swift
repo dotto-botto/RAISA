@@ -72,7 +72,7 @@ struct ArticleView: View {
                 }
             }
         }
-        .frame(width: 400)
+        .padding(.horizontal, 25)
         .sheet(isPresented: $presentSheet) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }

@@ -21,7 +21,7 @@ struct RAISAText: View {
         let mode = defaults.integer(forKey: "articleViewSetting")
         ScrollViewReader { value in
             ScrollView {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 5) {
                     if mode == 0 && !filtered {
                         ProgressView()
                             .onAppear {
@@ -113,7 +113,6 @@ struct RAISAText: View {
                             if !forbiddenLines.contains(item) {
                                 #if os(iOS)
                                 Markdown(item)
-                                    .padding(.bottom, 1)
                                     .id(item)
                                     .contextMenu {
                                         Button {
@@ -125,7 +124,6 @@ struct RAISAText: View {
 
                                 #else
                                 Text(item)
-                                    .padding(.bottom, 1)
                                     .id(item)
                                     .contextMenu {
                                         Button {
@@ -147,7 +145,6 @@ struct RAISAText: View {
                         let list = article.pagesource.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
                             Text(item)
-                                .padding(.bottom, 1)
                                 .id(item)
                                 .contextMenu {
                                     Button {
