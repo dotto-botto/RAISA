@@ -25,7 +25,7 @@ struct ArticleImage: View {
         } else if content.contains(":image-block") {
             // Old Format
             let stringURL = articleURL.formatted()
-            let name = content.slice(from: "name=", to: "|") ?? ""
+            let name = content.slice(from: "name=", to: " |") ?? content.slice(from: "name=", to: "|") ?? ""
             if name.contains("http") {
                 let _ = newURL = name
                     .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
@@ -34,11 +34,18 @@ struct ArticleImage: View {
                 let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + name
             }
             let _ = caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
-        } else if content.contains("[[image") {
-            if content.contains("http") { let _ = newURL = content.slice(with: "http", and: " ") }
+        } else if content.contains("[[image") ||
+                    content.contains("[[>image") ||
+                    content.contains("[[<image") ||
+                    content.contains("[[=image") {
+            if content.contains("http") {
+                let _ = newURL = (content.slice(from: "image ", to: " ") ?? "")
+                    .replacingOccurrences(of: "*", with: "//")
+                
+            }
             else {
                 let stringURL = articleURL.formatted()
-                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + (content.slice(from: " ", to: " ") ?? "")
+                let _ = newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: " ", to: " ") ?? "")
             }
         }
         
@@ -61,6 +68,7 @@ struct ArticleImage_Previews: PreviewProvider {
             articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-5004")!,
             content: "[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]"
         ).previewDisplayName("Old Format")
+        
         ArticleImage(
             articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-049")!,
             content: """
@@ -75,6 +83,7 @@ struct ArticleImage_Previews: PreviewProvider {
                     ]]
                     """
         ).previewDisplayName("New Format")
+        
         ArticleImage(
             articleURL: URL(string: "https://scp-wiki.wikidot.com/scp-179")!,
             content: "[[image SCPArchiveLogo.png width=\"140px\"]]"

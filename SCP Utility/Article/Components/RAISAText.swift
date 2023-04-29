@@ -68,6 +68,13 @@ struct RAISAText: View {
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
+                            } else if item.contains("[[image") ||
+                                        item.contains("[[>image") ||
+                                        item.contains("[[<image") ||
+                                        item.contains("[[=image") {
+                                ArticleImage(articleURL: article.url, content: item)
+                                let _ = filteredText = filteredText.replacingOccurrences(of: item, with: "")
+                                let _ = forbiddenLines += [item]
                             }
                             #endif
                             
