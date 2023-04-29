@@ -14,7 +14,7 @@ struct ArticleView: View {
     @State var showSafari: Bool = false
     @State private var showInfo: Bool = false
     @State private var resume: Bool = false
-    @State private var tooltip: Bool = false
+    @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
     @State private var forbidden: Bool = true
     @State private var forbiddenComponents: [String] = []
@@ -80,6 +80,9 @@ struct ArticleView: View {
         .sheet(isPresented: $showInfo) {
             ArticleInfoView(url: scp.url)
         }
+        .sheet(isPresented: $showComments) {
+            CommentsView(article: scp)
+        }
         .fullScreenCover(isPresented: $showSafari) {
             SFSafariViewWrapper(url: scp.url)
         }
@@ -128,22 +131,12 @@ struct ArticleView: View {
                 } label: {
                     Image(systemName: "info.circle")
                 }
-                Spacer()
                 
-                Menu {
-                    Button {
-                        
-                    } label: {
-                        Label("DOWNVOTE", systemImage: "arrow.down")
-                    }
-                    
-                    Button {
-                        
-                    } label: {
-                        Label("UPVOTE", systemImage: "arrow.up")
-                    }
+                Spacer()
+                Button {
+                    showComments.toggle()
                 } label: {
-                    Image(systemName: "arrow.up.arrow.down")
+                    Image(systemName: "bubble.left.and.bubble.right")
                 }
                 
                 Spacer()
