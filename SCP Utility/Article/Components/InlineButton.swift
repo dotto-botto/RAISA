@@ -53,7 +53,7 @@ fileprivate func parseLink(_ content: String) -> String {
         } else if let combined = element.slice(from: "[[[", to: "]]]") {
             doc = doc.replacingOccurrences(
                 of: element,
-                with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined))"
+                with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined.replacingOccurrences(of: " ", with: "-")))"
             )
         }
     }
