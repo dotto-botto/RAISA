@@ -12,19 +12,20 @@ import MarkdownUI
 
 struct RAISAText: View {
     @State var article: Article
+    @State var text: String? = nil
     
     @State private var filtered: Bool = false
     @State private var filteredText = ""
-    @AppStorage("articleViewSetting") var mode = 0
     var body: some View {
         let defaults = UserDefaults.standard
+        let mode = defaults.integer(forKey: "articleViewSetting")
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading) {
                     if mode == 0 && !filtered {
                         ProgressView()
                             .onAppear {
-                                FilterToMarkdown(doc: article.pagesource) { str in
+                                FilterToMarkdown(doc: text ?? article.pagesource) { str in
                                     filteredText = str
                                     filtered = true
                                 }
@@ -40,7 +41,7 @@ struct RAISAText: View {
                                 let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
                                 
                                 Collapsible(
-                                    articleID: article.id,
+                                    article: article,
                                     text: sliced
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
@@ -199,8 +200,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     }
 }
 
-//struct RAISAText_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RAISAText()
-//    }
-//}
+struct RAISAText_Previews: PreviewProvider {
+    static var previews: some View {
+        RAISAText(article: placeHolderArticle)
+    }
+}

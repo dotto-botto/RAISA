@@ -11,61 +11,30 @@ import MarkdownUI
 #endif
 
 struct Collapsible: View {
-    @State var articleID: String
+    @State var article: Article
     @State var text: String
     @State var showed: Bool = false
-    @State private var filtered = ""
-    @State private var tooltip: Bool = false
     var body: some View {
-        VStack {
-            if text.contains("[[collapsible") && text.contains("[[/collapsible]]") {
-                let show = text.slice(from: " show=\"", to: "\"")
-                let hide = text.slice(from: " hide=\"", to: "\"")
-                
-                let content = text.slice(from: "]]", to: "[[/collapsible]]")
-                let _ = FilterToMarkdown(doc: content ?? "") { str in
-                    filtered = str
-                }
-                if show != nil && hide != nil {
-                    Button {
-                        showed.toggle()
-                    } label: {
-                        let prompt = showed ? hide! : show!
-                        Text(prompt).foregroundColor(.accentColor)
-                    }
-                    if showed && filtered != "" {
-                        let list = filtered.components(separatedBy: .newlines)
-                        ForEach(list, id: \.self) { item in
-                            #if os(iOS)
-                            Markdown(item)
-                                .padding(.bottom, 1)
-                                .id(item)
-                                .onTapGesture {
-                                    tooltip = true
-                                    PersistenceController.shared.setScroll(text: item, articleid: articleID)
-                                }
-                            #else
-                            Text(item)
-                                .padding(.bottom, 1)
-                                .id(item)
-                                .onTapGesture {
-                                    tooltip = true
-                                    PersistenceController.shared.setScroll(text: item, articleid: articleID)
-                                }
-                            #endif
+        if text.contains("[[collapsible") && text.contains("[[/collapsible]]") {
+            let show = text.slice(from: " show=\"", to: "\"")
+            let hide = text.slice(from: " hide=\"", to: "\"")
+            let content = text.slice(from: "]]", to: "[[/collapsible]]")
+
+            if show != nil && hide != nil {
+                VStack {
+                    HStack { // without hstack the button snaps to middle when shown
+                        Button {
+                            showed.toggle()
+                        } label: {
+                            Text(showed ? hide! : show!).foregroundColor(.accentColor)
                         }
+                        Spacer()
+                    }
+                    if showed {
+                        RAISAText(article: article, text: content)
                     }
                 }
-            } else {
-                Text(text)
             }
-        }
-        .alert("PLACE_SAVED", isPresented: $tooltip) {
-            Button("OK") {
-                tooltip = false
-            }
-        } message: {
-            Text("HOW_TO_SAVE")
         }
     }
 }
@@ -73,7 +42,7 @@ struct Collapsible: View {
 struct Collapsible_Previews: PreviewProvider {
     static var previews: some View {
         Collapsible(
-            articleID: "",
+            article: placeHolderArticle,
             text: """
 [[collapsible show="+ Open" hide="- Close"]]
 This text is in a collapsible.
@@ -82,7 +51,7 @@ This text is in a collapsible.
         )
         
         Collapsible(
-            articleID: "",
+            article: placeHolderArticle,
             text: """
 [[collapsible hide="SECURITY MEMETIC: WE DID NOT FAIL THEM" show="Incident Report 2001-19██-A: LEVEL 4 CLEARANCE REQUIRED" hideLocation=both]]
 This text is also in a collapsible.
