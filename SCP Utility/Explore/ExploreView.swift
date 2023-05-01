@@ -11,7 +11,7 @@ struct ExploreView: View {
     @State private var settings: Bool = false
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     RandomCard().clipped()
                     ResumeCard().clipped()

@@ -136,7 +136,7 @@ query Search {
     }
 }
 
-func cromAPISearchFromURL(query: URL, completion: @escaping (Article) -> Void) {
+func cromAPISearchFromURL(query: URL, completion: @escaping (Article?) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(query)") {
     page(url: $query) {
@@ -166,18 +166,17 @@ query Search($query: URL! = "\(query)") {
                 print(error)
             }
 
-            for pages in responseJSON["data"]["searchPages"].arrayValue {
-                let title = pages["wikidotInfo"]["title"]
-                let source = pages["wikidotInfo"]["source"]
-                let pic = pages["wikidotInfo"]["thumbnailUrl"]
-
-                article = Article(
-                    title: title.string ?? "Could not find title",
-                    pagesource: source.string ?? "Could not find pagesource",
-                    url: query,
-                    thumbnail: pic.url ?? nil
-                )
-            }
+            let page = responseJSON["data"]["page"]
+            guard let title = page["wikidotInfo"]["title"].string else { completion(nil); return }
+            guard let source = page["wikidotInfo"]["source"].string else { completion(nil); return }
+            let pic = page["wikidotInfo"]["thumbnailUrl"].url
+            
+            article = Article(
+                title: title,
+                pagesource: source,
+                url: query,
+                thumbnail: pic ?? nil
+            )
             completion(article)
         }
     }

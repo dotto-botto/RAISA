@@ -111,7 +111,7 @@ struct Article: Identifiable, Codable {
     }
     
     func isSaved() -> Bool {
-        return con.isArticleSaved(url: self.url) ?? false
+        return con.isArticleSaved(url: self.url)
     }
     
     /// Checks page source for unsupported components and returns the components.

@@ -349,6 +349,7 @@ extension PersistenceController {
     func getArticleByURL(url: URL, context: NSManagedObjectContext? = nil) -> ArticleItem? {
         let context = context ?? container.viewContext
         
+        if url == URL(string: "https://scp-wiki.wikidot.com/") { return nil }
         let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
         object.predicate = NSPredicate(format: "url == %@", url as CVarArg)
 
@@ -601,7 +602,7 @@ extension PersistenceController {
         }
     }
     
-    func isArticleSaved(url: URL, context: NSManagedObjectContext? = nil) -> Bool? {
+    func isArticleSaved(url: URL, context: NSManagedObjectContext? = nil) -> Bool {
         let context = context ?? container.viewContext
         
         let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
@@ -610,13 +611,13 @@ extension PersistenceController {
         do {
             if try context.fetch(request).first != nil {
                 return true
+            } else {
+                return false
             }
         } catch {
             print(error)
-            return nil
+            return false
         }
-        
-        return false
     }
     
     func isArticleSaved(id: String, context: NSManagedObjectContext? = nil) -> Bool? {
