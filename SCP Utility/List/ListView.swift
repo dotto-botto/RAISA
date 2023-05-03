@@ -11,57 +11,17 @@ import Foundation
 // MARK: - Many List View
 struct ListView: View {
     @State private var alertPresent: Bool = false
-    @State private var listTitlePresent: Bool = false
-    @State private var listSubtitlePresent: Bool = false
     @State private var presentSheet: Bool = false
     @State private var mode: Int = 0
     @State private var query: String = ""
     @State private var currentList: SCPList = SCPList(listid: "Placeholder")
-        
+    @State private var items = PersistenceController.shared.getAllLists()
     var body: some View {
-        let items = PersistenceController.shared.getAllLists()
         let con = PersistenceController.shared
         
         NavigationStack {
             List(items!) { item in
-                if let newItem = SCPList(fromEntity: item) {
-                    NavigationLink(destination: OneListView(list: newItem)) {
-                        VStack(alignment: .leading) {
-                            Text(newItem.listid)
-                                .lineLimit(1)
-                            if newItem.subtitle != nil {
-                                Text(newItem.subtitle!)
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 13))
-                                    .lineLimit(1)
-                            } else {
-                                Text("SUBTITLE_PLACEHOLDER")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 13))
-                                    .lineLimit(1)
-                            }
-                        }
-                    }
-                    .swipeActions(allowsFullSwipe: false) {
-                        Button(role: .destructive) {
-                            con.deleteListEntity(listitem: newItem)
-                        } label: { Image(systemName: "trash") }
-                    }
-                    .contextMenu {
-                        Button {
-                            listTitlePresent = true
-                            currentList = newItem
-                        } label: {
-                            Label("CHANGE_LIST_TITLE", systemImage: "pencil")
-                        }
-                        Button {
-                            listSubtitlePresent = true
-                            currentList = newItem
-                        } label: {
-                            Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
-                        }
-                    }
-                }
+                ListRow(fromEntity: item)
             }
             .navigationTitle("LIST_TITLE")
             .toolbar {
@@ -107,34 +67,6 @@ struct ListView: View {
                     } label: {
                         Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
                     }
-                }
-            }
-            // Change List Title
-            .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
-                TextField(currentList.listid, text: $query)
-                
-                Button("CHANGE") {
-                    con.updateListTitle(newTitle: query, list: currentList)
-                    listTitlePresent = false
-                    query = ""
-                }
-                Button("CANCEL", role: .cancel) {
-                    listTitlePresent = false
-                    query = ""
-                }
-            }
-            // Change List Subtitle
-            .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
-                TextField(currentList.subtitle ?? "", text: $query)
-                
-                Button("CHANGE") {
-                    con.updateListSubtitle(newTitle: query, list: currentList)
-                    listSubtitlePresent = false
-                    query = ""
-                }
-                Button("CANCEL", role: .cancel) {
-                    listSubtitlePresent = false
-                    query = ""
                 }
             }
             .sheet(isPresented: $presentSheet) { AllArticleView(mode: mode) }

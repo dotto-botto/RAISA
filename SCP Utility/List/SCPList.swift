@@ -5,7 +5,6 @@
 //  Created by Maximus Harding on 2/13/23.
 //
 
-import SwiftUI
 import Foundation
 
 fileprivate let con = PersistenceController.shared
@@ -42,5 +41,19 @@ struct SCPList: Identifiable {
             con.createArticleEntity(article: article)
         }
         con.addArticleToListFromId(listid: self.listid, article: article)
+    }
+    
+    mutating func updateTitle(newTitle: String) {
+        self.listid = newTitle
+        con.updateListTitle(newTitle: newTitle, list: self)
+    }
+    
+    mutating func updateSubtitle(newTitle: String) {
+        self.subtitle = newTitle
+        con.updateListSubtitle(newTitle: newTitle, list: self)
+    }
+    
+    func deleteEntity() {
+        con.deleteListEntity(listitem: self)
     }
 }

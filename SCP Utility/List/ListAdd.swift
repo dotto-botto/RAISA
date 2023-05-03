@@ -12,7 +12,6 @@ struct ListAdd: View {
     @Binding var isPresented: Bool
     @State var article: Article
     @State private var items = PersistenceController.shared.getAllLists()
-    
     var body: some View {
         let con = PersistenceController.shared
         
@@ -25,15 +24,17 @@ struct ListAdd: View {
                             isPresented = false
                         } label: {
                             HStack {
-                                Text(newItem.listid)
-                                Spacer()
                                 if con.isIdInList(listid: newItem.id, articleid: article.id) {
-                                    Image(systemName: "checkmark")
+                                    Image(systemName: "checkmark").foregroundColor(.accentColor)
                                 }
+                                
+                                ListRow(list: newItem)
                             }
                         }
                     }
                 }
+                .listStyle(.plain)
+                .navigationTitle("Add to List")
             }
         }
     }
