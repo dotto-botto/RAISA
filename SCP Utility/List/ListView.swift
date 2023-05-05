@@ -23,6 +23,7 @@ struct ListView: View {
             List(items!) { item in
                 ListRow(fromEntity: item)
             }
+            .listStyle(.plain)
             .navigationTitle("LIST_TITLE")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

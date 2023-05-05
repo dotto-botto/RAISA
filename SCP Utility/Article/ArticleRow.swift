@@ -5,7 +5,6 @@
 //  Created by Maximus Harding on 12/30/22.
 //
 
-import Foundation
 import SwiftUI
 
 struct ArticleRow: View {
@@ -16,7 +15,6 @@ struct ArticleRow: View {
     @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     @State private var bookmarkStatus: Bool = false
-    
     var body: some View {
         let con = PersistenceController.shared
         let defaults = UserDefaults.standard
@@ -45,12 +43,39 @@ struct ArticleRow: View {
             }
         } label: {
             HStack {
-                Text(passedSCP.title)
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-                if con.completionStatus(article: passedSCP) {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.accentColor)
+                VStack(spacing: 3) {
+                    HStack {
+                        Text(passedSCP.title)
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                        if con.completionStatus(article: passedSCP) {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.accentColor)
+                        }
+                        Spacer()
+                    }
+                    
+                    if localArticle {
+                        HStack {
+                            if passedSCP.pagesource != "" {
+                                Image(systemName: "arrow.down.circle.fill")
+                                    .resizable()
+                                    .foregroundColor(.accentColor)
+                                    .scaledToFit()
+                                    .frame(width: 15, height: 14)
+                            }
+                            
+                            let text = passedSCP.currenttext ??
+                            passedSCP.pagesource.slice(from: "Description:** ") ??
+                            passedSCP.pagesource
+                            
+                            Text(text)
+                                .lineLimit(1)
+                                .foregroundColor(.secondary)
+                                .font(.monospaced(.caption2)())
+                            Spacer()
+                        }
+                    }
                 }
                 Spacer()
                 #if os(iOS)
@@ -87,12 +112,15 @@ struct ArticleRow: View {
                 } label: {
                     Label("Add to Bar", systemImage: "plus.circle")
                 }
+                
                 Button {
                     showArticle = true
                 } label: {
                     Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
                 }
             }
+        } preview: {
+            NavigationStack { RAISAText(article: passedSCP) }
         }
         .swipeActions(allowsFullSwipe: false) {
             if localArticle {
