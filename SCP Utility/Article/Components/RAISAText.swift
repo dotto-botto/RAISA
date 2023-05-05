@@ -185,6 +185,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[=", to: "]]")
         text.removeText(from: "[[/=", to: "]]")
         text.removeText(from: "[!--", to: "--]")
+        text.removeText(from: "<< [[[", to: "]]] >>")
         for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
         // Footnotes

@@ -292,20 +292,21 @@ query Search($query: String! = "\(title)") {
                 print(error)
             }
             
-            let article = responseJSON["data"]["searchPages"].array!.first!
-            
-            let title = article["wikidotInfo"]["title"].string
-            let source = article["wikidotInfo"]["source"].string
-            let url = article["url"].url
-            let thumbnail = article["wikidotInfo"]["thumbnailUrl"].url
-            completion(
-                Article(
-                    title: title ?? "Could not find title",
-                    pagesource: source ?? "Could not find source",
-                    url: url ?? placeholderURL,
-                    thumbnail: thumbnail
+            if let article = responseJSON["data"]["searchPages"].array?.first {
+                
+                let title = article["wikidotInfo"]["title"].string
+                let source = article["wikidotInfo"]["source"].string
+                let url = article["url"].url
+                let thumbnail = article["wikidotInfo"]["thumbnailUrl"].url
+                completion(
+                    Article(
+                        title: title ?? "Could not find title",
+                        pagesource: source ?? "Could not find source",
+                        url: url ?? placeholderURL,
+                        thumbnail: thumbnail
+                    )
                 )
-            )
+            }
         }
     }
 }

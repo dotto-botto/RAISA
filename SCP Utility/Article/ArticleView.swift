@@ -10,6 +10,7 @@ import SwiftUI
 // MARK: - View
 struct ArticleView: View {
     @State var scp: Article
+    @State var dismissText: String? = ""
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
     @State private var showInfo: Bool = false
@@ -17,6 +18,8 @@ struct ArticleView: View {
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
     @State private var forbidden: Bool = true
+    @State private var nextArticle: Article? = nil
+    @State private var showNext: Bool = false
     @State private var forbiddenComponents: [String] = []
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
@@ -71,8 +74,12 @@ struct ArticleView: View {
                     forbidden = false
                 }
             }
+            
+            findNextArticle(currentTitle: scp.title) { article in
+                nextArticle = article
+            }
         }
-        .padding(.horizontal, 25)
+        .padding(.horizontal, 20)
         .sheet(isPresented: $presentSheet) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
@@ -86,28 +93,49 @@ struct ArticleView: View {
         .fullScreenCover(isPresented: $showSafari) {
             SFSafariViewWrapper(url: scp.url)
         }
+        .fullScreenCover(isPresented: $showNext) {
+            NavigationStack { ArticleView(scp: nextArticle!, dismissText: scp.title) }
+        }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button {
                     dismiss()
                 } label: {
-                    Image(systemName: "chevron.backward")
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text(dismissText ?? "")
+                    }
                 }
-            }
-            ToolbarItem {
-                Button {
-                    con.complete(status: !(scp.completed ?? false), article: scp)
-                    scp.completed = !(scp.completed ?? false)
-                } label: {
-                    if scp.completed == true {
-                        Image(systemName: "checkmark")
-                    } else {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.secondary)
-                            .opacity(0.5)
+                .contextMenu {
+                    Button {
+                        // https://stackoverflow.com/a/69968825/11248074
+                        let rootViewController = UIApplication.shared.connectedScenes
+                                .filter {$0.activationState == .foregroundActive }
+                                .map {$0 as? UIWindowScene }
+                                .compactMap { $0 }
+                                .first?.windows
+                                .filter({ $0.isKeyWindow }).first?.rootViewController
+                            
+                        rootViewController?.dismiss(animated: true)
+                    } label: {
+                        Label("Dismiss all Articles", systemImage: "house")
                     }
                 }
             }
+            
+            ToolbarItem {
+                Button {
+                    showNext = true
+                } label: {
+                    if nextArticle != nil {
+                        HStack {
+                            Text(nextArticle!.title)
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                }
+            }
+
             // Bottom
             ToolbarItemGroup(placement: .bottomBar) {
                 Button {} label: {
@@ -144,6 +172,20 @@ struct ArticleView: View {
                     showSafari.toggle()
                 } label: {
                     Image(systemName: "safari")
+                }
+                
+                Spacer()
+                Button {
+                    con.complete(status: !(scp.completed ?? false), article: scp)
+                    scp.completed = !(scp.completed ?? false)
+                } label: {
+                    if scp.completed == true {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.secondary)
+                            .opacity(0.5)
+                    }
                 }
             }
         }

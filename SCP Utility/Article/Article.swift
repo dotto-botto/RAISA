@@ -133,6 +133,17 @@ struct Article: Identifiable, Codable {
     }
 }
 
+/// Finds the next article using "currentTitle" as a query.
+/// If "currentTitle" is not an SCP from the main series, (eg: SCP-173 or SCP-097, but not SCP-8900-EX), this returns nil.
+func findNextArticle(currentTitle title: String, completion: @escaping (Article?) -> Void) {
+    if var key = title.slice(from: "SCP-"), let num = Int(key) {
+        key = String(num + 1)
+        cromGetSourceFromTitle(title: key) { article in
+            completion(article)
+        }
+    } else { completion(nil) }
+}
+
 // MARK: - Atribute Enums
 enum ObjectClass: Int16, Codable, CaseIterable {
     case safe = 0
