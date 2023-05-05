@@ -21,6 +21,7 @@ struct ArticleView: View {
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
     @State private var forbiddenComponents: [String] = []
+    @State private var sourceLoaded: Bool = false
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
@@ -56,7 +57,11 @@ struct ArticleView: View {
             }
             
             if !forbidden {
-                RAISAText(article: scp)
+                if sourceLoaded {
+                    RAISAText(article: scp)
+                } else {
+                    ProgressView()
+                }
             }
         }
         .navigationTitle(scp.title)
@@ -78,6 +83,13 @@ struct ArticleView: View {
             findNextArticle(currentTitle: scp.title) { article in
                 nextArticle = article
             }
+            
+            if scp.pagesource == "" {
+                cromGetSourceFromURL(url: scp.url) { source in
+                    scp.updateSource(source)
+                    sourceLoaded = true
+                }
+            } else { sourceLoaded = true }
         }
         .padding(.horizontal, 20)
         .sheet(isPresented: $presentSheet) {

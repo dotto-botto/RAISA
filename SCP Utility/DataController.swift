@@ -443,6 +443,40 @@ extension PersistenceController {
         return nil
     }
     
+    /// Deletes the page source of an article by setting it to an empty string.
+    func deletePageSource(id: String, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", id)
+
+        do {
+            if let article = try context.fetch(request).first {
+                article.pagesource = ""
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
+    /// Sets the page source of a core data article.
+    func updatePageSource(id: String, newPageSource source: String, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+
+        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        request.predicate = NSPredicate(format: "identifier == %@", id)
+
+        do {
+            if let article = try context.fetch(request).first {
+                article.pagesource = source
+            }
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
     /// Update the object class of an article.
     func updateObjectClass(articleid: String, newattr: ObjectClass, context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext

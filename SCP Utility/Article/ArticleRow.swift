@@ -65,10 +65,14 @@ struct ArticleRow: View {
                                     .frame(width: 15, height: 14)
                             }
                             
-                            let text = passedSCP.currenttext ??
+                            var text = passedSCP.currenttext ??
                             passedSCP.pagesource.slice(from: "Description:** ") ??
                             passedSCP.pagesource
                             
+                            if text == "" { // offloaded
+                                let _ = text = NSLocalizedString("DOWNLOAD_ARTICLE_PROMPT", comment: "")
+                            }
+                                
                             Text(text)
                                 .lineLimit(1)
                                 .foregroundColor(.secondary)
@@ -117,6 +121,24 @@ struct ArticleRow: View {
                     showArticle = true
                 } label: {
                     Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+                }
+                
+                Divider()
+                
+                if passedSCP.pagesource == "" {
+                    Button {
+                        cromGetSourceFromURL(url: passedSCP.url) { source in
+                            con.updatePageSource(id: passedSCP.id, newPageSource: source)
+                        }
+                    } label: {
+                        Label("Download", systemImage: "square.and.arrow.down")
+                    }
+                } else {
+                    Button {
+                        con.deletePageSource(id: passedSCP.id)
+                    } label: {
+                        Label("Offload", systemImage: "square.and.arrow.up")
+                    }
                 }
             }
         } preview: {

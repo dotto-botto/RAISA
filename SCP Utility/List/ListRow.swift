@@ -43,7 +43,6 @@ struct ListRow: View {
                     }
                 }
                 Spacer()
-                Image(systemName: "arrow.down.circle.fill").foregroundColor(.accentColor)
             }
         }
         .swipeActions(allowsFullSwipe: false) {
