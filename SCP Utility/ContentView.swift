@@ -43,10 +43,8 @@ struct ContentView: View {
                     resumeReading = true
                 } else {
                     cromAPISearchFromURL(query: url!) { article in
-                        if article != nil {
-                            offlineArticle = article
-                            resumeReading = true
-                        }
+                        offlineArticle = article
+                        resumeReading = true
                     }
                 }
             }
@@ -55,7 +53,9 @@ struct ContentView: View {
             if let articleItem = con.getArticleByURL(url: url!) {
                 NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!) }
             } else {
-                NavigationStack { ArticleView(scp: offlineArticle!) }
+                if offlineArticle != nil {
+                    NavigationStack { ArticleView(scp: offlineArticle!) }
+                }
             }
         }
     }
