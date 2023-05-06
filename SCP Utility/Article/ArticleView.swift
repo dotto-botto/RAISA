@@ -22,6 +22,8 @@ struct ArticleView: View {
     @State private var showNext: Bool = false
     @State private var forbiddenComponents: [String] = []
     @State private var sourceLoaded: Bool = false
+    @State private var containsExplicitContent: Bool = true
+    @State private var explicitContent: [String] = []
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
@@ -56,7 +58,29 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden {
+            if !forbidden && containsExplicitContent {
+                VStack {
+                    Text("This article contains sensitive content.")
+                        .foregroundColor(.gray)
+                        .font(.largeTitle)
+                        .padding(.bottom, 20)
+                    
+                    ForEach(explicitContent, id: \.self) { comp in
+                        Text(comp).foregroundColor(.gray)
+                    }
+                    
+                    Button("Continue") {
+                        containsExplicitContent = false
+                    }
+                    .padding(.top, 10)
+                    
+                    Button("Back") {
+                        dismiss()
+                    }
+                }
+            }
+            
+            if !forbidden && !containsExplicitContent {
                 if sourceLoaded {
                     RAISAText(article: scp)
                 } else {
@@ -77,6 +101,14 @@ struct ArticleView: View {
                     forbidden = true
                 } else {
                     forbidden = false
+                }
+            }
+            
+            if containsExplicitContent {
+                if let list = scp.findContentWarnings() {
+                    explicitContent = list
+                } else {
+                    containsExplicitContent = false
                 }
             }
             
@@ -164,6 +196,7 @@ struct ArticleView: View {
                             .onLongPressGesture { presentSheet.toggle() }
                     }
                 }
+                .disabled(containsExplicitContent)
                 
                 Spacer()
                 Button {
@@ -171,21 +204,24 @@ struct ArticleView: View {
                 } label: {
                     Image(systemName: "info.circle")
                 }
-                
+                .disabled(containsExplicitContent)
+
                 Spacer()
                 Button {
                     showComments.toggle()
                 } label: {
                     Image(systemName: "bubble.left.and.bubble.right")
                 }
-                
+                .disabled(containsExplicitContent)
+
                 Spacer()
                 Button {
                     showSafari.toggle()
                 } label: {
                     Image(systemName: "safari")
                 }
-                
+                .disabled(containsExplicitContent)
+
                 Spacer()
                 Button {
                     con.complete(status: !(scp.completed ?? false), article: scp)

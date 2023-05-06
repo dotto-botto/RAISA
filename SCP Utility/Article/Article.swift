@@ -131,6 +131,31 @@ struct Article: Identifiable, Codable {
         if values == [] { return nil }
         else { return values }
     }
+    
+    /// Checks page source for content warnings and returns the warnings.
+    /// https://scp-wiki.wikidot.com/component:adult-content-warning
+    func findContentWarnings() -> [String]? {
+        let forbidden: [String:String] = [
+            "gore" : "|gore",
+            "sexual references" : "|sexual-references=",
+            "sexual content" : "|sexually-explicit=",
+            "sexual assault" : "|sexual-assault=",
+            "child abuse" : "|child-abuse=",
+            "self harm" : "|self-harm=",
+            "suicide" : "|suicide=",
+            "torture" : "|torture=",
+            "other content" : "|custom=",
+        ]
+        
+        var values: [String] = []
+        for key in forbidden.keys {
+            if self.pagesource.contains(forbidden[key]!) {
+                values.append(key)
+            }
+        }
+        if values == [] { return nil }
+        else { return values }
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.
