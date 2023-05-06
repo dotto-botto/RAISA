@@ -36,6 +36,14 @@ struct RAISAText: View {
                         var forbiddenLines: [String] = []
                         let list = filteredText.components(separatedBy: .newlines)
                         ForEach(list, id: \.self) { item in
+                            
+                            // ACS
+                            if item.contains("anomaly-class") {
+                                let sliced = filteredText.slice(with: item, and: "]]")
+                                ACSView(component: sliced)
+                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
+                            }
+                            
                             // Tab View
                             if item.contains("[[tabview") {
                                 let sliced = filteredText.slice(with: item, and: "[[/tabview]]")
@@ -48,7 +56,7 @@ struct RAISAText: View {
                             }
                             
                             // Collapsible
-                            if item.contains("[[collapsible") {
+                            if item.lowercased().contains("[[collapsible") {
                                 let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
                                 
                                 Collapsible(
@@ -108,6 +116,13 @@ struct RAISAText: View {
                                 )
                                 let _ = forbiddenLines += [item]
                             }
+                            
+                            // Audio
+//                            if item.contains(":snippets:html5player") {
+//                                let slice = filteredText.slice(with: item, and: "]]")
+//                                ArticleAudio(text: slice)
+//                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
+//                            }
                             
                             // Text
                             if !forbiddenLines.contains(item) {
@@ -169,7 +184,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
         text.removeText(from: "[[include component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
-        text.removeText(from: "[[include :scp-wiki:component:anomaly-class-bar-source", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[include :scp-wiki:theme", to: "]]")

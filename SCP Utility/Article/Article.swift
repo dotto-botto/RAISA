@@ -5,7 +5,7 @@
 //  Created by Maximus Harding on 3/5/23.
 //
 
-import Foundation
+import SwiftUI
 
 fileprivate let con = PersistenceController.shared
 struct Article: Identifiable, Codable {
@@ -194,6 +194,19 @@ enum ObjectClass: Int16, Codable, CaseIterable {
         }
     }
     
+    func toColor() -> Color {
+        switch self {
+        case .safe: return Color("Unrestricted Green")
+        case .euclid: return Color("Confidential Yellow")
+        case .keter: return Color("Top-Secret Red")
+        case .neutralized: return Color("Declassified Gray")
+        case .pending: return Color("Pending Black")
+        case .explained: return Color("Pending Black")
+        case .esoteric: return Color("Declassified Gray")
+        case .unknown: return Color("Pending Black")
+        }
+    }
+    
     func toLocalString() -> String {
         switch self {
         case .safe: return NSLocalizedString("SAFE", comment: "")
@@ -250,6 +263,10 @@ enum EsotericClass: Int16, Codable, CaseIterable {
         case .unknown: return ""
         }
     }
+    
+    func toColor() -> Color {
+        return Color("Declassified Gray")
+    }
 }
 
 enum DisruptionClass: Int16, Codable, CaseIterable {
@@ -282,6 +299,17 @@ enum DisruptionClass: Int16, Codable, CaseIterable {
         case .unknown: return ""
         }
     }
+    
+    func toColor() -> Color {
+        switch self {
+        case .dark: return Color("Unrestricted Green")
+        case .vlam: return Color("Restricted Blue")
+        case .keneq: return Color("Confidential Yellow")
+        case .ekhi: return Color("Secret Orange")
+        case .amida: return Color("Top-Secret Red")
+        case .unknown: return Color("Pending Black")
+        }
+    }
 }
 
 enum RiskClass: Int16, Codable, CaseIterable {
@@ -312,6 +340,51 @@ enum RiskClass: Int16, Codable, CaseIterable {
         case .danger: return NSLocalizedString("DANGER", comment: "")
         case .critical: return NSLocalizedString("CRITICAL", comment: "")
         case .unknown: return ""
+        }
+    }
+    
+    func toColor() -> Color {
+        switch self {
+        case .notice: return Color("Unrestricted Green")
+        case .caution: return Color("Restricted Blue")
+        case .warning: return Color("Confidential Yellow")
+        case .danger: return Color("Secret Orange")
+        case .critical: return Color("Top-Secret Red")
+        case .unknown: return Color("Pending Black")
+        }
+    }
+}
+
+enum ArticleAttribute {
+    case object(ObjectClass)
+    case esoteric(EsotericClass)
+    case disruption(DisruptionClass)
+    case risk(RiskClass)
+    
+    func toImage() -> String {
+        switch self {
+        case .object(let objectClass): return objectClass.toImage()
+        case .esoteric(let esotericClass): return esotericClass.toImage()
+        case .disruption(let disruptionClass): return disruptionClass.toImage()
+        case .risk(let riskClass): return riskClass.toImage()
+        }
+    }
+    
+    func toLocalString() -> String {
+        switch self {
+        case .object(let objectClass): return objectClass.toLocalString()
+        case .esoteric(let esotericClass): return esotericClass.toLocalString()
+        case .disruption(let disruptionClass): return disruptionClass.toLocalString()
+        case .risk(let riskClass): return riskClass.toLocalString()
+        }
+    }
+    
+    func toColor() -> Color {
+        switch self {
+        case .object(let objectClass): return objectClass.toColor()
+        case .esoteric(let esotericClass): return esotericClass.toColor()
+        case .disruption(let disruptionClass): return disruptionClass.toColor()
+        case .risk(let riskClass): return riskClass.toColor()
         }
     }
 }

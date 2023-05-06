@@ -37,6 +37,8 @@
 		F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED229FD9FA900AEB15B /* TopCard.swift */; };
 		F64BEED529FDB0EA00AEB15B /* ArticleAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED429FDB0EA00AEB15B /* ArticleAudio.swift */; };
 		F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED62A03057A00AEB15B /* ListRow.swift */; };
+		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
+		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
 		F69219F129BA5C1200EF19D0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F69219F029BA5C1200EF19D0 /* Kingfisher */; };
 		F69219F829BA6A4400EF19D0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F69219FA29BA6A4400EF19D0 /* Localizable.strings */; };
 		F69219FD29BA6C6900EF19D0 /* ArticleSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69219FC29BA6C6900EF19D0 /* ArticleSpotlight.swift */; };
@@ -108,6 +110,8 @@
 		F64BEED229FD9FA900AEB15B /* TopCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCard.swift; sourceTree = "<group>"; };
 		F64BEED429FDB0EA00AEB15B /* ArticleAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleAudio.swift; sourceTree = "<group>"; };
 		F64BEED62A03057A00AEB15B /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
+		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
+		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
 		F69219F929BA6A4400EF19D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F69219FC29BA6C6900EF19D0 /* ArticleSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleSpotlight.swift; sourceTree = "<group>"; };
 		F69219FE29BA6C7500EF19D0 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
@@ -218,6 +222,15 @@
 			path = Comment;
 			sourceTree = "<group>";
 		};
+		F66DF2352A05DED0004437AC /* Anomaly Class Bar */ = {
+			isa = PBXGroup;
+			children = (
+				F66DF2362A05DEDF004437AC /* ACSView.swift */,
+				F66DF2382A05DF1C004437AC /* ACSCellView.swift */,
+			);
+			path = "Anomaly Class Bar";
+			sourceTree = "<group>";
+		};
 		F69219F529BA69E200EF19D0 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -314,6 +327,7 @@
 		F6EFF42429DF878900605E40 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				F66DF2352A05DED0004437AC /* Anomaly Class Bar */,
 				F64BEEC629FC6B2700AEB15B /* RAISAText.swift */,
 				F6EFF42529DF879500605E40 /* Collapsible.swift */,
 				F608B71829E09D8600B583EF /* ArticleImage.swift */,
@@ -466,6 +480,7 @@
 				F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */,
 				F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */,
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
+				F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */,
 				F62A5D7629D9F8F200661DE0 /* SafariWrapper.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
@@ -476,6 +491,7 @@
 				F6DEC9CC29B5288E00E72063 /* ListAdd.swift in Sources */,
 				F64BEED529FDB0EA00AEB15B /* ArticleAudio.swift in Sources */,
 				F6DFED06299EF1B6002C3F1A /* Crom.swift in Sources */,
+				F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */,
 				F6DEC9CA29B5227F00E72063 /* Article.swift in Sources */,
 				F62A5D7829D9F91200661DE0 /* ArticleView.swift in Sources */,
 				F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */,
