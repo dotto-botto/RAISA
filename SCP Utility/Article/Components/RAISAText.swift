@@ -79,18 +79,18 @@ struct RAISAText: View {
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             } else if item.contains(":image-block") {
                                 var slice = ""
-                                if item.contains("]]") { let _ = slice = item }
-                                else { let _ = slice = filteredText.slice(with: item, and: "]]") }
+                                if item.contains("]]") {
+                                    let _ = slice = item
+                                } else {
+                                    let _ = slice = filteredText.slice(with: item, and: "]]")
+                                }
                                 ArticleImage(
                                     articleURL: article.url,
                                     content: slice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-                            } else if item.contains("[[image") ||
-                                        item.contains("[[>image") ||
-                                        item.contains("[[<image") ||
-                                        item.contains("[[=image") {
+                            } else if item.contains("[[") && item.contains("image ") {
                                 ArticleImage(articleURL: article.url, content: item)
                                 let _ = filteredText = filteredText.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += [item]
@@ -191,6 +191,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for _ in text.indicesOf(string: "[[div") {
             text.removeText(from: "[[div", to: "]]")
             text.removeText(from: "[[/div", to: "]]")
+        }
+        for _ in text.indicesOf(string: "[[span") {
+            text.removeText(from: "[[span", to: "]]")
+            text.removeText(from: "[[/span", to: "]]")
         }
         text.removeText(from: "[[size", to: "]]")
         text.removeText(from: "[[/size", to: "]]")
