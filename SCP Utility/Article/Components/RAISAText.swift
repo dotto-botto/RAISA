@@ -35,8 +35,7 @@ struct RAISAText: View {
                     if filtered && mode == 0 { // Default
                         var forbiddenLines: [String] = []
                         let list = filteredText.components(separatedBy: .newlines)
-                        ForEach(list, id: \.self) { item in
-                            
+                        ForEach(Array(zip(list, list.indices)), id: \.1) { item, index in
                             // ACS
                             if item.contains("anomaly-class") {
                                 let sliced = filteredText.slice(with: item, and: "]]")
@@ -58,7 +57,6 @@ struct RAISAText: View {
                             // Collapsible
                             if item.lowercased().contains("[[collapsible") {
                                 let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
-                                
                                 Collapsible(
                                     article: article,
                                     text: sliced
@@ -196,8 +194,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: "[[span", to: "]]")
             text.removeText(from: "[[/span", to: "]]")
         }
-        text.removeText(from: "[[size", to: "]]")
-        text.removeText(from: "[[/size", to: "]]")
+        for _ in text.indicesOf(string: "[[size") {
+            text.removeText(from: "[[size", to: "]]")
+            text.removeText(from: "[[/size", to: "]]")
+        }
         text.removeText(from: "[[>", to: "]]")
         text.removeText(from: "[[/>", to: "]]")
         text.removeText(from: "[[=", to: "]]")
@@ -212,23 +212,28 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
         }
         
-        text = text.replacingOccurrences(of: "------", with: "---")
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
         text = text.replacingOccurrences(of: "@@ @@", with: "\n")
         text = text.replacingOccurrences(of: "//", with: "*")
         text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
-        text = text.replacingOccurrences(of: " --", with: " ~~")
-        text = text.replacingOccurrences(of: "-- ", with: "~~ ")
-        text = text.replacingOccurrences(of: "\n--", with: "\n~~")
-        text = text.replacingOccurrences(of: "--\n", with: "~~\n")
+        text = try! text.replacing(Regex("-+\n"), with: "---") // horizontal rule
+        text = try! text.replacing(Regex(#"\n\++"#), with: "\n##") // header markings
+        text = try! text.replacing(Regex(#"\W--"#), with: " ~~") // strikethrough
+        text = try! text.replacing(Regex(#"--\W"#), with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
-        text = text.replacingOccurrences(of: "++++++ ", with: "###### ")
-        text = text.replacingOccurrences(of: "+++++ ", with: "##### ")
-        text = text.replacingOccurrences(of: "++++ ", with: "#### ")
-        text = text.replacingOccurrences(of: "+++ ", with: "### ")
-        text = text.replacingOccurrences(of: "++ ", with: "## ")
         
         completion(text)
+    }
+}
+
+func FindTextInCollapsible(_ input: String) -> [String] {
+    let pattern = "\\]\\](.*?)\\[\\[/collapsible\\]\\]"
+    let regex = try! NSRegularExpression(pattern: pattern, options: [])
+
+    let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+
+    return matches.map {
+        String(input[Range($0.range(at: 1), in: input)!])
     }
 }
 
