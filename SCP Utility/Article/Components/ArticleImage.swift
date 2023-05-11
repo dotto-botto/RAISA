@@ -13,23 +13,24 @@ struct ArticleImage: View {
     var articleURL: URL
     var content: String
     
-    init(articleURL: URL, content: String) {
-        self.articleURL = articleURL
-        self.content = content
+    init?(articleURL: URL, content: String) {
+        if UserDefaults.standard.bool(forKey: "showImages") {
+            self.articleURL = articleURL
+            self.content = content
+        } else { return nil }
     }
     
     var body: some View {
-        let parsed = parseArticleImage(content, articleURL: articleURL)
-        if UserDefaults.standard.bool(forKey: "showImages") {
-            VStack {
-                KFImage(parsed.first?.value)
-                    .resizable()
-                    .scaledToFit()
-                Text(parsed.first?.key ?? "")
-                    .font(.headline)
-            }
-            .padding(.vertical)
+        let parsed = parseArticleImage(content, articleURL: articleURL).first
+        VStack {
+            KFImage.url(parsed?.value)
+                .placeholder { Image("image-placeholder") }
+                .resizable()
+                .scaledToFit()
+            Text(parsed?.key ?? "")
+                .font(.headline)
         }
+        .padding(.vertical)
     }
 }
 
