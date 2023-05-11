@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ArticleTable: View {
+    @State var article: Article
     @State var doc: String
     var body: some View {
         var headers: [String] = findHeaders(doc)
@@ -19,9 +20,9 @@ struct ArticleTable: View {
             VStack {
                 ForEach(row, id: \.self) { cell in
                     HStack {
-                        Text(headers[headerIndex]).bold()
+                        RAISAText(article: article, text: headers[headerIndex])
                         Spacer()
-                        Text(cell)
+                        RAISAText(article: article, text: cell)
                     }
                     let _ = (headerIndex == headers.count - 1) ? (headerIndex = 0) : (headerIndex += 1)
                 }
@@ -97,7 +98,7 @@ fileprivate func parseTableContent(_ doc: String) -> [[String]] {
 
 struct ArticleTable_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleTable(doc: """
+        ArticleTable(article: placeHolderArticle, doc: """
 [[table style="width: 100%;"]]
 [[row]]
 [[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
@@ -130,7 +131,7 @@ struct ArticleTable_Previews: PreviewProvider {
 [[/table]]
 """).previewDisplayName("Div Style")
         
-        ArticleTable(doc: """
+        ArticleTable(article: placeHolderArticle, doc: """
 ||~ **Position**||~ **Name**||~ **Title**||
 ||Committee Lead||Dir. Sophia Light||Director, Western Regional Command||
 ||Assistant Lead||Dr. Mark Kiryu||Sr. Research||

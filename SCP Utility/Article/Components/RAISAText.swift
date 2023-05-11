@@ -80,7 +80,7 @@ struct RAISAText: View {
                                 if item.contains("]]") {
                                     let _ = slice = item
                                 } else {
-                                    let _ = slice = filteredText.slice(with: item, and: "]]")
+                                    let _ = slice = filteredText.slice(with: item + "\n" + list[index + 1], and: "]]")
                                 }
                                 ArticleImage(
                                     articleURL: article.url,
@@ -99,6 +99,7 @@ struct RAISAText: View {
                             if item.contains("[[table") {
                                 let tableSlice = filteredText.slice(with: "[[table", and: "[[/table]]")
                                 ArticleTable(
+                                    article: article,
                                     doc: tableSlice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
@@ -184,7 +185,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
+        text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
         text.removeText(from: "[[include :scp-wiki:theme", to: "]]")
+        text.removeText(from: "[[include theme", to: "]]")
         text.removeText(from: "[[module Rate", to: "]]")
         for _ in text.indicesOf(string: "[[div") {
             text.removeText(from: "[[div", to: "]]")
@@ -194,12 +197,18 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: "[[span", to: "]]")
             text.removeText(from: "[[/span", to: "]]")
         }
+        for _ in text.indicesOf(string: "[[include :scp-wiki:component:customizable-acs") {
+            text.removeText(from: "[[include :scp-wiki:component:customizable-acs", to: "]]]")
+            text.removeText(from: "[[include :scp-wiki:component:customizable-acs", to: "]]")
+        }
         for _ in text.indicesOf(string: "[[size") {
             text.removeText(from: "[[size", to: "]]")
             text.removeText(from: "[[/size", to: "]]")
         }
         text.removeText(from: "[[>", to: "]]")
         text.removeText(from: "[[/>", to: "]]")
+        text.removeText(from: "[[<", to: "]]")
+        text.removeText(from: "[[/<", to: "]]")
         text.removeText(from: "[[=", to: "]]")
         text.removeText(from: "[[/=", to: "]]")
         text.removeText(from: "[!--", to: "--]")
@@ -215,11 +224,13 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
         text = text.replacingOccurrences(of: "@@ @@", with: "\n")
         text = text.replacingOccurrences(of: "//", with: "*")
+        text = text.replacingOccurrences(of: "{{", with: "")
+        text = text.replacingOccurrences(of: "}}", with: "")
         text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
-        text = try! text.replacing(Regex("-+\n"), with: "---") // horizontal rule
-        text = try! text.replacing(Regex(#"\n\++"#), with: "\n##") // header markings
-        text = try! text.replacing(Regex(#"\W--"#), with: " ~~") // strikethrough
-        text = try! text.replacing(Regex(#"--\W"#), with: "~~ ")
+        text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
+        text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
+        text = try! text.replacing(Regex(#" --"#), with: " ~~") // strikethrough
+        text = try! text.replacing(Regex(#"-- "#), with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         
         completion(text)
