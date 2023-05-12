@@ -70,7 +70,7 @@ struct RAISAText: View {
                             if item.contains(":scp-wiki:component:image-features-source") {
                                 let slice = filteredText.slice(with: item, and: "]]")
                                 ArticleImage(
-                                    articleURL: article.url,
+                                    article: article,
                                     content: slice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
@@ -83,13 +83,13 @@ struct RAISAText: View {
                                     let _ = slice = filteredText.slice(with: item + "\n" + list[index + 1], and: "]]")
                                 }
                                 ArticleImage(
-                                    articleURL: article.url,
+                                    article: article,
                                     content: slice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
                                 let _ = forbiddenLines += slice.components(separatedBy: .newlines)
                             } else if item.contains("[[") && item.contains("image ") {
-                                ArticleImage(articleURL: article.url, content: item)
+                                ArticleImage(article: article, content: item)
                                 let _ = filteredText = filteredText.replacingOccurrences(of: item, with: "")
                                 let _ = forbiddenLines += [item]
                             }

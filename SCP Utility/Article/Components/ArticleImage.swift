@@ -10,21 +10,25 @@ import Kingfisher
 
 /// Image view to be displayed inside ArticleView.
 struct ArticleImage: View {
-    var articleURL: URL
+    var article: Article
     var content: String
     
-    init?(articleURL: URL, content: String) {
+    init?(article: Article, content: String) {
         if UserDefaults.standard.bool(forKey: "showImages") {
-            self.articleURL = articleURL
+            self.article = article
             self.content = content
         } else { return nil }
     }
     
     var body: some View {
-        let parsed = parseArticleImage(content, articleURL: articleURL).first
+        let parsed = parseArticleImage(content, articleURL: article.url).first
         VStack {
             KFImage.url(parsed?.value)
-                .placeholder { Image("image-placeholder") }
+                .placeholder {
+                    Image("image-placeholder")
+                        .resizable()
+                        .scaledToFit()
+                }
                 .resizable()
                 .scaledToFit()
             Text(parsed?.key ?? "")
@@ -62,9 +66,9 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
         caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
     } else if content.contains("[[") && content.contains("image ") {
         if content.contains("http") {
-            newURL = (content.slice(from: "image ", to: " ") ?? "")
+            newURL = (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
                 .replacingOccurrences(of: "*", with: "//")
-            
+                .replacingOccurrences(of: "http:", with: "https:")
         } else {
             let stringURL = articleURL.formatted()
             newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: " ", to: " ") ?? "")
@@ -74,31 +78,31 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
     return [caption : URL(string: newURL)]
 }
 
-struct ArticleImage_Previews: PreviewProvider {
-    static var previews: some View {
-        ArticleImage(
-            articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-5004")!,
-            content: "[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]"
-        ).previewDisplayName("Old Format")
-        
-        ArticleImage(
-            articleURL: URL(string: "http://scp-wiki.wikidot.com/scp-049")!,
-            content: """
-                    [[include :scp-wiki:component:image-features-source |hover-enlarge=--]
-                    |enlarge-amount=6
-                    |speed=250
-                    |float=true
-                    |align=right
-                    |width=400px
-                    |url=049xray.jpg|add-caption=true
-                    |caption=X-Ray imaging of SCP-049's facial structure.
-                    ]]
-                    """
-        ).previewDisplayName("New Format")
-        
-        ArticleImage(
-            articleURL: URL(string: "https://scp-wiki.wikidot.com/scp-179")!,
-            content: "[[image SCPArchiveLogo.png width=\"140px\"]]"
-        ).previewDisplayName("Compact Format")
-    }
-}
+//struct ArticleImage_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ArticleImage(
+//            article: placeHolderArticle,
+//            content: "[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]"
+//        ).previewDisplayName("Old Format")
+//
+//        ArticleImage(
+//            article: placeHolderArticle,
+//            content: """
+//                    [[include :scp-wiki:component:image-features-source |hover-enlarge=--]
+//                    |enlarge-amount=6
+//                    |speed=250
+//                    |float=true
+//                    |align=right
+//                    |width=400px
+//                    |url=049xray.jpg|add-caption=true
+//                    |caption=X-Ray imaging of SCP-049's facial structure.
+//                    ]]
+//                    """
+//        ).previewDisplayName("New Format")
+//
+//        ArticleImage(
+//            article: placeHolderArticle,
+//            content: "[[image SCPArchiveLogo.png width=\"140px\"]]"
+//        ).previewDisplayName("Compact Format")
+//    }
+//}
