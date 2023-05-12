@@ -14,17 +14,25 @@ struct TabViewComponent: View {
     @State var currentKey: String = ""
     @State private var showText: Bool = false
     var body: some View {
-        let content = parseTabView(text)
+        let content = parseTabView(text).sorted(by: <)
         
         VStack {
             HStack {
                 Image(systemName: "chevron.left.2").foregroundColor(.secondary)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(content.sorted(by: >), id: \.key) { key, value in
-                            Button(key) {
+                        ForEach(content, id: \.key) { key, value in
+                            Button {
                                 currentKey = key
                                 showText = true
+                            } label: {
+                                VStack(spacing: 5) {
+                                    Text(key)
+                                    if currentKey == key {
+                                        Rectangle().frame(height: 1)
+                                    }
+                                }
+                                .foregroundColor(.accentColor)
                             }
                         }
                     }
@@ -32,11 +40,23 @@ struct TabViewComponent: View {
                 Image(systemName: "chevron.right.2").foregroundColor(.secondary)
             }
             
-            ForEach(content.sorted(by: >), id: \.key) { key, value in
+            ForEach(content, id: \.key) { key, value in
                 if key == currentKey {
                     RAISAText(article: article, text: value)
                 }
             }
+            
+            HStack {
+                Text("End Tab").foregroundColor(.secondary)
+                Image(systemName: "chevron.right.2").foregroundColor(.secondary)
+                Rectangle()
+                    .frame(height: 0.5)
+                    .foregroundColor(.secondary)
+                Image(systemName: "chevron.left.2").foregroundColor(.secondary)
+            }
+        }
+        .onAppear {
+            currentKey = content.first?.key ?? ""
         }
     }
 }
