@@ -24,14 +24,22 @@ struct ArticleView: View {
     @State private var sourceLoaded: Bool = false
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
+    @State private var isBuiltIn: Bool = false
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
         let mode: Int = defaults.integer(forKey: "articleViewSetting")
+        if scp.url.formatted().contains("://scp-wiki.wikidot.com/scp-001") && scp.title == "SCP-001" {
+            ScrollView {
+                SCP001View()
+                    .onAppear { isBuiltIn = true }
+                    .padding(.horizontal, 5)
+            }
+        }
         VStack(alignment: .leading) {
-            if forbidden && showComponentPrompt {
+            if forbidden && showComponentPrompt && !isBuiltIn {
                 VStack {
                     Text("This article contains unsupported components, it may not display correctly.")
                         .foregroundColor(.gray)
@@ -58,7 +66,7 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden && containsExplicitContent {
+            if !forbidden && containsExplicitContent && !isBuiltIn {
                 VStack {
                     Text("This article contains sensitive content.")
                         .foregroundColor(.gray)
@@ -80,7 +88,7 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden && !containsExplicitContent {
+            if !forbidden && !containsExplicitContent && !isBuiltIn {
                 if sourceLoaded {
                     RAISAText(article: scp)
                 } else {

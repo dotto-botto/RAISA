@@ -35,10 +35,11 @@
 		F64BEECF29FD63BB00AEB15B /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEECE29FD63BB00AEB15B /* CommentView.swift */; };
 		F64BEED129FD67CC00AEB15B /* CommentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED029FD67CC00AEB15B /* CommentParser.swift */; };
 		F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED229FD9FA900AEB15B /* TopCard.swift */; };
-		F64BEED529FDB0EA00AEB15B /* ArticleAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED429FDB0EA00AEB15B /* ArticleAudio.swift */; };
 		F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED62A03057A00AEB15B /* ListRow.swift */; };
 		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
 		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
+		F66DF2432A0DACEE004437AC /* SCP001View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2422A0DACEE004437AC /* SCP001View.swift */; };
+		F66DF2452A0DB0B9004437AC /* OneProposalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2442A0DB0B9004437AC /* OneProposalsView.swift */; };
 		F69219F129BA5C1200EF19D0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F69219F029BA5C1200EF19D0 /* Kingfisher */; };
 		F69219F829BA6A4400EF19D0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F69219FA29BA6A4400EF19D0 /* Localizable.strings */; };
 		F69219FD29BA6C6900EF19D0 /* ArticleSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69219FC29BA6C6900EF19D0 /* ArticleSpotlight.swift */; };
@@ -108,10 +109,11 @@
 		F64BEECE29FD63BB00AEB15B /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
 		F64BEED029FD67CC00AEB15B /* CommentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentParser.swift; sourceTree = "<group>"; };
 		F64BEED229FD9FA900AEB15B /* TopCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCard.swift; sourceTree = "<group>"; };
-		F64BEED429FDB0EA00AEB15B /* ArticleAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleAudio.swift; sourceTree = "<group>"; };
 		F64BEED62A03057A00AEB15B /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
 		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
 		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
+		F66DF2422A0DACEE004437AC /* SCP001View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP001View.swift; sourceTree = "<group>"; };
+		F66DF2442A0DB0B9004437AC /* OneProposalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneProposalsView.swift; sourceTree = "<group>"; };
 		F69219F929BA6A4400EF19D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F69219FC29BA6C6900EF19D0 /* ArticleSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleSpotlight.swift; sourceTree = "<group>"; };
 		F69219FE29BA6C7500EF19D0 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
@@ -231,6 +233,23 @@
 			path = "Anomaly Class Bar";
 			sourceTree = "<group>";
 		};
+		F66DF23F2A0DACCB004437AC /* Official Articles */ = {
+			isa = PBXGroup;
+			children = (
+				F66DF2402A0DACD3004437AC /* SCP-001 */,
+			);
+			path = "Official Articles";
+			sourceTree = "<group>";
+		};
+		F66DF2402A0DACD3004437AC /* SCP-001 */ = {
+			isa = PBXGroup;
+			children = (
+				F66DF2422A0DACEE004437AC /* SCP001View.swift */,
+				F66DF2442A0DB0B9004437AC /* OneProposalsView.swift */,
+			);
+			path = "SCP-001";
+			sourceTree = "<group>";
+		};
 		F69219F529BA69E200EF19D0 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,6 +308,7 @@
 		F6DFECDD2994643A002C3F1A /* Article */ = {
 			isa = PBXGroup;
 			children = (
+				F66DF23F2A0DACCB004437AC /* Official Articles */,
 				F64BEECB29FD62E200AEB15B /* Comment */,
 				F6EFF42429DF878900605E40 /* Components */,
 				F6DFECD72990A2FA002C3F1A /* ArticleView.swift */,
@@ -334,7 +354,6 @@
 				F6E1FF2229E467400030DF41 /* ArticleTable.swift */,
 				F6EA343829F0A58700593378 /* InlineButton.swift */,
 				F64BEEC429F9C80C00AEB15B /* TabViewComponent.swift */,
-				F64BEED429FDB0EA00AEB15B /* ArticleAudio.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -456,6 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F66DF2432A0DACEE004437AC /* SCP001View.swift in Sources */,
 				F604054729624A21003577D7 /* ListView.swift in Sources */,
 				F615611B29D87332003561CD /* RandomCard.swift in Sources */,
 				F604054529624A21003577D7 /* ContentView.swift in Sources */,
@@ -485,11 +505,11 @@
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
 				F6921A0629BAA70700EF19D0 /* History.swift in Sources */,
+				F66DF2452A0DB0B9004437AC /* OneProposalsView.swift in Sources */,
 				F6921A0429BAA60000EF19D0 /* HistoryRow.swift in Sources */,
 				F6E1FF2329E467400030DF41 /* ArticleTable.swift in Sources */,
 				F69219FF29BA6C7500EF19D0 /* ExploreView.swift in Sources */,
 				F6DEC9CC29B5288E00E72063 /* ListAdd.swift in Sources */,
-				F64BEED529FDB0EA00AEB15B /* ArticleAudio.swift in Sources */,
 				F6DFED06299EF1B6002C3F1A /* Crom.swift in Sources */,
 				F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */,
 				F6DEC9CA29B5227F00E72063 /* Article.swift in Sources */,
