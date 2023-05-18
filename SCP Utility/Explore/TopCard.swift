@@ -50,9 +50,11 @@ struct TopCard: View {
 
 /// Returns the top 5 articles
 func parseTopRatedPage(completion: @escaping ([String]) -> Void) {
-    DispatchQueue.main.async {
+    let url = URL(string: "https://scp-wiki.wikidot.com/top-rated-pages-this-month")!
+    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        guard let data = data else { return }
         do {
-            let articledoc = try SwiftSoup.parse(String(contentsOf: URL(string: "https://scp-wiki.wikidot.com/top-rated-pages-this-month")!))
+            let articledoc = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
             
             var returnArray: [String] = []
 
@@ -66,6 +68,7 @@ func parseTopRatedPage(completion: @escaping ([String]) -> Void) {
             print(error)
         }
     }
+    task.resume()
 }
 
 struct TopCard_Previews: PreviewProvider {

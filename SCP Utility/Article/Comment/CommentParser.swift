@@ -10,10 +10,11 @@ import SwiftSoup
 
 /// Parses the first page of comments of an article from the article's URL
 func parseComments(articleURL: URL, completion: @escaping ([Comment]) -> Void) {
-    DispatchQueue.main.async {
+    let stringURL = URL(string: "https" + articleURL.formatted().dropFirst(4))!
+    let task = URLSession.shared.dataTask(with: stringURL) { data, response, error in
+        guard let data = data else { return }
         do {
-            let stringURL = URL(string: "https" + articleURL.formatted().dropFirst(4))!
-            let articledoc = try SwiftSoup.parse(String(contentsOf: stringURL))
+            let articledoc = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
             var url = try articledoc.getElementById("discuss-button")?.attr("href").asURL()
             if url == nil { return }
             url = URL(string: "https://scp-wiki.wikidot.com" + url!.formatted())!
@@ -47,4 +48,5 @@ func parseComments(articleURL: URL, completion: @escaping ([Comment]) -> Void) {
             print(error)
         }
     }
+    task.resume()
 }
