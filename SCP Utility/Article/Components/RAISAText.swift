@@ -97,7 +97,7 @@ struct RAISAText: View {
                             
                             // Table
                             if item.contains("[[table") {
-                                let tableSlice = filteredText.slice(with: "[[table", and: "[[/table]]")
+                                let tableSlice = filteredText.slice(with: "[[table" + "\n" + list[index + 1], and: "[[/table]]")
                                 ArticleTable(
                                     article: article,
                                     doc: tableSlice
