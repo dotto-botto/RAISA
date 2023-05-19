@@ -41,6 +41,25 @@
 "DANGER" = "Danger";
 "CRITICAL" = "Critical";
 
+// Tooltips
+"SAFE_TOOLTIP" = "An anomaly that can be easily contained.";
+"EUCLID_TOOLTIP" = "An anomaly where containment isn't always reliable.";
+"KETER_TOOLTIP" = "An anomaly that is extremely difficult to contain.";
+"NEUTRALIZED_TOOLTIP" = "An anomaly that has been destroyed or disabled in some way.";
+"PENDING_TOOLTIP" = "An anomaly whose class is currently being decided.";
+"EXPLAINED_TOOLTIP" = "An anomaly that is no longer considered one.";
+"ESOTERIC_TOOLTIP" = "This anomaly cannot be classified by a normal object class.";
+
+"APOLLYON_TOOLTIP" = "Impossible to contain, and may end the world.";
+"ARCHON_TOOLTIP" = "This anomaly is best left uncontained.";
+"CERNUNNOS_TOOLTIP" = "This anomaly cannot be contained for ethical/logistics reasons.";
+"DECOMMISSIONED_TOOLTIP" = "This anomaly has been purposely destroyed.";
+"HIEMAL_TOOLTIP" = "This anomaly contains and is contained by another anomaly.";
+"TIAMAT_TOOLTIP" = "This anomaly can only be contained through large scale warfare.";
+"TICONDEROGA_TOOLTIP" = "This anomaly does not need to be contained.";
+"THAUMIEL_TOOLTIP" = "This anomaly assists in the foundation's ultimate task.";
+"UNCONTAINED_TOOLTIP" = "This anomaly is not contained in any way.";
+
 // MARK: - View Titles
 "SEARCH_TITLE" = "Search";
 "SETTINGS_TITLE" = "Settings";

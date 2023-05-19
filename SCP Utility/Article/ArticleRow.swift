@@ -15,6 +15,7 @@ struct ArticleRow: View {
     @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     @State private var bookmarkStatus: Bool = false
+    @State private var showUpdateView: Bool = false
     var body: some View {
         let con = PersistenceController.shared
         let defaults = UserDefaults.standard
@@ -123,6 +124,12 @@ struct ArticleRow: View {
                     Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
                 }
                 
+                Button {
+                    showUpdateView = true
+                } label: {
+                    Label("Update Attributes", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
+                }
+                
                 Divider()
                 
                 if passedSCP.pagesource == "" {
@@ -153,6 +160,9 @@ struct ArticleRow: View {
         }
         .sheet(isPresented: $showSheet) {
             ListAdd(isPresented: $showSheet, article: passedSCP)
+        }
+        .sheet(isPresented: $showUpdateView) {
+            UpdateAttributeView(article: passedSCP)
         }
         .fullScreenCover(isPresented: $showArticle) {
             NavigationStack { ArticleView(scp: passedSCP) }

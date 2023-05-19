@@ -194,6 +194,19 @@ enum ObjectClass: Int16, Codable, CaseIterable {
         }
     }
     
+    func getTooltip() -> String? {
+        switch self {
+        case .safe: return NSLocalizedString("SAFE_TOOLTIP", comment: "")
+        case .euclid: return NSLocalizedString("EUCLID_TOOLTIP", comment: "")
+        case .keter: return NSLocalizedString("KETER_TOOLTIP", comment: "")
+        case .neutralized: return NSLocalizedString("NEUTRALIZED_TOOLTIP", comment: "")
+        case .pending: return NSLocalizedString("PENDING_TOOLTIP", comment: "")
+        case .explained: return NSLocalizedString("EXPLAINED_TOOLTIP", comment: "")
+        case .esoteric: return NSLocalizedString("ESOTERIC_TOOLTIP", comment: "")
+        case .unknown: return nil
+        }
+    }
+    
     func toColor() -> Color {
         switch self {
         case .safe: return Color("Unrestricted Green")
@@ -246,6 +259,21 @@ enum EsotericClass: Int16, Codable, CaseIterable {
         case .thaumiel: return "thaumiel-icon"
         case .uncontained: return "uncontained-icon"
         case .unknown: return ""
+        }
+    }
+    
+    func getTooltip() -> String? {
+        switch self {
+        case .apollyon: return NSLocalizedString("APOLLYON_TOOLTIP", comment: "")
+        case .archon: return NSLocalizedString("ARCHON_TOOLTIP", comment: "")
+        case .cernunnos: return NSLocalizedString("CERNUNNOS_TOOLTIP", comment: "")
+        case .decommissioned: return NSLocalizedString("DECOMMISSIONED_TOOLTIP", comment: "")
+        case .hiemal: return NSLocalizedString("HIEMAL_TOOLTIP", comment: "")
+        case .tiamat: return NSLocalizedString("TIAMAT_TOOLTIP", comment: "")
+        case .ticonderoga: return NSLocalizedString("TICONDEROGA_TOOLTIP", comment: "")
+        case .thaumiel: return NSLocalizedString("THAUMIEL_TOOLTIP", comment: "")
+        case .uncontained: return NSLocalizedString("UNCONTAINED_TOOLTIP", comment: "")
+        case .unknown: return nil
         }
     }
     
