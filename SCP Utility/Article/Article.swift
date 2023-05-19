@@ -119,7 +119,8 @@ struct Article: Identifiable, Codable {
         let forbidden: [String:String] = [
             "Fragments" : "category=\"fragment\"",
             "Audio Players": "[[include :snippets:html5player",
-            "HTML": "[[html"
+            "HTML": "[[html",
+            "Math" : "[[math",
         ]
         
         var values: [String] = []
