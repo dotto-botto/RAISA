@@ -45,7 +45,7 @@ struct RAISAText: View {
                             
                             // Tab View
                             if item.contains("[[tabview") {
-                                let sliced = filteredText.slice(with: item, and: "[[/tabview]]")
+                                let sliced = filteredText.slice(with: item + "\n" + list[index + 1], and: "[[/tabview]]")
                                 TabViewComponent(
                                     article: article,
                                     text: sliced
@@ -97,7 +97,7 @@ struct RAISAText: View {
                             
                             // Table
                             if item.contains("[[table") {
-                                let tableSlice = filteredText.slice(with: "[[table" + "\n" + list[index + 1], and: "[[/table]]")
+                                let tableSlice = filteredText.slice(with: item + "\n" + list[index + 1], and: "[[/table]]")
                                 ArticleTable(
                                     article: article,
                                     doc: tableSlice
@@ -115,13 +115,6 @@ struct RAISAText: View {
                                 )
                                 let _ = forbiddenLines += [item]
                             }
-                            
-                            // Audio
-//                            if item.contains(":snippets:html5player") {
-//                                let slice = filteredText.slice(with: item, and: "]]")
-//                                ArticleAudio(text: slice)
-//                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-//                            }
                             
                             // Text
                             if !forbiddenLines.contains(item) {
@@ -186,9 +179,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
-        text.removeText(from: "[[include :scp-wiki:theme", to: "]]")
-        text.removeText(from: "[[include theme", to: "]]")
-        text.removeText(from: "[[module Rate", to: "]]")
+        text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
         for _ in text.indicesOf(string: "[[div") {
             text.removeText(from: "[[div", to: "]]")
             text.removeText(from: "[[/div", to: "]]")
@@ -196,10 +187,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for _ in text.indicesOf(string: "[[span") {
             text.removeText(from: "[[span", to: "]]")
             text.removeText(from: "[[/span", to: "]]")
-        }
-        for _ in text.indicesOf(string: "[[include :scp-wiki:component:customizable-acs") {
-            text.removeText(from: "[[include :scp-wiki:component:customizable-acs", to: "]]]")
-            text.removeText(from: "[[include :scp-wiki:component:customizable-acs", to: "]]")
         }
         for _ in text.indicesOf(string: "[[size") {
             text.removeText(from: "[[size", to: "]]")
@@ -211,7 +198,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[/<", to: "]]")
         text.removeText(from: "[[=", to: "]]")
         text.removeText(from: "[[/=", to: "]]")
-        text.removeText(from: "[!--", to: "--]")
+        text.removeText(from: "[[==", to: "]]")
+        text.removeText(from: "[[/==", to: "]]")
         text.removeText(from: "<< [[[", to: "]]] >>")
         for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
@@ -228,23 +216,24 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: "}}", with: "")
         text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
         text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
+        text = try! text.replacing(Regex("===+\n"), with: "---\n")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
         text = try! text.replacing(Regex(#" --"#), with: " ~~") // strikethrough
         text = try! text.replacing(Regex(#"-- "#), with: "~~ ")
+        text = try! text.replacing(Regex(#"\n="#), with: "\n")
+        text = try! text.replacing(Regex(#"-- "#), with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         
+        let supportedIncludes: [String] = [
+            "image-features-source",
+            "image-block",
+            "anomaly-class",
+        ]
+        
+        let regex = try! Regex("\\[\\[include(?!.*(\(supportedIncludes.joined(separator: "|"))))[^\\]]*\\]\\](?![^\\[]*\\])")
+        text = text.replacing(regex, with: "")
+        
         completion(text)
-    }
-}
-
-func FindTextInCollapsible(_ input: String) -> [String] {
-    let pattern = "\\]\\](.*?)\\[\\[/collapsible\\]\\]"
-    let regex = try! NSRegularExpression(pattern: pattern, options: [])
-
-    let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
-
-    return matches.map {
-        String(input[Range($0.range(at: 1), in: input)!])
     }
 }
 
