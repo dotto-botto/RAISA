@@ -120,7 +120,7 @@
 "AUTO_SCROLL_SETTING" = "Open Reader to Bookmarked Text";
 
 // MARK: - History View
-"NO_HISTORY" = "You seem to have no history.";
+"NO_HISTORY" = "You have not read an article yet.";
 "CLEAR_HISTORY_BUTTON" = "Clear All History";
 "CLEAR_HISTORY_CONFIRMATION" = "Clear All History?";
 

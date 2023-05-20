@@ -29,11 +29,6 @@ struct HistoryRow: View {
                     .clipped()
             }
         }
-        .swipeActions(allowsFullSwipe: false) {
-            Button(role: .destructive) {
-                con.deleteHistoryFromId(id: item.id)
-            } label: { Image(systemName: "trash") }
-        }
     }
 }
 

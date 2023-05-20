@@ -15,29 +15,40 @@ struct HistoryView: View {
     let con = PersistenceController.shared
     var body: some View {
         NavigationStack {
-            if items != nil {
-                List(items!) { item in
-                    HistoryRow(item: History(fromEntity: item)!)
-                }
-                .listStyle(.plain)
-                .navigationTitle("HISTORY_TITLE")
-                .toolbar {
-                    ToolbarItem(placement: .secondaryAction) {
-                        Button(action: {
-                            clearConfirmation = true
-                        }, label: {
-                            Text("CLEAR_HISTORY_BUTTON")
-                            Image(systemName: "clear")
-                        })
-                        .confirmationDialog("Are you sure?", isPresented: $clearConfirmation) {
-                            Button("CLEAR_HISTORY_CONFIRMATION", role: .destructive) {
-                                con.deleteAllHistory()
-                            }
+            ScrollView {
+                if items != nil && items != [] {
+                    LazyVStack {
+                        ForEach(items!) { item in
+                            let history = History(fromEntity: item)!
+                            HistoryRow(item: history)
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        con.deleteHistoryFromId(id: history.id)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+                            Divider()
                         }
                     }
+                    .padding(.horizontal, 15)
+                } else {
+                    Text("NO_HISTORY").foregroundColor(.secondary)
                 }
-            } else {
-                Text("NO_HISTORY")
+            }
+            .navigationTitle("HISTORY_TITLE")
+            .toolbar {
+                Button {
+                    clearConfirmation = true
+                } label: {
+                    Label("CLEAR_HISTORY_BUTTON", systemImage: "multiply.circle")
+                }
+                .confirmationDialog("Are you sure?", isPresented: $clearConfirmation) {
+                    Button("CLEAR_HISTORY_CONFIRMATION", role: .destructive) {
+                        con.deleteAllHistory()
+                        items = con.getAllHistory()?.reversed()
+                    }
+                }
             }
         }
         .onAppear {
