@@ -15,18 +15,24 @@ struct ArticleTable: View {
         if headers == [] { let _ = headers = [""] }
         let rows: [[String]] = parseTableContent(doc)
     
-        ForEach(rows, id: \.self) { row in
-            var headerIndex = 0
-            VStack {
-                ForEach(row, id: \.self) { cell in
-                    HStack {
-                        RAISAText(article: article, text: headers[headerIndex])
-                        Spacer()
-                        RAISAText(article: article, text: cell)
-                    }
-                    let _ = (headerIndex == headers.count - 1) ? (headerIndex = 0) : (headerIndex += 1)
+        VStack(spacing: 0) {
+            Rectangle().frame(height: 1)
+            HStack {
+                ForEach(headers, id: \.self) { header in
+                    RAISAText(article: article, text: header)
+                    Spacer()
                 }
             }
+            Rectangle().frame(height: 1)
+            ForEach(rows, id: \.self) { row in
+                HStack {
+                    ForEach(row, id: \.self) { cell in
+                        RAISAText(article: article, text: cell)
+                        Spacer()
+                    }
+                }
+            }
+            Rectangle().frame(height: 1)
         }
     }
 }
@@ -37,18 +43,24 @@ fileprivate func findHeaders(_ doc: String) -> [String] {
     
     if doc.contains("[[table") && doc.contains("[[/table]]") {
         var firstRow = content.slice(with: "[[row", and: "[[/row]]")
-        for _ in firstRow.indicesOf(string: "[[cell") {
-            if let header = firstRow.slice(from: "\"]]", to: "[[/cell]]") {
+        
+        var cellMark: String = ""
+        var cellEndMark: String = ""
+        if firstRow.contains("[[hcell") { cellMark = "[[hcell"; cellEndMark = "[[/hcell]]" }
+        else { cellMark = "[[cell"; cellEndMark = "[[/cell]]" }
+        
+        for _ in firstRow.indicesOf(string: cellMark) {
+            if let header = firstRow.slice(from: "\"]]", to: cellEndMark) {
                 headers.append(header)
-                firstRow.removeText(from: "[[cell", to: "[[/cell]]")
+                firstRow.removeText(from: cellMark, to: cellEndMark)
             }
         }
     } else if doc.contains("||") {
         var firstRow = content.slice(with: "||", and: "||\n")
-        for _ in firstRow.indicesOf(string: "||") {
-            if let header = firstRow.slice(from: "||", to: "||") {
+        for _ in firstRow.indicesOf(string: "||~") {
+            if let header = firstRow.slice(from: "||~ ", to: "||") {
                 headers.append(header.replacingOccurrences(of: "\n", with: ""))
-                firstRow = firstRow.replacingOccurrences(of: header, with: "")
+                firstRow = firstRow.replacingOccurrences(of: "||~ " + header, with: "")
             }
         }
     }
@@ -76,24 +88,39 @@ fileprivate func parseTableContent(_ doc: String) -> [[String]] {
             content.removeText(from: "[[row", to: "[[/row]]")
         }
     } else if doc.contains("||") {
-        // Remove first row
+         //Remove first row
         var content = doc.replacingOccurrences(of: doc.slice(with: "||", and: "||\n"), with: "")
         for _ in content.indicesOf(string: "||\n") {
             var madeRow: [String] = []
-            if var stringRow = content.slice(from: "||", to: "||\n") {
-                for _ in stringRow.indicesOf(string: "||") {
-                    if let cell = stringRow.slice(from: "||", to: "||") {
-                        madeRow.append(cell)
-                        stringRow = stringRow.replacingOccurrences(of: cell, with: "")
-                    }
+            var stringRow = content.slice(with: "||", and: "||\n")
+            for _ in stringRow.indicesOf(string: "||") {
+                if let cell = stringRow.slice(from: "||", to: "||") {
+                    madeRow.append(cell)
+                    stringRow = stringRow.replacingOccurrences(of: "||" + cell, with: "")
                 }
             }
+            
             rows.append(madeRow)
             content.removeText(from: "||", to: "||\n")
         }
     }
     
     return rows
+}
+
+// https://stackoverflow.com/a/27880748/11248074
+func matches(for regex: String, in text: String) -> [String] {
+    do {
+        let regex = try NSRegularExpression(pattern: regex)
+        let results = regex.matches(in: text,
+                                    range: NSRange(text.startIndex..., in: text))
+        return results.map {
+            String(text[Range($0.range, in: text)!])
+        }
+    } catch let error {
+        print("invalid regex: \(error.localizedDescription)")
+        return []
+    }
 }
 
 struct ArticleTable_Previews: PreviewProvider {

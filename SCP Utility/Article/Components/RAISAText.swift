@@ -16,9 +16,11 @@ struct RAISAText: View {
     
     @State private var filtered: Bool = false
     @State private var filteredText = ""
+    @State private var quickTableIndex = 0
     var body: some View {
         let defaults = UserDefaults.standard
         let mode = defaults.integer(forKey: "articleViewSetting")
+        let quickTables = findAllQuickTables(article.pagesource)
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading, spacing: 5) {
@@ -97,13 +99,19 @@ struct RAISAText: View {
                             
                             // Table
                             if item.contains("[[table") {
-                                let tableSlice = filteredText.slice(with: item + "\n" + list[index + 1], and: "[[/table]]")
+                                let tableSlice = filteredText.slice(with: item + "\n" + list[index + 1] + "\n" + list[index + 2] + "\n" + list[index + 3], and: "[[/table]]")
                                 ArticleTable(
                                     article: article,
                                     doc: tableSlice
                                 )
                                 let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
                                 let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
+                            }
+                            
+                            if item.contains("||~") {
+                                ArticleTable(article: article, doc: quickTables[quickTableIndex])
+                                let _ = quickTableIndex += 1
+                                let _ = forbiddenLines += quickTables[quickTableIndex].components(separatedBy: .newlines)
                             }
                             
                             // Link
@@ -235,6 +243,29 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         completion(text)
     }
+}
+
+/// Finds all tables that use the "||" syntax
+func findAllQuickTables(_ source: String) -> [String] {
+    var tables: [String] = []
+    let list = source.components(separatedBy: .newlines)
+    for item in list {
+        if item.contains("||~") {
+            var table: [String] = [item]
+            var tableIndex: Int = (list.firstIndex(of: item) ?? 0) + 1
+            
+            var tableItem: String = list[tableIndex]
+            while tableItem.contains("||") {
+                table += [tableItem]
+                tableIndex += 1
+                tableItem = list[tableIndex]
+            }
+            
+            tables.append(table.joined(separator: "\n"))
+        }
+    }
+    
+    return tables
 }
 
 struct RAISAText_Previews: PreviewProvider {
