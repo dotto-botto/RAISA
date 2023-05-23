@@ -13,8 +13,8 @@ struct ChangeLanguageView: View {
     var body: some View {
         NavigationStack {
             Group {
-                Text("This changes the language articles will appear in.")
-                Text("To change the app's language, go to your device settings.")
+                Text("LANGUAGEVIEW_TOOLTIP1")
+                Text("LANGUAGEVIEW_TOOLTIP2")
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
@@ -37,7 +37,7 @@ struct ChangeLanguageView: View {
                 .frame(height: 40)
             }
             .listStyle(.plain)
-            .navigationTitle("Language")
+            .navigationTitle("LANGUAGEVIEW_TITLE")
             .toolbar {
                 Button { dismiss() } label: { Image(systemName: "xmark") }
             }

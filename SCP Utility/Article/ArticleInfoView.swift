@@ -51,9 +51,9 @@ struct ArticleInfoView: View {
             
             // Licensing
             Group {
-                Text("\"\(article.title)\" by \(info.createdBy), from the SCP Wiki.")
-                Link("View Source", destination: article.url)
-                Text("Licensed under CC-BY-SA")
+                Text("\(article.title)AIV_CITATION\(info.createdBy)")
+                Link("AIV_VIEW_SOURCE", destination: article.url)
+                Text("AIV_LICENSE")
             }
             .font(.subheadline)
         }

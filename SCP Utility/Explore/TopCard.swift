@@ -15,7 +15,7 @@ struct TopCard: View {
         var article = placeHolderArticle
         VStack {
             HStack {
-                Text("Popular Articles")
+                Text("TOP_CARD")
                     .font(.headline)
                     .fontWeight(.bold)
                     .padding(.leading)

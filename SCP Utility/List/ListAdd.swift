@@ -34,7 +34,7 @@ struct ListAdd: View {
                     }
                 }
                 .listStyle(.plain)
-                .navigationTitle("Add to List")
+                .navigationTitle("LISTADDVIEW_TITLE")
             }
         }
     }

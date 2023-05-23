@@ -17,7 +17,7 @@ struct CommentsView: View {
                     CommentView(comment: comment).padding(.vertical, 5)
                 }
             }
-            .navigationTitle("Discuss: \(article.title)")
+            .navigationTitle("CV_TITLE\(article.title)")
             .frame(width: 400)
         }
         .onAppear {

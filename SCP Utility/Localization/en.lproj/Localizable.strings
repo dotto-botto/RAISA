@@ -60,13 +60,6 @@
 "THAUMIEL_TOOLTIP" = "This anomaly assists in the foundation's ultimate task.";
 "UNCONTAINED_TOOLTIP" = "This anomaly is not contained in any way.";
 
-// MARK: - View Titles
-"SEARCH_TITLE" = "Search";
-"SETTINGS_TITLE" = "Settings";
-"HISTORY_TITLE" = "History";
-"LIST_TITLE" = "Lists";
-"EXPLORE_TITLE" = "Explore";
-
 // MARK: - General
 "SEARCH_PROMPT" = "Search";
 "TABBAR_EXPLORE" = "Explore";
@@ -83,8 +76,12 @@
 "NO" = "No";
 "OK" = "Ok";
 "BOTH" = "Both";
+"LOWERCASE_OR" = "or";
+"CONTINUE" = "Continue";
+"BACK" = "Back";
 
 // MARK: - Explore
+"EXPLORE_TITLE" = "Explore";
 "SITE_NEWS" = "Site News";
 "RAISA_HEADER" = "RAISA";
 "FEATURED_SCP" = "Featured SCP";
@@ -94,6 +91,12 @@
 "FEATURED_ART" = "Art Spotlight";
 
 // MARK: - Settings
+"SETTINGS_TITLE" = "Settings";
+
+"SUPPORT_OPTIONS" = "Support";
+"SUPPORT_RAISA_PROMPT" = "Support the RAISA Creator";
+"SUPPORT_CROM_PROMPT" = "Support the CROM Creator";
+
 "GENERAL_OPTIONS" = "General";
 "OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
 
@@ -110,6 +113,7 @@
 "DELETE_ALL_HISTORY" = "Delete All History";
 
 "READER_OPTIONS" = "Reader";
+"DEFAULT_OPEN_SETTING" = "Open Articles In";
 "DEFAULT_READER_SETTING" = "Reader Setting";
 "PARSED_SOURCE_SETTING" = "Default";
 "RAW_SOURCE_SETTING" = "Raw Page Source";
@@ -118,19 +122,24 @@
 "BAR_SETTING" = "Bar";
 "READER_SETTING" = "Reader";
 "AUTO_SCROLL_SETTING" = "Open Reader to Bookmarked Text";
+"DETECT_COMPONENTS_SETTING" = "Detect Unsupported Components";
+"REMOVE_BAR_ITEMS_SETTING" = "Remove All Bar Items";
 
 // MARK: - History View
+"HISTORY_TITLE" = "History";
 "NO_HISTORY" = "You have not read an article yet.";
 "CLEAR_HISTORY_BUTTON" = "Clear All History";
 "CLEAR_HISTORY_CONFIRMATION" = "Clear All History?";
 
 // MARK: - List View
+"LIST_TITLE" = "Lists";
 "NO_ARTICLES_IN_LIST" = "There are no articles in this list.";
 "CHANGE_LIST_TITLE" = "Change Title";
 "CHANGE_LIST_SUBTITLE" = "Change Subtitle";
 "NEW_LIST_PROMPT" = "Tap the \"+\" to make a new list";
 "ADD_LIST_PROMPT" = "Add new List";
 "SUBTITLE_PLACEHOLDER" = "Hold to add subtitle";
+"LISTADDVIEW_TITLE" = "Add to List";
 "LIST_ADD_GUIDE" = "Press the bookmark while reading an article to add it to a list.";
 "ALL_SAVED_ARTICLES" = "All Saved Articles";
 "ALL_READ_ARTICLES" = "All Read Articles";
@@ -148,8 +157,18 @@
 "DOWNVOTE" = "Downvote";
 "MARK_READ" = "Mark Read";
 "MARK_UNREAD" = "Mark Unread";
+"AV_UNSUPPORTED" = "This article contains unsupported components, it may not display correctly.";
+"AV_UNSUPPORTED_GUIDE" = "Unsupported Components:";
+"AV_DISPLAY_AS_IS" = "Display As Is";
+"AV_USER_TIRED_OF_WARNING" = "You can turn this warning off in settings.";
+"AV_SENSITIVE" = "This article contains sensitive content.";
+"AV_DISMISS_ALL" = "Dismiss all Articles";
 "REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
 "DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself
+"CV_TITLE%@" = "Discuss: %@";
+"%@AIV_CITATION%@" = "\"%@\" by %@, from the SCP Wiki.";
+"AIV_VIEW_SOURCE" = "View Source";
+"AIV_LICENSE" = "Licensed under CC-BY-SA";
 "RATING" = "Rating";
 "RANK" = "Rank";
 "PAGES_CREATED" = "Pages Created";
@@ -158,6 +177,10 @@
 
 // MARK: - Explore
 "RANDOM_CARD" = "Random Article";
+"RESUME_CARD" = "Continue Reading";
+"SERIES_CARD" = "Series";
+"SERIES_TITLE%@" = "Series %@";
+"TOP_CARD" = "Popular Articles";
 
 // MARK: - Languages
 "ENGLISH" = "English";
@@ -176,3 +199,9 @@
 "CZECH" = "Czech";
 "TRADITIONALCH" = "Traditional Chinese";
 "VIETNAMESE" = "Vietnamese";
+"LANGUAGEVIEW_TITLE" = "Language";
+"LANGUAGEVIEW_TOOLTIP1" = "This changes the language articles will appear in.";
+"LANGUAGEVIEW_TOOLTIP2" = "To change the app's language, go to your device settings.";
+
+// MARK: - Other
+"SEARCH_TITLE" = "Search";

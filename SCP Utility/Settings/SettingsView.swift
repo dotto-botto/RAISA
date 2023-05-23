@@ -29,9 +29,9 @@ struct SettingsView: View {
     let defaults = UserDefaults.standard
     var body: some View {
         Form {
-            Section("Support") {
+            Section("SUPPORT_OPTIONS") {
                 HStack {
-                    Button("Support the RAISA Creator") {
+                    Button("SUPPORT_RAISA_PROMPT") {
                         raisaView = true
                     }.foregroundColor(.primary)
                     Spacer()
@@ -39,7 +39,7 @@ struct SettingsView: View {
                 }
                 
                 HStack {
-                    Button("Support the CROM Creator") {
+                    Button("SUPPORT_CROM_PROMPT") {
                         cromView = true
                     }.foregroundColor(.primary)
                     Spacer()
@@ -52,7 +52,7 @@ struct SettingsView: View {
             }
             
             Section("READER_OPTIONS") {
-                Picker("Open Articles In", selection: $defaultOpen) {
+                Picker("DEFAULT_OPEN_SETTING", selection: $defaultOpen) {
                     Text("BAR_SETTING").tag(0)
                     Text("READER_SETTING").tag(1)
                     Text("BOTH").tag(2)
@@ -64,8 +64,8 @@ struct SettingsView: View {
                 }
                 Toggle("SHOW_IMAGES", isOn: $showImages)
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
-                Toggle("Detect Unsupported Components", isOn: $showComponentPrompt)
-                Button("Remove All Bar Items") {
+                Toggle("DETECT_COMPONENTS_SETTING", isOn: $showComponentPrompt)
+                Button("REMOVE_BAR_ITEMS_SETTING") {
                     defaults.set("", forKey: "articleBarIds")
                 }
             }

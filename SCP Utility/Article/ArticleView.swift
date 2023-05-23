@@ -41,34 +41,34 @@ struct ArticleView: View {
         VStack(alignment: .leading) {
             if forbidden && showComponentPrompt && !isBuiltIn {
                 VStack {
-                    Text("This article contains unsupported components, it may not display correctly.")
+                    Text("AV_UNSUPPORTED")
                         .foregroundColor(.gray)
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
-                    Text("Unsupported Components:").foregroundColor(.gray)
+                    Text("AV_UNSUPPORTED_GUIDE").foregroundColor(.gray)
                     ForEach(forbiddenComponents, id: \.self) { comp in
                         Text(comp).foregroundColor(.gray)
                     }
                     
                     HStack {
-                        Button("Display As Is") {
+                        Button("AV_DISPLAY_AS_IS") {
                             forbidden = false
                         }
-                        Text("or").foregroundColor(.gray)
-                        Button("Open In Safari") {
+                        Text("LOWERCASE_OR").foregroundColor(.gray)
+                        Button("SAFARI_SETTING") {
                             showSafari = true
                         }
                     }
                     .padding(.vertical, 10)
                     
-                    Text("You can turn this warning off in settings.").foregroundColor(.gray)
+                    Text("AV_USER_TIRED_OF_WARNING").foregroundColor(.gray)
                 }
             }
             
             if !forbidden && containsExplicitContent && !isBuiltIn {
                 VStack {
-                    Text("This article contains sensitive content.")
+                    Text("AV_SENSITIVE")
                         .foregroundColor(.gray)
                         .font(.largeTitle)
                         .padding(.bottom, 20)
@@ -77,12 +77,12 @@ struct ArticleView: View {
                         Text(comp).foregroundColor(.gray)
                     }
                     
-                    Button("Continue") {
+                    Button("CONTINUE") {
                         containsExplicitContent = false
                     }
                     .padding(.top, 10)
                     
-                    Button("Back") {
+                    Button("BACK") {
                         dismiss()
                     }
                 }
@@ -170,7 +170,7 @@ struct ArticleView: View {
                             
                         rootViewController?.dismiss(animated: true)
                     } label: {
-                        Label("Dismiss all Articles", systemImage: "house")
+                        Label("AV_DISMISS_ALL", systemImage: "house")
                     }
                 }
             }

@@ -21,7 +21,7 @@ struct ResumeCard: View {
         if let history = con.getLatestHistory() {
             VStack {
                 HStack {
-                    Text("Continue Reading")
+                    Text("RESUME_CARD")
                         .font(.headline)
                         .fontWeight(.bold)
                         .padding(.leading)
