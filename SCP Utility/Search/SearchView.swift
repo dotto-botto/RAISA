@@ -15,10 +15,11 @@ struct SearchView: View {
     
     var body: some View {
         NavigationStack {
-            List {
+            VStack {
                 ForEach(articles) { article in
-                    ArticleRow(passedSCP: article, localArticle: false)
+                    OnlineArticleRow(article: article)
                 }
+                Spacer()
             }
             .navigationTitle("SEARCH_TITLE")
         }

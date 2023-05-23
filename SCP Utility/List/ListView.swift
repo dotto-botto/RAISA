@@ -93,7 +93,7 @@ struct OneListView: View {
             
             List {
                 ForEach(articles, id: \.self) { article in
-                    ArticleRow(passedSCP: Article(fromEntity: article)!, localArticle: true)
+                    ArticleRow(passedSCP: Article(fromEntity: article)!)
                         .swipeActions(edge: .leading) {
                             Button {
                                 

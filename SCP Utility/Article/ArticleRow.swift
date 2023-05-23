@@ -9,10 +9,9 @@ import SwiftUI
 
 struct ArticleRow: View {
     @State var passedSCP: Article
-    @State var localArticle: Bool /// If the article comes from the core data store, or the Crom api
-    @State var showSheet: Bool = false // list add view
-    @State var showArticle: Bool = false // article view
-    @State var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
+    @State private var showSheet: Bool = false // list add view
+    @State private var showArticle: Bool = false // article view
+    @State private var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     @State private var bookmarkStatus: Bool = false
     @State private var showUpdateView: Bool = false
@@ -21,26 +20,19 @@ struct ArticleRow: View {
         let defaults = UserDefaults.standard
         
         Button {
-            if localArticle {
-                if open == 0 || open == 2 {
-                    if barIds != nil {
-                        barIds! += " " + passedSCP.id
-                        defaults.set(barIds, forKey: "articleBarIds")
-                    } else {
-                        defaults.set(passedSCP.id, forKey: "articleBarIds")
-                    }
-                    
-                    if open == 2 {
-                        showArticle = true
-                    }
-                } else if open == 1 {
+            if open == 0 || open == 2 {
+                if barIds != nil {
+                    barIds! += " " + passedSCP.id
+                    defaults.set(barIds, forKey: "articleBarIds")
+                } else {
+                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+                }
+                
+                if open == 2 {
                     showArticle = true
                 }
-            } else {
-                cromGetSourceFromURL(url: passedSCP.url) { source in
-                    passedSCP.updateSource(source)
-                    showArticle = true
-                }
+            } else if open == 1 {
+                showArticle = true
             }
         } label: {
             HStack {
@@ -56,30 +48,28 @@ struct ArticleRow: View {
                         Spacer()
                     }
                     
-                    if localArticle {
-                        HStack {
-                            if passedSCP.pagesource != "" {
-                                Image(systemName: "arrow.down.circle.fill")
-                                    .resizable()
-                                    .foregroundColor(.accentColor)
-                                    .scaledToFit()
-                                    .frame(width: 15, height: 14)
-                            }
-                            
-                            var text = passedSCP.currenttext ??
-                            passedSCP.pagesource.slice(from: "Description:** ") ??
-                            passedSCP.pagesource
-                            
-                            if text == "" { // offloaded
-                                let _ = text = NSLocalizedString("DOWNLOAD_ARTICLE_PROMPT", comment: "")
-                            }
-                                
-                            Text(text)
-                                .lineLimit(1)
-                                .foregroundColor(.secondary)
-                                .font(.monospaced(.caption2)())
-                            Spacer()
+                    HStack {
+                        if passedSCP.pagesource != "" {
+                            Image(systemName: "arrow.down.circle.fill")
+                                .resizable()
+                                .foregroundColor(.accentColor)
+                                .scaledToFit()
+                                .frame(width: 15, height: 14)
                         }
+                        
+                        var text = passedSCP.currenttext ??
+                        passedSCP.pagesource.slice(from: "Description:** ") ??
+                        passedSCP.pagesource
+                        
+                        if text == "" { // offloaded
+                            let _ = text = NSLocalizedString("DOWNLOAD_ARTICLE_PROMPT", comment: "")
+                        }
+                            
+                        Text(text)
+                            .lineLimit(1)
+                            .foregroundColor(.secondary)
+                            .font(.monospaced(.caption2)())
+                        Spacer()
                     }
                 }
                 Spacer()
@@ -106,57 +96,53 @@ struct ArticleRow: View {
             }
         }
         .contextMenu {
-            if localArticle {
-                Button {
-                    if barIds != nil {
-                        barIds! += " " + passedSCP.id
-                        defaults.set(barIds, forKey: "articleBarIds")
-                    } else {
-                        defaults.set(passedSCP.id, forKey: "articleBarIds")
-                    }
-                } label: {
-                    Label("Add to Bar", systemImage: "plus.circle")
-                }
-                
-                Button {
-                    showArticle = true
-                } label: {
-                    Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
-                }
-                
-                Button {
-                    showUpdateView = true
-                } label: {
-                    Label("Update Attributes", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
-                }
-                
-                Divider()
-                
-                if passedSCP.pagesource == "" {
-                    Button {
-                        cromGetSourceFromURL(url: passedSCP.url) { source in
-                            con.updatePageSource(id: passedSCP.id, newPageSource: source)
-                        }
-                    } label: {
-                        Label("Download", systemImage: "square.and.arrow.down")
-                    }
+            Button {
+                if barIds != nil {
+                    barIds! += " " + passedSCP.id
+                    defaults.set(barIds, forKey: "articleBarIds")
                 } else {
-                    Button {
-                        con.deletePageSource(id: passedSCP.id)
-                    } label: {
-                        Label("Offload", systemImage: "square.and.arrow.up")
+                    defaults.set(passedSCP.id, forKey: "articleBarIds")
+                }
+            } label: {
+                Label("Add to Bar", systemImage: "plus.circle")
+            }
+            
+            Button {
+                showArticle = true
+            } label: {
+                Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            
+            Button {
+                showUpdateView = true
+            } label: {
+                Label("Update Attributes", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
+            }
+            
+            Divider()
+            
+            if passedSCP.pagesource == "" {
+                Button {
+                    cromGetSourceFromURL(url: passedSCP.url) { source in
+                        con.updatePageSource(id: passedSCP.id, newPageSource: source)
                     }
+                } label: {
+                    Label("Download", systemImage: "square.and.arrow.down")
+                }
+            } else {
+                Button {
+                    con.deletePageSource(id: passedSCP.id)
+                } label: {
+                    Label("Offload", systemImage: "square.and.arrow.up")
                 }
             }
         } preview: {
             NavigationStack { RAISAText(article: passedSCP) }
         }
         .swipeActions(allowsFullSwipe: false) {
-            if localArticle {
-                Button(role: .destructive) {
-                    con.deleteArticleEntity(id: passedSCP.id)
-                } label: { Image(systemName: "trash") }
-            }
+            Button(role: .destructive) {
+                con.deleteArticleEntity(id: passedSCP.id)
+            } label: { Image(systemName: "trash") }
         }
         .sheet(isPresented: $showSheet) {
             ListAdd(isPresented: $showSheet, article: passedSCP)
@@ -168,7 +154,7 @@ struct ArticleRow: View {
             NavigationStack { ArticleView(scp: passedSCP) }
         }
         .onAppear {
-            if localArticle && passedSCP.objclass == .unknown {
+            if passedSCP.objclass == .unknown {
                 // MARK: Article Scanning
                 DispatchQueue.main.async {
                     cromGetTags(url: passedSCP.url) { tags in
@@ -219,7 +205,7 @@ struct ArticleRow_Previews: PreviewProvider {
             esoteric: .thaumiel,
             disruption: .amida,
             risk: .danger
-        ), localArticle: true).previewDisplayName("Local")
+        )).previewDisplayName("Local")
         ArticleRow(passedSCP: Article(
             title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
             pagesource: "",
@@ -228,6 +214,6 @@ struct ArticleRow_Previews: PreviewProvider {
             esoteric: .thaumiel,
             disruption: .amida,
             risk: .danger
-        ), localArticle: false).previewDisplayName("Online")
+        )).previewDisplayName("Online")
     }
 }

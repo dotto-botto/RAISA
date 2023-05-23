@@ -163,7 +163,7 @@ struct Article: Identifiable, Codable {
 /// If "currentTitle" is not an SCP from the main series, (eg: SCP-173 or SCP-097, but not SCP-8900-EX), this returns nil.
 func findNextArticle(currentTitle title: String, completion: @escaping (Article?) -> Void) {
     if var key = title.slice(from: "SCP-"), let num = Int(key) {
-        key = String(num + 1)
+        key = String(format: "%03d", num + 1)
         cromGetSourceFromTitle(title: key) { article in
             completion(article)
         }
@@ -421,7 +421,7 @@ enum ArticleAttribute {
 // MARK: - Placeholder Vars
 let placeholderURL: URL = URL(string: "https://scp-wiki.wikidot.com/")!
 let placeHolderArticle = Article(
-    title: "SCP-173",
+    title: "SCP-173 (RAISA Placeholder)",
     pagesource: """
 **Item #:** SCP-173
 

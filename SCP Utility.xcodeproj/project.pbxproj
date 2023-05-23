@@ -29,13 +29,14 @@
 		F64BEEC329F45CEC00AEB15B /* ArticleTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC229F45CEC00AEB15B /* ArticleTabView.swift */; };
 		F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC429F9C80C00AEB15B /* TabViewComponent.swift */; };
 		F64BEEC729FC6B2700AEB15B /* RAISAText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC629FC6B2700AEB15B /* RAISAText.swift */; };
-		F64BEEC829FC6B2700AEB15B /* RAISAText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC629FC6B2700AEB15B /* RAISAText.swift */; };
 		F64BEECA29FD62B300AEB15B /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC929FD62B300AEB15B /* CommentsView.swift */; };
 		F64BEECD29FD630100AEB15B /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEECC29FD630100AEB15B /* Comment.swift */; };
 		F64BEECF29FD63BB00AEB15B /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEECE29FD63BB00AEB15B /* CommentView.swift */; };
 		F64BEED129FD67CC00AEB15B /* CommentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED029FD67CC00AEB15B /* CommentParser.swift */; };
 		F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED229FD9FA900AEB15B /* TopCard.swift */; };
 		F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED62A03057A00AEB15B /* ListRow.swift */; };
+		F65A110B2A1AD34F00B096F7 /* RAISALanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */; };
+		F65A110C2A1AEB1500B096F7 /* RAISAText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEEC629FC6B2700AEB15B /* RAISAText.swift */; };
 		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
 		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
 		F66DF2432A0DACEE004437AC /* SCP001View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2422A0DACEE004437AC /* SCP001View.swift */; };
@@ -62,6 +63,9 @@
 		F6B0C1E629C76D8E00C5BD98 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6B0C1E329C76D8E00C5BD98 /* Preview Assets.xcassets */; };
 		F6B0C1E829C76DB200C5BD98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B0C1E429C76D8E00C5BD98 /* ContentView.swift */; };
 		F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */; };
+		F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */; };
+		F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8232A1A97930048C180 /* SeriesCard.swift */; };
+		F6DCB8262A1AA2630048C180 /* SeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8252A1AA2630048C180 /* SeriesView.swift */; };
 		F6DEC9CA29B5227F00E72063 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DEC9C929B5227F00E72063 /* Article.swift */; };
 		F6DEC9CC29B5288E00E72063 /* ListAdd.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DEC9CB29B5288E00E72063 /* ListAdd.swift */; };
 		F6DFECDA2990A2FC002C3F1A /* ArticleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DFECD92990A2FC002C3F1A /* ArticleRow.swift */; };
@@ -111,6 +115,7 @@
 		F64BEED029FD67CC00AEB15B /* CommentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentParser.swift; sourceTree = "<group>"; };
 		F64BEED229FD9FA900AEB15B /* TopCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCard.swift; sourceTree = "<group>"; };
 		F64BEED62A03057A00AEB15B /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
+		F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAISALanguage.swift; sourceTree = "<group>"; };
 		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
 		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
 		F66DF2422A0DACEE004437AC /* SCP001View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP001View.swift; sourceTree = "<group>"; };
@@ -127,6 +132,9 @@
 		F6B0C1E329C76D8E00C5BD98 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F6B0C1E429C76D8E00C5BD98 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAttributeView.swift; sourceTree = "<group>"; };
+		F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineArticleRow.swift; sourceTree = "<group>"; };
+		F6DCB8232A1A97930048C180 /* SeriesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesCard.swift; sourceTree = "<group>"; };
+		F6DCB8252A1AA2630048C180 /* SeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesView.swift; sourceTree = "<group>"; };
 		F6DEC9C929B5227F00E72063 /* Article.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		F6DEC9CB29B5288E00E72063 /* ListAdd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAdd.swift; sourceTree = "<group>"; };
 		F6DEC9CD29B7B01D00E72063 /* SCP-Utility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SCP-Utility-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -193,6 +201,7 @@
 				F6DFED00299AEFC6002C3F1A /* DataController.swift */,
 				F604054029624A21003577D7 /* ContentView.swift */,
 				F615611C29D9CE92003561CD /* SafariWrapper.swift */,
+				F65A11092A1AD33C00B096F7 /* Language */,
 				F6A092A729C7EA5C00E661A0 /* Settings */,
 				F6921A0229BAA5DE00EF19D0 /* History */,
 				F69219FB29BA6C5B00EF19D0 /* Explore */,
@@ -224,6 +233,14 @@
 				F64BEECE29FD63BB00AEB15B /* CommentView.swift */,
 			);
 			path = Comment;
+			sourceTree = "<group>";
+		};
+		F65A11092A1AD33C00B096F7 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */,
+			);
+			path = Language;
 			sourceTree = "<group>";
 		};
 		F66DF2352A05DED0004437AC /* Anomaly Class Bar */ = {
@@ -266,6 +283,8 @@
 				F69219FE29BA6C7500EF19D0 /* ExploreView.swift */,
 				F615611A29D87332003561CD /* RandomCard.swift */,
 				F6E1FF2429E78C540030DF41 /* ResumeCard.swift */,
+				F6DCB8232A1A97930048C180 /* SeriesCard.swift */,
+				F6DCB8252A1AA2630048C180 /* SeriesView.swift */,
 				F64BEED229FD9FA900AEB15B /* TopCard.swift */,
 			);
 			path = Explore;
@@ -350,6 +369,7 @@
 			isa = PBXGroup;
 			children = (
 				F604054A29624A3F003577D7 /* SearchView.swift */,
+				F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */,
 				F6DFED05299EF1B6002C3F1A /* Crom.swift */,
 			);
 			path = Search;
@@ -488,7 +508,9 @@
 			files = (
 				F66DF2432A0DACEE004437AC /* SCP001View.swift in Sources */,
 				F604054729624A21003577D7 /* ListView.swift in Sources */,
+				F65A110B2A1AD34F00B096F7 /* RAISALanguage.swift in Sources */,
 				F615611B29D87332003561CD /* RandomCard.swift in Sources */,
+				F6DCB8262A1AA2630048C180 /* SeriesView.swift in Sources */,
 				F604054529624A21003577D7 /* ContentView.swift in Sources */,
 				F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */,
 				F6EFF42329DB81D200605E40 /* ArticleInfoView.swift in Sources */,
@@ -501,6 +523,7 @@
 				F62A5D7A29D9F92C00661DE0 /* SCPList.swift in Sources */,
 				F6EFF42629DF879500605E40 /* Collapsible.swift in Sources */,
 				F69219FD29BA6C6900EF19D0 /* ArticleSpotlight.swift in Sources */,
+				F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */,
 				F6EA343929F0A58700593378 /* InlineButton.swift in Sources */,
 				F6E1FF2529E78C540030DF41 /* ResumeCard.swift in Sources */,
 				F6DFECDA2990A2FC002C3F1A /* ArticleRow.swift in Sources */,
@@ -516,6 +539,7 @@
 				F62A5D7629D9F8F200661DE0 /* SafariWrapper.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
+				F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */,
 				F6921A0629BAA70700EF19D0 /* History.swift in Sources */,
 				F66DF2452A0DB0B9004437AC /* OneProposalsView.swift in Sources */,
 				F6921A0429BAA60000EF19D0 /* HistoryRow.swift in Sources */,
@@ -537,7 +561,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6B0C1D529C7635D00C5BD98 /* SCP_UtilityApp.swift in Sources */,
-				F64BEEC829FC6B2700AEB15B /* RAISAText.swift in Sources */,
+				F65A110C2A1AEB1500B096F7 /* RAISAText.swift in Sources */,
 				F6B0C1D929C7635D00C5BD98 /* SCPList.swift in Sources */,
 				F6B0C1D829C7635D00C5BD98 /* ArticleView.swift in Sources */,
 				F6B0C1DB29C7654100C5BD98 /* DataController.swift in Sources */,
