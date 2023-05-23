@@ -15,6 +15,7 @@ struct ExploreView: View {
                 VStack(spacing: 40) {
                     RandomCard().clipped()
                     ResumeCard().clipped()
+                    SeriesCard()
                     TopCard()
                 }
                 .frame(width: 400)
