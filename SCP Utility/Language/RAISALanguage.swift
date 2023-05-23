@@ -11,7 +11,7 @@ import Foundation
 
 /// Enum for the international translations of scp articles.
 /// This is NOT the same as localization for app text.
-enum RAISALanguage: CaseIterable, Identifiable {
+enum RAISALanguage: Int, CaseIterable, Identifiable, Codable {
     case english
     case russian
     case korean

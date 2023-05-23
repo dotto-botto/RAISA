@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExploreView: View {
     @State private var settings: Bool = false
+    @State private var language: Bool = false
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -22,12 +23,19 @@ struct ExploreView: View {
                 .navigationTitle("RAISA_HEADER")
                 .toolbar {
                     Button {
+                        language = true
+                    } label: {
+                        Image(systemName: "globe")
+                    }
+                    
+                    Button {
                         settings = true
                     } label: {
                         Image(systemName: "gear")
                     }
                 }
                 .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
+                .fullScreenCover(isPresented: $language) { NavigationStack { ChangeLanguageView() } }
             }
         }
     }
