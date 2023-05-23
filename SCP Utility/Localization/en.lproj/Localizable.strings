@@ -158,3 +158,21 @@
 
 // MARK: - Explore
 "RANDOM_CARD" = "Random Article";
+
+// MARK: - Languages
+"ENGLISH" = "English";
+"RUSSIAN" = "Russian";
+"KOREAN" = "Korean";
+"CHINESE" = "Chinese";
+"FRENCH" = "French";
+"POLISH" = "Polish";
+"SPANISH" = "Spanish";
+"THAI" = "Thai";
+"JAPANESE" = "Japanese";
+"GERMAN" = "German";
+"ITALIAN" = "Italian";
+"UKRANIAN" = "Ukranian";
+"PORTUGUESE" = "Portuguese";
+"CZECH" = "Czech";
+"TRADITIONALCH" = "Traditional Chinese";
+"VIETNAMESE" = "Vietnamese";

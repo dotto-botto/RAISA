@@ -11,7 +11,7 @@ import Foundation
 
 /// Enum for the international translations of scp articles.
 /// This is NOT the same as localization for app text.
-enum RAISALanguage {
+enum RAISALanguage: CaseIterable, Identifiable {
     case english
     case russian
     case korean
@@ -28,6 +28,45 @@ enum RAISALanguage {
     case czech
     case traditionalch
     case vietnamese
+    
+    var id: Self { return self }
+    
+    func toName() -> String {
+        switch self {
+        case .english:
+            return NSLocalizedString("ENGLISH", comment: "")
+        case .russian:
+            return NSLocalizedString("RUSSIAN", comment: "")
+        case .korean:
+            return NSLocalizedString("KOREAN", comment: "")
+        case .chinese:
+            return NSLocalizedString("CHINESE", comment: "")
+        case .french:
+            return NSLocalizedString("FRENCH", comment: "")
+        case .polish:
+            return NSLocalizedString("POLISH", comment: "")
+        case .spanish:
+            return NSLocalizedString("SPANISH", comment: "")
+        case .thai:
+            return NSLocalizedString("THAI", comment: "")
+        case .japanese:
+            return NSLocalizedString("JAPANESE", comment: "")
+        case .german:
+            return NSLocalizedString("GERMAN", comment: "")
+        case .italian:
+            return NSLocalizedString("ITALIAN", comment: "")
+        case .ukranian:
+            return NSLocalizedString("UKRANIAN", comment: "")
+        case .portuguese:
+            return NSLocalizedString("PORTUGUESE", comment: "")
+        case .czech:
+            return NSLocalizedString("CZECH", comment: "")
+        case .traditionalch:
+            return NSLocalizedString("TRADITIONALCH", comment: "")
+        case .vietnamese:
+            return NSLocalizedString("VIETNAMESE", comment: "")
+        }
+    }
     
     func toURL() -> URL {
         switch self {
@@ -64,5 +103,46 @@ enum RAISALanguage {
         case .vietnamese:
             return URL(string: "http://scp-vn.wikidot.com/")!
         }
+    }
+    
+    func toAbbr() -> String {
+        switch self {
+        case .english:
+            return "EN"
+        case .russian:
+            return "RU"
+        case .korean:
+            return "KO"
+        case .chinese:
+            return "CN"
+        case .french:
+            return "FR"
+        case .polish:
+            return "PL"
+        case .spanish:
+            return "ES"
+        case .thai:
+            return "TH"
+        case .japanese:
+            return "JP"
+        case .german:
+            return "DE"
+        case .italian:
+            return "IT"
+        case .ukranian:
+            return "UA"
+        case .portuguese:
+            return "PT"
+        case .czech:
+            return "CS"
+        case .traditionalch:
+            return "ZH"
+        case .vietnamese:
+            return "VN"
+        }
+    }
+    
+    func toImage() -> String {
+        return "SCP-\(self.toAbbr())"
     }
 }

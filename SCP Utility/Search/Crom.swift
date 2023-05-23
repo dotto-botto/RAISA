@@ -183,10 +183,10 @@ query Search($query: URL! = "\(query)") {
 }
 
 /// Returns a list of articles without source with given query.
-func cromAPISearch(query: String, completion: @escaping ([Article]) -> Void) {
+func cromAPISearch(query: String, language: RAISALanguage = .english, completion: @escaping ([Article]) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(query)") {
-  searchPages(query: $query, filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+  searchPages(query: $query, filter: {anyBaseUrl: "\(language.toURL())"}) {
     url
     wikidotInfo {
       title
