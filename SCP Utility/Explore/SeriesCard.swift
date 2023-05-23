@@ -11,7 +11,7 @@ struct SeriesCard: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Series")
+                Text("SERIES_CARD")
                     .font(.headline)
                     .fontWeight(.bold)
                     .padding(.leading)
