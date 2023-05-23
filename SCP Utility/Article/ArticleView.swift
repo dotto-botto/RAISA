@@ -137,7 +137,7 @@ struct ArticleView: View {
         }
         #if os(iOS)
         .sheet(isPresented: $showInfo) {
-            ArticleInfoView(url: scp.url)
+            ArticleInfoView(article: scp)
         }
         .sheet(isPresented: $showComments) {
             CommentsView(article: scp)

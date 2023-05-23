@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ArticleInfoView: View {
-    @State var url: URL
+    @State var article: Article
     @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
     var body: some View {
         let Guide = {
@@ -47,10 +47,19 @@ struct ArticleInfoView: View {
                 Guide()
                 Text(String(info.userTotalRating)).foregroundColor(.green)
             }
+            .padding(.bottom, 10)
+            
+            // Licensing
+            Group {
+                Text("\"\(article.title)\" by \(info.createdBy), from the SCP Wiki.")
+                Link("View Source", destination: article.url)
+                Text("Licensed under CC-BY-SA")
+            }
+            .font(.subheadline)
         }
         .frame(width: 300)
         .onAppear {
-            cromInfo(url: url) { scp in
+            cromInfo(url: article.url) { scp in
                 info = scp
             }
         }
@@ -59,6 +68,6 @@ struct ArticleInfoView: View {
 
 struct ArticleInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleInfoView(url: URL(string: "https://scp-wiki.wikidot.com/scp-5004")!)
+        ArticleInfoView(article: placeHolderArticle)
     }
 }
