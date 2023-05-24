@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that displays a settings menu to the user.
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("articleViewSetting") var articleViewSetting = 0

@@ -8,6 +8,8 @@
 import SwiftUI
 
 // https://scp-wiki.wikidot.com/scp-001
+
+/// Built in SCP Article of SCP-001.
 struct SCP001View: View {
     var body: some View {
         VStack(alignment: .center) {

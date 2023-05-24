@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that displays an SCPList.
 struct ListRow: View {
     @State var list: SCPList
     @State private var listTitlePresent: Bool = false

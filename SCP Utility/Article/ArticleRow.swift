@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// The main view used to display articles that are saved by the user.
+/// Meant to be used inside of a List or a VStack.
 struct ArticleRow: View {
     @State var passedSCP: Article
     @State private var showSheet: Bool = false // list add view

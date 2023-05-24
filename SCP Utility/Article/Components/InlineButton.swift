@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that handles links inside text.
 struct InlineButton: View {
     @State var article: Article
     @State var content: String

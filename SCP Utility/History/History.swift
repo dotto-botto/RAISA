@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct that defines a users history.
 struct History: Identifiable, Codable {
     let id: String
     

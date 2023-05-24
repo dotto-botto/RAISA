@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Container for the attribute icons used in ACSView.
 struct ACSCellView: View {
     @State var componentClass: ArticleAttribute
     

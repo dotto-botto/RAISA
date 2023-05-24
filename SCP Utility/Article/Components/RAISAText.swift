@@ -10,6 +10,8 @@ import SwiftUI
 import MarkdownUI
 #endif
 
+/// View that parses and displays an article's page source. RAISAText calls many other views that also call RAISAText.
+/// If "text" is not nil, it will be parsed instead of the passed article's page source.
 struct RAISAText: View {
     @State var article: Article
     @State var text: String? = nil

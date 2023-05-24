@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// View presented when ArticleBar is tapped, this is not the same as TabViewComponent, which is a reader component displayed in RAISAText.
+/// Displays a switcher at the bottom which can be used to change the article displayed in the corresponding ArticleView.
 struct ArticleTabView: View {
     @State var selectedID: String? = nil
     @Environment(\.dismiss) var dismiss

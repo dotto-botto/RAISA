@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// View that allows a user to change the language that articles display in as well as the default search setting.
+/// This does not update the system or the app language.
 struct ChangeLanguageView: View {
     @AppStorage("chosenRaisaLanguage") var chosenRaisaLanguage = RAISALanguage.english.rawValue
     @Environment(\.dismiss) private var dismiss

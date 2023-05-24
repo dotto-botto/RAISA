@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+/// View that allows a user to add an article to an SCPList.
 struct ListAdd: View {
     @Binding var isPresented: Bool
     @State var article: Article

@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+/// View that displays multiple HistoryRows, and adds deletion of history items.
 struct HistoryView: View {
     @State var clearConfirmation: Bool = false
     @State private var items: [HistoryItem]? = nil

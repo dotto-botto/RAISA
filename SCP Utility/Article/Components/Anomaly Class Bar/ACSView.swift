@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Component designed to mimic the Anomaly Classification Bar, in SwiftUI.
 struct ACSView: View {
     let itemnumber: Int
     let clearance: Int
@@ -15,6 +16,17 @@ struct ACSView: View {
     let disruption: DisruptionClass
     let risk: RiskClass
     
+    /// Init from a raw wikidot component string. Example:
+    /// [[include :scp-wiki:component:anomaly-class-bar-source
+    ///    |item-number=5004
+    ///    |clearance=5
+    ///    |container-class=esoteric
+    ///    |secondary-class=thaumiel
+    ///    |secondary-icon=...
+    ///    |disruption-class=ekhi
+    ///    |risk-class=notice
+    ///    ]]
+    /// - Parameter component: The raw string
     init?(component: String) {
         guard let num = Int(component.slice(from: "|item-number=", to: "\n")?.replacingOccurrences(of: " ", with: "") ?? "") else { return nil }
         guard let clearance = Int(component.slice(from: "|clearance=", to: "\n")?.replacingOccurrences(of: " ", with: "") ?? "") else { return nil }

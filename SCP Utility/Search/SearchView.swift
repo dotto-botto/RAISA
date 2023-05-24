@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import Foundation
 
-
+/// Search menu that searches the crom api for articles based on the selected language.
 struct SearchView: View {
     @State var query: String = ""
     @State var articles: [Article] = []

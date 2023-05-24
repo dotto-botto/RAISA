@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// Table to be displayed inside RAISAText.
+/// "doc" should be the corresponsing [[table]] div or a table made using the "||" syntax.
 struct ArticleTable: View {
     @State var article: Article
     @State var doc: String

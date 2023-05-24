@@ -7,12 +7,17 @@
 
 import Foundation
 
+/// Struct that defines comments.
 struct Comment: Hashable {
     let username: String
     let content: String
     let profilepic: URL?
     let date: Date?
- 
+    
+    /// - Parameters:
+    ///   - content: The content of the comment.
+    ///   - profilepic: A link to the user's profile picture.
+    ///   - date: The time the coment was made. (unused)
     init(
         username: String,
         content: String,

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct made to store info about articles from the Crom API.
 struct ArticleInfo: Codable {
     let rating: Int
     let tags: [String]

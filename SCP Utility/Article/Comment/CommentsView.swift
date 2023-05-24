@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that displays several CommentViews given a list of Comment structs.
 struct CommentsView: View {
     @State var article: Article
     @State private var comments: [Comment] = []

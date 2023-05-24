@@ -8,6 +8,8 @@
 import SwiftUI
 import Kingfisher
 
+/// Displays a single comment.
+/// inset - How deeply nested the comment is.
 struct CommentView: View {
     @State var comment: Comment
     @State var inset: Int? = nil

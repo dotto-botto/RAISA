@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// View that displays articles that arent saved in core data.
+/// Used for search results as well as in SeriesView.
 struct OnlineArticleRow: View {
     var title: String
     var url: URL

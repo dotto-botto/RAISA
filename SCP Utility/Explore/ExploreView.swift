@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// The first view that the user sees on app startup.
+/// This view links to several other views, and allows the user to change the settings and language of the app.
 struct ExploreView: View {
     @State private var settings: Bool = false
     @State private var language: Bool = false

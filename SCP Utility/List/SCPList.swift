@@ -8,6 +8,8 @@
 import Foundation
 
 fileprivate let con = PersistenceController.shared
+/// Struct that defines a list of article id's.
+/// Includes a title and an optional subtitle.
 struct SCPList: Identifiable {
     let id: String
     var listid: String

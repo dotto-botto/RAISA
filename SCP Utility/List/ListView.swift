@@ -9,6 +9,8 @@ import SwiftUI
 import Foundation
 
 // MARK: - Many List View
+
+/// View that displays all stored lists in core data as ListRow views.
 struct ListView: View {
     @State private var alertPresent: Bool = false
     @State private var presentSheet: Bool = false
@@ -77,6 +79,8 @@ struct ListView: View {
 
 
 // MARK: - Single List View
+
+/// View that displays the articles stored in an SCPList.
 struct OneListView: View {
     @State var list: SCPList
     @State private var query: String = ""

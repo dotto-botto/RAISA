@@ -8,6 +8,8 @@
 import SwiftUI
 import MarkdownUI
 
+/// Component to be displayed in RAISAText
+/// given a "[[tabview]]" component from wikidot.
 struct TabViewComponent: View {
     @State var article: Article
     @State var text: String

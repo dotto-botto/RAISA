@@ -8,6 +8,7 @@
 import SwiftUI
 import Kingfisher
 
+/// ExploreView card that displays The last read article from core data.
 struct ResumeCard: View {
     @State private var showSheet: Bool = false
     let con = PersistenceController.shared

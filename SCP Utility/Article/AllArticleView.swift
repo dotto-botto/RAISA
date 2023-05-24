@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// View that displays all articles stored in core data.
+/// 0 - Default (Every saved article)
+/// 1 - Every article that the user has marked as complete.
+/// 2 - Every article that the user hasn't marked as complete.
 struct AllArticleView: View {
     @State var mode: Int? = 0
     // 0 = default

@@ -8,6 +8,8 @@
 import SwiftUI
     
 // MARK: - View
+/// View that wraps around RAISAText to display various controls to the user.
+/// ArticleView also displays warnings before an article is displayed.
 struct ArticleView: View {
     @State var scp: Article
     @State var dismissText: String? = ""

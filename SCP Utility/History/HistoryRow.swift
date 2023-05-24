@@ -8,6 +8,7 @@
 import SwiftUI
 import Kingfisher
 
+/// View that displays a history struct.
 struct HistoryRow: View {
     @State var item: History
     

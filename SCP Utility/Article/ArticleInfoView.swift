@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Struct that presents an ArticleInfo struct to the user, along with licensing information about the article.
 struct ArticleInfoView: View {
     @State var article: Article
     @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)

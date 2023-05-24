@@ -8,6 +8,7 @@
 import SwiftUI
 import Kingfisher
 
+/// ExploreView card that displays a random article from the Crom API.
 struct RandomCard: View {
     @State private var showArticle: Bool = false
     @State private var article = Article(title: "", pagesource: "", url: placeholderURL)

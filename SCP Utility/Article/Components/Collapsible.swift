@@ -10,6 +10,8 @@ import SwiftUI
 import MarkdownUI
 #endif
 
+/// Collapsible text to be displayed inside RAISAText
+/// "text" should be the text from "[[collapsible" to "[[/collapsible]]" including those two lines.
 struct Collapsible: View {
     @State var article: Article
     @State var text: String

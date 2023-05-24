@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that is used by the built in SCP-001 view to display the proposals as a stack of buttons.
 struct OneProposalsView: View {
     @State private var showSheet: Bool = false
     var body: some View {

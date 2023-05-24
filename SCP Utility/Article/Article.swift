@@ -8,6 +8,8 @@
 import SwiftUI
 
 fileprivate let con = PersistenceController.shared
+/// The main struct used to store articles along with other information about them.
+/// Optimized for SCP articles, but can be used for any article on the wiki.
 struct Article: Identifiable, Codable {
     let id: String
     
@@ -24,6 +26,10 @@ struct Article: Identifiable, Codable {
     var disruption: DisruptionClass? = .unknown
     var risk: RiskClass? = .unknown
     
+    /// - Parameters:
+    ///   - pagesource: The raw pagesouce that wikidot uses to display an article.
+    ///   - thumbnail: Thumbnails are used as an accessory to catch the user's attention.
+    ///   - clearance: Is different for every scp, and is not used at all across the app.
     init(
         title: String,
         pagesource: String,

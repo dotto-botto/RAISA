@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that allows the user to update an article's attributes.
 struct UpdateAttributeView: View {
     @State var article: Article
     var body: some View {

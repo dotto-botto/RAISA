@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// ExploreView card that displays the 8 series.
 struct SeriesCard: View {
     var body: some View {
         VStack {
@@ -34,6 +35,8 @@ struct SeriesCard: View {
     }
 }
 
+/// View that displays an SCP Series.
+/// A roman numeral on top of the corresponding series background.
 struct SeriesButton: View {
     let series: Int
     @State private var presentSheet: Bool = false

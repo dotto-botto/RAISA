@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// View that is displayed at the bottom of the main page.
+/// Can be opened to quickly traverse between the articles displayed on it.
 struct ArticleBar: View {
     @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
     @State private var toArticle = false

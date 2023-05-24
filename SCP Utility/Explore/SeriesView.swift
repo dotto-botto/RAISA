@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View that displays a list of SCP's from the passed "series" int.
 struct SeriesView: View {
     @State var startingNum: Int
 

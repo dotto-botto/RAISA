@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftSoup
 
+/// ExploreView card that displays the top articles parsed from the home page.
 struct TopCard: View {
     @State private var titles: [String] = []
     @State private var showArticle: Bool = false
@@ -48,7 +49,6 @@ struct TopCard: View {
     }
 }
 
-/// Returns the top 5 articles
 func parseTopRatedPage(completion: @escaping ([String]) -> Void) {
     let url = URL(string: "https://scp-wiki.wikidot.com/top-rated-pages-this-month")!
     let task = URLSession.shared.dataTask(with: url) { data, response, error in
