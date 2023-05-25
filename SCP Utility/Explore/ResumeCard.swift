@@ -10,17 +10,21 @@ import Kingfisher
 
 /// ExploreView card that displays The last read article from core data.
 struct ResumeCard: View {
-    @State private var showSheet: Bool = false
-    let con = PersistenceController.shared
-    var body: some View {
-        var local = false
-        if let history = con.getLatestHistory() {
-            if (con.getArticleByTitle(title: history.articletitle ?? "") != nil) {
-                let _ = local = true
-            }
+    @State var article: Article = placeHolderArticle
+    
+    init?() {
+        guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { return nil }
+        
+        if let entity = PersistenceController.shared.getArticleByURL(url: url) {
+            guard let scp = Article(fromEntity: entity) else { return }
+            _article = State(initialValue: scp)
         }
-        if let history = con.getLatestHistory() {
-            VStack {
+    }
+    
+    @State var showSheet: Bool = false
+    var body: some View {
+        VStack {
+            if article.title != placeHolderArticle.title {
                 HStack {
                     Text("RESUME_CARD")
                         .font(.headline)
@@ -30,28 +34,33 @@ struct ResumeCard: View {
                 }
                 Spacer()
                 HStack {
-                    Text(history.articletitle!)
+                    Text(article.title)
                         .font(.monospaced(.largeTitle)())
                         .lineLimit(2)
-                    if local { Image(systemName: "arrow.forward") }
+                    Image(systemName: "arrow.forward")
                 }
             }
-            .padding(10)
-            .background {
-                KFImage(history.thumbnail)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .opacity(0.5)
-            }
-            .fullScreenCover(isPresented: $showSheet) {
-                if let title = history.articletitle {
-                    if let article = con.getArticleByTitle(title: title) {
-                        NavigationStack { ArticleView(scp: Article(fromEntity: article)!) }
-                    }
+        }
+        .padding(10)
+        .background {
+            KFImage(article.thumbnail)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .opacity(0.5)
+        }
+        .fullScreenCover(isPresented: $showSheet) {
+            NavigationStack { ArticleView(scp: article) }
+        }
+        .onTapGesture {
+            showSheet = true
+        }
+        .onAppear {
+            if article.title == placeHolderArticle.title {
+                guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { return }
+                cromAPISearchFromURL(query: url) { scp in
+                    guard let scp = scp else { return }
+                    article = scp
                 }
-            }
-            .onTapGesture {
-                if local { showSheet = true }
             }
         }
     }
