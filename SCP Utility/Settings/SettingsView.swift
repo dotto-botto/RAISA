@@ -14,7 +14,6 @@ struct SettingsView: View {
     @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 0
     @AppStorage("storeIcloud") var storeIcloud = true
-    @AppStorage("autoOpen") var autoOpen = true
     @AppStorage("autoScroll") var autoScroll = true
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     
@@ -48,9 +47,9 @@ struct SettingsView: View {
                 }
             }
             
-            Section("GENERAL_OPTIONS") {
-                Toggle("OPEN_LAST_READ_OPTION", isOn: $autoOpen)
-            }
+//            Section("GENERAL_OPTIONS") {
+//
+//            }
             
             Section("READER_OPTIONS") {
                 Picker("DEFAULT_OPEN_SETTING", selection: $defaultOpen) {

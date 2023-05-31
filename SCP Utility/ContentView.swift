@@ -8,13 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var toArticle: Bool = false
-    @State private var resumeReading: Bool = false
-    let con = PersistenceController.shared
-    let defaults = UserDefaults.standard
-    let url = UserDefaults.standard.url(forKey: "lastReadUrl")
     var body: some View {
-        var offlineArticle: Article? = nil
         TabView {
             VStack {
                 ExploreView()
@@ -36,27 +30,6 @@ struct ContentView: View {
                 Spacer()
                 ArticleBar()
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
-        }
-        .onAppear {
-            if url != nil && defaults.bool(forKey: "autoOpen") {
-                if con.isArticleSaved(url: url!) {
-                    resumeReading = true
-                } else {
-                    cromAPISearchFromURL(query: url!) { article in
-                        offlineArticle = article
-                        resumeReading = true
-                    }
-                }
-            }
-        }
-        .fullScreenCover(isPresented: $resumeReading) {
-            if let articleItem = con.getArticleByURL(url: url!) {
-                NavigationStack { ArticleView(scp: Article(fromEntity: articleItem)!) }
-            } else {
-                if offlineArticle != nil {
-                    NavigationStack { ArticleView(scp: offlineArticle!) }
-                }
-            }
         }
     }
 }
