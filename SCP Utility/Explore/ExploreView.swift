@@ -17,28 +17,28 @@ struct ExploreView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     RandomCard().clipped()
-                    ResumeCard().clipped()
+                    ResumeCard()
                     SeriesCard()
                     TopCard()
                 }
-                .frame(width: 400)
-                .navigationTitle("RAISA_HEADER")
-                .toolbar {
-                    Button {
-                        language = true
-                    } label: {
-                        Image(systemName: "globe")
-                    }
-                    
-                    Button {
-                        settings = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                }
-                .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
-                .fullScreenCover(isPresented: $language) { NavigationStack { ChangeLanguageView() } }
             }
+            .frame(width: 400)
+            .navigationTitle("RAISA_HEADER")
+            .toolbar {
+                Button {
+                    language = true
+                } label: {
+                    Image(systemName: "globe")
+                }
+                
+                Button {
+                    settings = true
+                } label: {
+                    Image(systemName: "gear")
+                }
+            }
+            .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
+            .fullScreenCover(isPresented: $language) { NavigationStack { ChangeLanguageView() } }
         }
     }
 }

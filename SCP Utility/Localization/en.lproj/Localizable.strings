@@ -179,7 +179,7 @@
 "RANDOM_CARD" = "Random Article";
 "RESUME_CARD" = "Continue Reading";
 "SERIES_CARD" = "Series";
-"SERIES_TITLE%@" = "Series %@";
+"SERIES_TITLE%lld" = "Series %lld";
 "TOP_CARD" = "Popular Articles";
 
 // MARK: - Languages

@@ -12,49 +12,74 @@ import Kingfisher
 struct RandomCard: View {
     @State private var showArticle: Bool = false
     @State private var article = Article(title: "", pagesource: "", url: placeholderURL)
+    @State private var beenLoaded: Bool = false
     var body: some View {
-        Button {
-            cromGetSourceFromURL(url: article.url) { source in
-                article.pagesource = source
-                showArticle = true
-            }
-        } label: {
-            VStack {
-                HStack {
-                    Text("RANDOM_CARD")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .padding(.leading)
-                    Spacer()
-                }
-                HStack {
-                    if article.title != "" {
-                        Text(article.title)
-                            .font(.monospaced(.largeTitle)())
-                            .lineLimit(2)
-                        Image(systemName: "arrow.forward")
-                    } else {
-                        ProgressView()
+        VStack {
+            HStack {
+                Text("RANDOM_CARD")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .padding(.leading)
+                Spacer()
+                Image(systemName: "arrow.clockwise")
+                    .padding([.top, .trailing], 5)
+                    .onTapGesture {
+                        if article.title != "" { // if not already loading
+                            article = Article(title: "", pagesource: "", url: placeholderURL)
+                            cromRandom { scp in
+                                article = scp
+                            }
+                        }
                     }
+            }
+            HStack {
+                if article.title != "" {
+                    Text(article.title)
+                        .font(.monospaced(.largeTitle)())
+                        .lineLimit(2)
+                    Image(systemName: "arrow.forward")
+                } else {
+                    ProgressView()
+                }
+            }
+            .onTapGesture {
+                cromGetSourceFromURL(url: article.url) { source in
+                    article.pagesource = source
+                    showArticle = true
                 }
             }
         }
         .foregroundColor(.primary)
         .frame(maxWidth: .infinity, maxHeight: 250)
+        .padding(10)
+        .background {
+            if article.title != "" {
+                KFImage(article.thumbnail)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .opacity(0.5)
+            }
+        }
+        .clipped()
         .fullScreenCover(isPresented: $showArticle) {
             NavigationStack { ArticleView(scp: article) }
         }
-        .background {
-            KFImage(article.thumbnail)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .opacity(0.5)
-        }
         .onAppear {
-            cromRandom { scp in
-                article = scp
+            #if !targetEnvironment(simulator)
+            if !beenLoaded {
+                cromRandom { scp in
+                    article = scp
+                }
+                beenLoaded = true
             }
+            #else
+            article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
+            #endif
         }
+    }
+    
+    mutating func refreshRandom() {
+        
     }
 }
 

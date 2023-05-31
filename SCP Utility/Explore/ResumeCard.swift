@@ -39,20 +39,22 @@ struct ResumeCard: View {
                         .lineLimit(2)
                     Image(systemName: "arrow.forward")
                 }
+                .onTapGesture {
+                    showSheet = true
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: 250)
         .padding(10)
         .background {
-            KFImage(article.thumbnail)
+            KFImage(article.thumbnail == placeHolderArticle.thumbnail ? nil : article.thumbnail)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFill()
                 .opacity(0.5)
         }
+        .clipped()
         .fullScreenCover(isPresented: $showSheet) {
             NavigationStack { ArticleView(scp: article) }
-        }
-        .onTapGesture {
-            showSheet = true
         }
         .onAppear {
             if article.title == placeHolderArticle.title {
