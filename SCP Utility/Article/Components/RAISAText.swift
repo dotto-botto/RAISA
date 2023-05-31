@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-#if os(iOS)
 import MarkdownUI
-#endif
 
 /// View that parses and displays an article's page source. RAISAText calls many other views that also call RAISAText.
 /// If "text" is not nil, it will be parsed instead of the passed article's page source.
@@ -16,13 +14,11 @@ struct RAISAText: View {
     @State var article: Article
     @State var text: String? = nil
     
-    @State private var filtered: Bool = false
-    @State private var filteredText = ""
-    @State private var quickTableIndex = 0
+    @State var filtered: Bool = false
+    @State var filteredText: String = ""
     var body: some View {
         let defaults = UserDefaults.standard
         let mode = defaults.integer(forKey: "articleViewSetting")
-        let quickTables = findAllQuickTables(article.pagesource)
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading, spacing: 5) {
@@ -37,121 +33,9 @@ struct RAISAText: View {
                     }
                     
                     if filtered && mode == 0 { // Default
-                        var forbiddenLines: [String] = []
-                        let list = filteredText.components(separatedBy: .newlines)
-                        ForEach(Array(zip(list, list.indices)), id: \.1) { item, index in
-                            // ACS
-                            if item.contains("anomaly-class") {
-                                let sliced = filteredText.slice(with: item, and: "]]")
-                                ACSView(component: sliced)
-                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
-                            }
-                            
-                            // Tab View
-                            if item.contains("[[tabview") {
-                                let sliced = filteredText.slice(with: item + "\n" + list[index + 1], and: "[[/tabview]]")
-                                TabViewComponent(
-                                    article: article,
-                                    text: sliced
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
-                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
-                            }
-                            
-                            // Collapsible
-                            if item.lowercased().contains("[[collapsible") {
-                                let sliced = filteredText.slice(with: item, and: "[[/collapsible]]")
-                                Collapsible(
-                                    article: article,
-                                    text: sliced
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: sliced, with: "")
-                                let _ = forbiddenLines += sliced.components(separatedBy: .newlines)
-                            }
-                            
-                            // Image
-                            #if os(iOS)
-                            if item.contains(":scp-wiki:component:image-features-source") {
-                                let slice = filteredText.slice(with: item, and: "]]")
-                                ArticleImage(
-                                    article: article,
-                                    content: slice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
-                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-                            } else if item.contains(":image-block") {
-                                var slice = ""
-                                if item.contains("]]") {
-                                    let _ = slice = item
-                                } else {
-                                    let _ = slice = filteredText.slice(with: item + "\n" + list[index + 1], and: "]]")
-                                }
-                                ArticleImage(
-                                    article: article,
-                                    content: slice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: slice, with: "")
-                                let _ = forbiddenLines += slice.components(separatedBy: .newlines)
-                            } else if item.contains("[[") && item.contains("image ") {
-                                ArticleImage(article: article, content: item)
-                                let _ = filteredText = filteredText.replacingOccurrences(of: item, with: "")
-                                let _ = forbiddenLines += [item]
-                            }
-                            #endif
-                            
-                            // Table
-                            if item.contains("[[table") {
-                                let tableSlice = filteredText.slice(with: item + "\n" + list[index + 1] + "\n" + list[index + 2] + "\n" + list[index + 3], and: "[[/table]]")
-                                ArticleTable(
-                                    article: article,
-                                    doc: tableSlice
-                                )
-                                let _ = filteredText = filteredText.replacingOccurrences(of: tableSlice, with: "")
-                                let _ = forbiddenLines += tableSlice.components(separatedBy: .newlines)
-                            }
-                            
-                            if item.contains("||~") {
-                                ArticleTable(article: article, doc: quickTables[quickTableIndex])
-                                let _ = quickTableIndex += 1
-                                let _ = forbiddenLines += quickTables[quickTableIndex].components(separatedBy: .newlines)
-                            }
-                            
-                            // Link
-                            if item.contains("[[[") {
-                                let content = item.replacingOccurrences(of: "://*", with: "://")
-                                InlineButton(
-                                    article: article,
-                                    content: content
-                                )
-                                let _ = forbiddenLines += [item]
-                            }
-                            
-                            // Text
-                            if !forbiddenLines.contains(item) {
-                                #if os(iOS)
-                                Markdown(item)
-                                    .id(item)
-                                    .contextMenu {
-                                        Button {
-                                            article.setScroll(item)
-                                        } label: {
-                                            Label("Save Position", systemImage: "bookmark")
-                                        }
-                                    }
-
-                                #else
-                                Text(item)
-                                    .id(item)
-                                    .contextMenu {
-                                        Button {
-                                            article.setScroll(item)
-                                        } label: {
-                                            Label("Save Position", systemImage: "bookmark")
-                                        }
-                                    }
-
-                                #endif
-                            }
+                        let list = parseRT(filteredText)
+                        ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
+                            item.toCorrespondingView(article: article)
                         }
                         .onAppear {
                             if article.currenttext != nil && defaults.bool(forKey: "autoScroll") && filtered {
@@ -175,6 +59,127 @@ struct RAISAText: View {
                 }
             }
         }
+    }
+    
+    /// Parse text that has already been filtered.
+    private func parseRT(_ text: String) -> [RTItem] {
+        var source = text
+        var items: [RTItem] = []
+        let list = source.components(separatedBy: .newlines)
+        
+        var forbiddenLines: [String] = []
+        
+        let imageStrings = findAllImages(source)
+        let quickTables = findAllQuickTables(source)
+        
+        var imageIndex = 0
+        var quickTableIndex = 0
+        
+        for (item, index) in zip(list, list.indices) {
+            guard !forbiddenLines.contains(item) else { continue }
+            
+            var itemAndNext: String? = nil
+            if index >= list.count + 2 {
+                itemAndNext = item + "\n" + list[index + 1] + "\n" + list[index + 2]
+            }
+            
+            if item.contains("anomaly-class") {
+                let slice = source.slice(with: item, and: "]]")
+                items.append(.acs(slice))
+                source.removeText(from: item, to: "]]")
+                forbiddenLines += slice.components(separatedBy: .newlines)
+                
+            } else if item.contains("[[tabview") {
+                let slice = source.slice(with: itemAndNext ?? item, and: "[[/tabview]]")
+                items.append(.tabview(slice))
+                source = source.replacingOccurrences(of: slice, with: "")
+                forbiddenLines += slice.components(separatedBy: .newlines)
+                
+            } else if item.lowercased().contains("[[collapsible") {
+                let slice = source.slice(with: itemAndNext ?? item, and: "[[/collapsible]]")
+                items.append(.collapsible(slice))
+                forbiddenLines += slice.components(separatedBy: .newlines)
+                
+            } else if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") ||
+                        (item.contains("[[") && item.contains("image ")) {
+                items.append(.image(imageStrings[imageIndex]))
+                imageIndex += 1
+                
+            } else if item.contains("[[table") {
+                let slice = source.slice(with: itemAndNext ?? item, and: "[[/table]]")
+                items.append(.table(slice))
+                forbiddenLines += slice.components(separatedBy: .newlines)
+                
+            } else if item.contains("||") {
+                items.append(.table(quickTables[quickTableIndex]))
+                forbiddenLines += quickTables[quickTableIndex].components(separatedBy: .newlines)
+                quickTableIndex += 1
+                
+            } else if item.contains("[[[") {
+                items.append(.inlinebuton(item.replacingOccurrences(of: "://*", with: "://")))
+            } else {
+                items.append(.text(item))
+            }
+        }
+        
+        return items
+    }
+    
+    
+    /// Finds all tables that use the "||" syntax
+    private func findAllQuickTables(_ source: String) -> [String] {
+        var tables: [String] = []
+        let list = source.components(separatedBy: .newlines)
+        for item in list {
+            if item.contains("||~") {
+                var table: [String] = [item]
+                var tableIndex: Int = (list.firstIndex(of: item) ?? 0) + 1
+                
+                var tableItem: String = list[tableIndex]
+                while tableItem.contains("||") {
+                    table += [tableItem]
+                    tableIndex += 1
+                    tableItem = list[tableIndex]
+                }
+                
+                tables.append(table.joined(separator: "\n"))
+            }
+        }
+        
+        return tables
+    }
+    
+    /// Finds and returns all text inside of collapsible tags, including those tags.
+    private func findAllCollapsibles(_ doc: String) -> [String] {
+        var returnArray: [String] = []
+        for match in matches(for: "\\[\\[collapsible.*?\\]\\]([\\s\\S]*?)\\[\\[\\/collapsible\\]\\]", in: doc) {
+            returnArray.append(match)
+        }
+        return returnArray
+    }
+    
+    /// Finds and returns all text that displays an image.
+    private func findAllImages(_ doc: String) -> [String] {
+        var returnArray: [String] = []
+        var source = doc
+        
+        let list = source.components(separatedBy: .newlines)
+        for (item, index) in zip(list, list.indices) {
+            if item.contains(":scp-wiki:component:image-features-source") {
+                let slice = source.slice(with: item, and: "]]")
+                returnArray.append(slice)
+                source = source.replacingOccurrences(of: slice, with: "")
+            } else if item.contains(":image-block") {
+                let slice = item.contains("]]") ? item : source.slice(with: item + "\n" + list[index + 1], and: "]]")
+                returnArray.append(slice)
+                source = source.replacingOccurrences(of: slice, with: "")
+            } else if item.contains("[[") && item.contains("image ") {
+                returnArray.append(item)
+                source = source.replacingOccurrences(of: item, with: "")
+            }
+        }
+        
+        return returnArray
     }
 }
 
@@ -245,29 +250,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         completion(text)
     }
-}
-
-/// Finds all tables that use the "||" syntax
-func findAllQuickTables(_ source: String) -> [String] {
-    var tables: [String] = []
-    let list = source.components(separatedBy: .newlines)
-    for item in list {
-        if item.contains("||~") {
-            var table: [String] = [item]
-            var tableIndex: Int = (list.firstIndex(of: item) ?? 0) + 1
-            
-            var tableItem: String = list[tableIndex]
-            while tableItem.contains("||") {
-                table += [tableItem]
-                tableIndex += 1
-                tableItem = list[tableIndex]
-            }
-            
-            tables.append(table.joined(separator: "\n"))
-        }
-    }
-    
-    return tables
 }
 
 struct RAISAText_Previews: PreviewProvider {

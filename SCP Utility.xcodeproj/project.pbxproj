@@ -46,6 +46,8 @@
 		F6921A0929C6250D00EF19D0 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F6921A0829C6250D00EF19D0 /* MarkdownUI */; };
 		F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A092A829CF727300E661A0 /* ArticleBar.swift */; };
 		F6B0C1DE29C7662700C5BD98 /* AllArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */; };
+		F6D331262A2149F200F8D004 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331252A2149F200F8D004 /* Theme.swift */; };
+		F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331282A27EB8700F8D004 /* RTItem.swift */; };
 		F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */; };
 		F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */; };
 		F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8232A1A97930048C180 /* SeriesCard.swift */; };
@@ -111,6 +113,8 @@
 		F6921A0529BAA70700EF19D0 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		F6A092A829CF727300E661A0 /* ArticleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleBar.swift; sourceTree = "<group>"; };
 		F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllArticleView.swift; sourceTree = "<group>"; };
+		F6D331252A2149F200F8D004 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F6D331282A27EB8700F8D004 /* RTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTItem.swift; sourceTree = "<group>"; };
 		F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAttributeView.swift; sourceTree = "<group>"; };
 		F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineArticleRow.swift; sourceTree = "<group>"; };
 		F6DCB8232A1A97930048C180 /* SeriesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesCard.swift; sourceTree = "<group>"; };
@@ -280,6 +284,22 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		F6D331242A2149D800F8D004 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				F6D331272A214C7600F8D004 /* Fonts */,
+				F6D331252A2149F200F8D004 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		F6D331272A214C7600F8D004 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		F6DCB81E2A16E71B0048C180 /* Accessories */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +311,7 @@
 		F6DFECDD2994643A002C3F1A /* Article */ = {
 			isa = PBXGroup;
 			children = (
+				F6D331242A2149D800F8D004 /* Theme */,
 				F6DCB81E2A16E71B0048C180 /* Accessories */,
 				F66DF23F2A0DACCB004437AC /* Official Articles */,
 				F64BEECB29FD62E200AEB15B /* Comment */,
@@ -333,6 +354,7 @@
 			children = (
 				F66DF2352A05DED0004437AC /* Anomaly Class Bar */,
 				F64BEEC629FC6B2700AEB15B /* RAISAText.swift */,
+				F6D331282A27EB8700F8D004 /* RTItem.swift */,
 				F6EFF42529DF879500605E40 /* Collapsible.swift */,
 				F608B71829E09D8600B583EF /* ArticleImage.swift */,
 				F6E1FF2229E467400030DF41 /* ArticleTable.swift */,
@@ -437,6 +459,7 @@
 				F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */,
 				F6EFF42329DB81D200605E40 /* ArticleInfoView.swift in Sources */,
 				F6236F6929A2F43F007A5A61 /* Model.xcdatamodeld in Sources */,
+				F6D331262A2149F200F8D004 /* Theme.swift in Sources */,
 				F64BEECD29FD630100AEB15B /* Comment.swift in Sources */,
 				F64BEED129FD67CC00AEB15B /* CommentParser.swift in Sources */,
 				F6921A0129BA9D3F00EF19D0 /* SettingsView.swift in Sources */,
@@ -459,6 +482,7 @@
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
 				F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */,
 				F62A5D7629D9F8F200661DE0 /* SafariWrapper.swift in Sources */,
+				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
 				F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */,

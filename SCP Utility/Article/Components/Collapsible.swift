@@ -6,36 +6,42 @@
 //
 
 import SwiftUI
-#if os(iOS)
-import MarkdownUI
-#endif
 
 /// Collapsible text to be displayed inside RAISAText
 /// "text" should be the text from "[[collapsible" to "[[/collapsible]]" including those two lines.
 struct Collapsible: View {
-    @State var article: Article
-    @State var text: String
-    @State var showed: Bool = false
-    var body: some View {
-        if text.contains("[[collapsible") && text.contains("[[/collapsible]]") {
-            let show = text.slice(from: " show=\"", to: "\"")
-            let hide = text.slice(from: " hide=\"", to: "\"")
-            let content = text.slice(from: "]]", to: "[[/collapsible]]")
+    var article: Article
+    var text: String
 
-            if show != nil && hide != nil {
-                VStack {
-                    HStack { // without hstack the button snaps to middle when shown
-                        Button {
-                            showed.toggle()
-                        } label: {
-                            Text(showed ? hide! : show!).foregroundColor(.accentColor)
-                        }
-                        Spacer()
-                    }
-                    if showed {
-                        RAISAText(article: article, text: content)
-                    }
+    var show: String
+    var hide: String
+    var content: String
+    @State private var showed: Bool = false
+
+    init(article: Article, text: String) {
+        let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? "no content"
+
+        let show = text.slice(from: " show=\"", to: "\"") ?? "+ show block"
+        let hide = text.slice(from: " hide=\"", to: "\"") ?? "- hide block"
+
+        self.article = article
+        self.text = text
+
+        self.show = show
+        self.hide = hide
+        self.content = content
+    }
+
+    var body: some View {
+        VStack {
+            HStack { // without hstack the button snaps to middle when shown
+                Button(showed ? hide : show) {
+                    showed.toggle()
                 }
+                Spacer()
+            }
+            if showed {
+                RAISAText(article: article, text: content)
             }
         }
     }

@@ -43,12 +43,12 @@ fileprivate func parseLink(_ content: String) -> String {
             if link.contains("http") {
                 doc = doc.replacingOccurrences(
                     of: element,
-                    with: "[\(text)](\(link))"
+                    with: "[\(text)](\(link.replacingOccurrences(of: " ", with: "-")))"
                 )
             } else {
                 doc = doc.replacingOccurrences(
                     of: element,
-                    with: "[\(text)](https://scp-wiki.wikidot.com/\(link))"
+                    with: "[\(text)](https://scp-wiki.wikidot.com/\(link.replacingOccurrences(of: " ", with: "-")))"
                 )
             }
         } else if let combined = element.slice(from: "[[[", to: "]]]") {
@@ -58,6 +58,16 @@ fileprivate func parseLink(_ content: String) -> String {
             )
         }
     }
+    
+    for _ in doc.indicesOf(string: "[http") {
+        if let link = doc.slice(from: "[http", to: " "), let text = doc.slice(from: link + " ", to: "]") {
+            doc = doc.replacingOccurrences(
+                of: "[" + link.replacingOccurrences(of: ":*www", with: "://www") + text + "]",
+                with: "[\(text)](\(link))"
+            )
+        }
+    }
+
     return doc
 }
 
