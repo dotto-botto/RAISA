@@ -13,28 +13,21 @@ struct ArticleRow: View {
     @State var passedSCP: Article
     @State private var showSheet: Bool = false // list add view
     @State private var showArticle: Bool = false // article view
-    @State private var barIds: String? = UserDefaults.standard.string(forKey: "articleBarIds")
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     @State private var bookmarkStatus: Bool = false
     @State private var showUpdateView: Bool = false
     var body: some View {
         let con = PersistenceController.shared
-        let defaults = UserDefaults.standard
         
         Button {
-            if open == 0 || open == 2 {
-                if barIds != nil {
-                    barIds! += " " + passedSCP.id
-                    defaults.set(barIds, forKey: "articleBarIds")
-                } else {
-                    defaults.set(passedSCP.id, forKey: "articleBarIds")
-                }
+            if open == 1 {
+                showArticle = true
+            } else {
+                addIDToBar(id: passedSCP.id)
                 
                 if open == 2 {
                     showArticle = true
                 }
-            } else if open == 1 {
-                showArticle = true
             }
         } label: {
             HStack {
@@ -99,12 +92,7 @@ struct ArticleRow: View {
         }
         .contextMenu {
             Button {
-                if barIds != nil {
-                    barIds! += " " + passedSCP.id
-                    defaults.set(barIds, forKey: "articleBarIds")
-                } else {
-                    defaults.set(passedSCP.id, forKey: "articleBarIds")
-                }
+                addIDToBar(id: passedSCP.id)
             } label: {
                 Label("Add to Bar", systemImage: "plus.circle")
             }
@@ -207,15 +195,6 @@ struct ArticleRow_Previews: PreviewProvider {
             esoteric: .thaumiel,
             disruption: .amida,
             risk: .danger
-        )).previewDisplayName("Local")
-        ArticleRow(passedSCP: Article(
-            title: "Article with a extremely long title that could definitely break things if it is not accounted for!",
-            pagesource: "",
-            url: placeholderURL,
-            objclass: .keter,
-            esoteric: .thaumiel,
-            disruption: .amida,
-            risk: .danger
-        )).previewDisplayName("Online")
+        ))
     }
 }

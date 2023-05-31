@@ -61,6 +61,21 @@ struct ArticleBar: View {
     }
 }
 
+@discardableResult
+func addIDToBar(id: String) -> Bool {
+    let defaults = UserDefaults.standard
+    guard let barIds = defaults.string(forKey: "articleBarIds") else { return false }
+    guard !barIds.contains(id) else { return false }
+    
+    if barIds.isEmpty {
+        defaults.set(id, forKey: "articleBarIds")
+    } else {
+        defaults.set(barIds + " " + id, forKey: "articleBarIds")
+    }
+    
+    return true
+}
+
 struct ArticleBar_Previews: PreviewProvider {
     static var previews: some View {
         ArticleBar()
