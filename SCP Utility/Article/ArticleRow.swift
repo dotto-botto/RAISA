@@ -94,19 +94,19 @@ struct ArticleRow: View {
             Button {
                 addIDToBar(id: passedSCP.id)
             } label: {
-                Label("Add to Bar", systemImage: "plus.circle")
+                Label("ADD_TO_BAR", systemImage: "plus.circle")
             }
             
             Button {
                 showArticle = true
             } label: {
-                Label("Open in Reader", systemImage: "rectangle.portrait.and.arrow.forward")
+                Label("OPEN_IN_READER", systemImage: "rectangle.portrait.and.arrow.forward")
             }
             
             Button {
                 showUpdateView = true
             } label: {
-                Label("Update Attributes", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
+                Label("UPDATE_ATTRIBUTE", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
             }
             
             Divider()
@@ -117,13 +117,13 @@ struct ArticleRow: View {
                         con.updatePageSource(id: passedSCP.id, newPageSource: source)
                     }
                 } label: {
-                    Label("Download", systemImage: "square.and.arrow.down")
+                    Label("DOWNLOAD", systemImage: "square.and.arrow.down")
                 }
             } else {
                 Button {
                     con.deletePageSource(id: passedSCP.id)
                 } label: {
-                    Label("Offload", systemImage: "square.and.arrow.up")
+                    Label("OFFLOAD", systemImage: "square.and.arrow.up")
                 }
             }
         } preview: {

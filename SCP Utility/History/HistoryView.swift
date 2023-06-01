@@ -26,7 +26,7 @@ struct HistoryView: View {
                                     Button(role: .destructive) {
                                         con.deleteHistoryFromId(id: history.id)
                                     } label: {
-                                        Label("Delete", systemImage: "trash")
+                                        Label("DELETE", systemImage: "trash")
                                     }
                                 }
                             Divider()
@@ -44,7 +44,7 @@ struct HistoryView: View {
                 } label: {
                     Label("CLEAR_HISTORY_BUTTON", systemImage: "multiply.circle")
                 }
-                .confirmationDialog("Are you sure?", isPresented: $clearConfirmation) {
+                .confirmationDialog("ASSURANCE", isPresented: $clearConfirmation) {
                     Button("CLEAR_HISTORY_CONFIRMATION", role: .destructive) {
                         con.deleteAllHistory()
                         items = con.getAllHistory()?.reversed()

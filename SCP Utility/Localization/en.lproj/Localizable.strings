@@ -72,6 +72,8 @@
 "CHANGE" = "Change";
 "ASSURANCE" = "Are You Sure?";
 "DELETE" = "Delete";
+"DOWNLOAD" = "Download";
+"OFFLOAD" = "Offload";
 "YES" = "Yes";
 "NO" = "No";
 "OK" = "Ok";
@@ -163,8 +165,11 @@
 "AV_USER_TIRED_OF_WARNING" = "You can turn this warning off in settings.";
 "AV_SENSITIVE" = "This article contains sensitive content.";
 "AV_DISMISS_ALL" = "Dismiss all Articles";
+"ADD_TO_BAR" = "Add to Bar";
 "REMOVE_FROM_BAR" = "Remove From Bar"; // Prompt to remove an article from the bar
 "DELETE_FROM_BAR" = "Delete Article"; // Prompt on bar to delete the article itself
+"OPEN_IN_READER" = "Open in Reader";
+"UPDATE_ATTRIBUTE" = "Update Attributes";
 "CV_TITLE%@" = "Discuss: %@";
 "%@AIV_CITATION%@" = "\"%@\" by %@, from the SCP Wiki.";
 "AIV_VIEW_SOURCE" = "View Source";
@@ -174,6 +179,8 @@
 "PAGES_CREATED" = "Pages Created";
 "TOTAL_VOTES" = "Total Votes";
 "DOWNLOAD_ARTICLE_PROMPT" = "Download this article to see flavor text.";
+"SAVE_POSITION_PROMPT" = "Save Position";
+"TAB_END_INDICATOR" = "End Tab";
 
 // MARK: - Explore
 "RANDOM_CARD" = "Random Article";
@@ -205,3 +212,14 @@
 
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
+"ROMAN_1" = "I";
+"ROMAN_2" = "II";
+"ROMAN_3" = "III";
+"ROMAN_4" = "IV";
+"ROMAN_5" = "V";
+"ROMAN_6" = "VI";
+"ROMAN_7" = "VII";
+"ROMAN_8" = "VIII";
+"ROMAN_9" = "IX";
+"ROMAN_10" = "X";
+"ROMAN_11" = "XI";

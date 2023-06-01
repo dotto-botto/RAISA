@@ -49,7 +49,7 @@ struct TabViewComponent: View {
             }
             
             HStack {
-                Text("End Tab").foregroundColor(.secondary)
+                Text("TAB_END_INDICATOR").foregroundColor(.secondary)
                 Image(systemName: "chevron.right.2").foregroundColor(.secondary)
                 Rectangle()
                     .frame(height: 0.5)

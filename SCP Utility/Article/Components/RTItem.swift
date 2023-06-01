@@ -26,7 +26,7 @@ enum RTItem: Hashable {
                     Button {
                         PersistenceController.shared.setScroll(text: str, articleid: article.id)
                     } label: {
-                        Label("Save Position", systemImage: "bookmark")
+                        Label("SAVE_POSITION_PROMPT", systemImage: "bookmark")
                     }
                 })
         case .acs(let str):

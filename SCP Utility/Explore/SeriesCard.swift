@@ -46,18 +46,18 @@ struct SeriesButton: View {
         } label: {
             Group {
                 switch series {
-                case 1: Text("I")
-                case 2: Text("II")
-                case 3: Text("III")
-                case 4: Text("IV")
-                case 5: Text("V")
-                case 6: Text("VI")
-                case 7: Text("VII")
-                case 8: Text("VIII")
+                case 1: Text("ROMAN_1")
+                case 2: Text("ROMAN_2")
+                case 3: Text("ROMAN_3")
+                case 4: Text("ROMAN_4")
+                case 5: Text("ROMAN_5")
+                case 6: Text("ROMAN_6")
+                case 7: Text("ROMAN_7")
+                case 8: Text("ROMAN_8")
                 // Unused
-                case 9: Text("IX")
-                case 10: Text("X")
-                case 11: Text("XI")
+                case 9: Text("ROMAN_9")
+                case 10: Text("ROMAN_10")
+                case 11: Text("ROMAN_11")
                 default: EmptyView()
                 }
             }
