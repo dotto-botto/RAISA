@@ -163,6 +163,22 @@ struct Article: Identifiable, Codable {
         if values == [] { return nil }
         else { return values }
     }
+    
+    func findTheme() -> RAISATheme? {
+        let themes: [RAISATheme] = [
+            BlackHighlighter(),
+            BasaltTheme(),
+            SpaceTheme()
+        ]
+        
+        for theme in themes {
+            if self.pagesource.contains(theme.keyword) {
+                return theme
+            }
+        }
+        
+        return nil
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.

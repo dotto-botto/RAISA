@@ -287,17 +287,9 @@
 		F6D331242A2149D800F8D004 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
-				F6D331272A214C7600F8D004 /* Fonts */,
 				F6D331252A2149F200F8D004 /* Theme.swift */,
 			);
 			path = Theme;
-			sourceTree = "<group>";
-		};
-		F6D331272A214C7600F8D004 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 		F6DCB81E2A16E71B0048C180 /* Accessories */ = {

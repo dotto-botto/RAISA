@@ -100,9 +100,7 @@ struct ArticleView: View {
         }
         .navigationTitle(scp.title)
         .onAppear {
-            #if os(iOS)
             con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-            #endif
             defaults.set(scp.url, forKey: "lastReadUrl")
             
             if mode == 0 && forbidden {
@@ -137,7 +135,6 @@ struct ArticleView: View {
         .sheet(isPresented: $presentSheet) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
-        #if os(iOS)
         .sheet(isPresented: $showInfo) {
             ArticleInfoView(article: scp)
         }
@@ -247,7 +244,7 @@ struct ArticleView: View {
                 }
             }
         }
-        #endif
+        .tint(scp.findTheme()?.themeAccent)
     }
 }
 
