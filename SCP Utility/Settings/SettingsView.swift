@@ -10,6 +10,7 @@ import SwiftUI
 /// View that displays a settings menu to the user.
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
+    @AppStorage("trackSearchHistory") var trackSearchHistory = true
     @AppStorage("articleViewSetting") var articleViewSetting = 0
     @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 0
@@ -76,6 +77,7 @@ struct SettingsView: View {
             
             Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)
+                Toggle("TRACK_SEARCH_HISTORY", isOn: $trackSearchHistory)
                 Button("DELETE_ALL_HISTORY") {
                     historyConf = true
                 }.confirmationDialog("ASSURANCE", isPresented: $historyConf) {

@@ -14,9 +14,38 @@ struct SearchView: View {
     @State private var tokens: [RAISALanguage] = [
         RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     ]
+    @State var recentSearches: [String] = []
     
     var body: some View {
+        let defaults = UserDefaults.standard
         NavigationStack {
+            if articles.isEmpty && !recentSearches.isEmpty {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Image(systemName: "clock.arrow.circlepath")
+                        Text("RECENT_SEARCHES")
+                        Spacer()
+                        Button {
+                            defaults.set([], forKey: "recentSearches")
+                            recentSearches = []
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                    }
+                    
+                    ForEach(recentSearches.reversed(), id: \.self) { search in
+                        Button(search) {
+                            query = search
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    
+                    Spacer()
+                }
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 50)
+            }
+            
             VStack {
                 ForEach(articles) { article in
                     OnlineArticleRow(article: article)
@@ -31,7 +60,19 @@ struct SearchView: View {
         .onSubmit(of: .search) {
             cromAPISearch(query: query, language: tokens.first ?? .english) { scp in
                 articles = scp
+            
+                if !recentSearches.contains(query) && defaults.bool(forKey: "trackSearchHistory") {
+                    recentSearches.append(query)
+                    if recentSearches.count > 5 {
+                        recentSearches.remove(at: 0)
+                    }
+                    
+                    defaults.set(recentSearches, forKey: "recentSearches")
+                }
             }
+        }
+        .onAppear {
+            recentSearches = defaults.stringArray(forKey: "recentSearches") ?? []
         }
     }
 }

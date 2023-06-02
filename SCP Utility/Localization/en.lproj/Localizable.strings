@@ -112,6 +112,7 @@
 
 "HISTORY_OPTIONS" = "History";
 "TRACK_HISTORY" = "Track History";
+"TRACK_SEARCH_HISTORY" = "Track Search History";
 "DELETE_ALL_HISTORY" = "Delete All History";
 
 "READER_OPTIONS" = "Reader";
@@ -212,6 +213,7 @@
 
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
+"RECENT_SEARCHES" = "Recent Searches";
 "ROMAN_1" = "I";
 "ROMAN_2" = "II";
 "ROMAN_3" = "III";
