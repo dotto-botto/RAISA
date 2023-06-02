@@ -76,12 +76,11 @@ struct RAISAText: View {
         var quickTableIndex = 0
         
         for (item, index) in zip(list, list.indices) {
-            guard !forbiddenLines.contains(item) else { continue }
+            let itemAndNext: String = index + 3 < list.count - 1 ?
+            item + "\n" + list[index + 1] + "\n" + list[index + 2] + "\n" + list[index + 3] : item
             
-            var itemAndNext: String? = nil
-            if index >= list.count + 2 {
-                itemAndNext = item + "\n" + list[index + 1] + "\n" + list[index + 2]
-            }
+            // Check if the next items are also forbidden, because check of the one item would fail in cases where it isn't unique.
+            guard !Set(itemAndNext.components(separatedBy: .newlines)).isSubset(of: Set(forbiddenLines)) else { continue }
             
             if item.contains("anomaly-class") {
                 let slice = source.slice(with: item, and: "]]")
@@ -90,34 +89,35 @@ struct RAISAText: View {
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
             } else if item.contains("[[tabview") {
-                let slice = source.slice(with: itemAndNext ?? item, and: "[[/tabview]]")
+                let slice = source.slice(with: itemAndNext, and: "[[/tabview]]")
                 items.append(.tabview(slice))
                 source = source.replacingOccurrences(of: slice, with: "")
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
             } else if item.lowercased().contains("[[collapsible") {
-                let slice = source.slice(with: itemAndNext ?? item, and: "[[/collapsible]]")
+                let slice = source.slice(with: itemAndNext, and: "[[/collapsible]]")
                 items.append(.collapsible(slice))
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
-            } else if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") ||
-                        (item.contains("[[") && item.contains("image ")) {
-                items.append(.image(imageStrings[imageIndex]))
-                imageIndex += 1
-                
             } else if item.contains("[[table") {
-                let slice = source.slice(with: itemAndNext ?? item, and: "[[/table]]")
+                let slice = source.slice(with: itemAndNext, and: "[[/table]]")
                 items.append(.table(slice))
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
-            } else if item.contains("||") {
+            } else if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") ||
+                (item.contains("[[") && item.contains("image ")) {
+                items.append(.image(imageStrings[imageIndex]))
+                forbiddenLines += imageStrings[imageIndex].components(separatedBy: .newlines)
+                imageIndex += 1
+                
+            } else if item.contains("||") && quickTableIndex < quickTables.count {
                 items.append(.table(quickTables[quickTableIndex]))
                 forbiddenLines += quickTables[quickTableIndex].components(separatedBy: .newlines)
                 quickTableIndex += 1
                 
             } else if item.contains("[[[") {
                 items.append(.inlinebuton(item.replacingOccurrences(of: "://*", with: "://")))
-            } else {
+            } else if !forbiddenLines.contains(item) {
                 items.append(.text(item))
             }
         }
@@ -137,7 +137,7 @@ struct RAISAText: View {
                 
                 var tableItem: String = list[tableIndex]
                 while tableItem.contains("||") {
-                    table += [tableItem]
+                    table.append(tableItem)
                     tableIndex += 1
                     tableItem = list[tableIndex]
                 }
@@ -207,6 +207,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: "[[size", to: "]]")
             text.removeText(from: "[[/size", to: "]]")
         }
+        // "--]" is used in customizable acs, and it doesnt match anything, so it causes problems
+        text = text.replacingOccurrences(of: "= --]", with: "")
         text.removeText(from: "[[>", to: "]]")
         text.removeText(from: "[[/>", to: "]]")
         text.removeText(from: "[[<", to: "]]")

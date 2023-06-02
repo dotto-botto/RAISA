@@ -43,10 +43,21 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
     // New Format
     if content.contains(":scp-wiki:component:image-features-source") {
         let stringURL = articleURL.formatted()
-        if let tempURL = content.slice(from: "url=", to: "|") {
+        guard let tempURL = content.slice(from: "url=", to: "|")  else { return [nil:nil] }
+        
+        if content.contains("http") {
+            newURL = tempURL
+                .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
+                .replacingOccurrences(of: "http:", with: "https:")
+        } else {
             newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + tempURL
         }
-        caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
+    
+        if content.contains("add-caption") {
+            caption = content.slice(from: "| caption=", to: "|") ?? content.slice(from: "| caption=", to: "]]")
+        } else {
+            caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
+        }
     } else if content.contains(":image-block") {
         // Old Format
         let stringURL = articleURL.formatted()
@@ -70,7 +81,7 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
                 .replacingOccurrences(of: "http:", with: "https:")
         } else {
             let stringURL = articleURL.formatted()
-            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: " ", to: " ") ?? "")
+            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? "")
         }
     }
     
