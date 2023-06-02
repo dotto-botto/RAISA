@@ -48,6 +48,7 @@ struct ListView: View {
                         
                         Button("ADD") {
                             con.createListEntity(list: SCPList(listid: query))
+                            items = con.getAllLists()
                             alertPresent = false
                             query = ""
                         }
@@ -73,6 +74,9 @@ struct ListView: View {
                 }
             }
             .sheet(isPresented: $presentSheet) { AllArticleView(mode: mode) }
+            .onAppear {
+                items = con.getAllLists()
+            }
         }
     }
 }
