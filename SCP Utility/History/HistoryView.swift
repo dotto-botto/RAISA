@@ -12,6 +12,7 @@ import Foundation
 struct HistoryView: View {
     @State var clearConfirmation: Bool = false
     @State private var items: [HistoryItem]? = nil
+    @State private var query: String =  ""
     
     let con = PersistenceController.shared
     var body: some View {
@@ -42,7 +43,7 @@ struct HistoryView: View {
                 Button {
                     clearConfirmation = true
                 } label: {
-                    Label("CLEAR_HISTORY_BUTTON", systemImage: "multiply.circle")
+                    Label("CLEAR_HISTORY_BUTTON", systemImage: "trash")
                 }
                 .confirmationDialog("ASSURANCE", isPresented: $clearConfirmation) {
                     Button("CLEAR_HISTORY_CONFIRMATION", role: .destructive) {
@@ -50,6 +51,14 @@ struct HistoryView: View {
                         items = con.getAllHistory()?.reversed()
                     }
                 }
+            }
+        }
+        .searchable(text: $query)
+        .onChange(of: query) { _ in
+            if query == "" {
+                items = con.getAllHistory()?.reversed()
+            } else {
+                items = con.getAllHistory()?.reversed().filter { $0.articletitle?.lowercased().contains(query.lowercased()) ?? false }
             }
         }
         .onAppear {
