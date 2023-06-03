@@ -23,7 +23,6 @@ struct SettingsView: View {
     @State private var articleConf = false
     @State private var allDataConf = false
     @State private var raisaView = false
-    @State private var cromView = false
     @Environment(\.dismiss) private var dismiss
 
     let con = PersistenceController.shared
@@ -38,14 +37,13 @@ struct SettingsView: View {
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
-                
+
                 HStack {
-                    Button("SUPPORT_CROM_PROMPT") {
-                        cromView = true
-                    }.foregroundColor(.primary)
+                    Link("SUPPORT_CROM_PROMPT", destination: URL(string: "https://www.patreon.com/crombird")!)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
+                .foregroundColor(.primary)
             }
             
 //            Section("GENERAL_OPTIONS") {
@@ -123,9 +121,6 @@ struct SettingsView: View {
             } label: {
                 Image(systemName: "xmark")
             }
-        }
-        .fullScreenCover(isPresented: $cromView) {
-            SFSafariViewWrapper(url: URL(string: "https://www.patreon.com/crombird")!)
         }
     }
 }
