@@ -88,61 +88,78 @@ struct ListView: View {
 struct OneListView: View {
     @State var list: SCPList
     @State private var query: String = ""
-    @State private var objFilter: ObjectClass? = nil
-    @State private var esoFilter: EsotericClass? = nil
+    
+    @State private var listTitlePresent: Bool = false
+    @State private var listSubtitlePresent: Bool = false
+    @State private var updateQuery: String = ""
     
     var body: some View {
         if list.contents != nil {
             let con = PersistenceController.shared
             var articles = con.getAllListArticles(list: list)!
-            let _ = articles = articles.filter{ query.isEmpty ? true: $0.title?.lowercased().contains(query.lowercased()) ?? false }
-            if objFilter != nil { let _ = articles = articles.filter{ $0.objclass == objFilter!.rawValue } }
-            if esoFilter != nil { let _ = articles = articles.filter{ $0.esoteric == esoFilter!.rawValue } }
             
             List {
                 ForEach(articles, id: \.self) { article in
-                    ArticleRow(passedSCP: Article(fromEntity: article)!)
-                        .swipeActions(edge: .leading) {
-                            Button {
-                                
-                            } label: {
-                                Image(systemName: "text.badge.minus")
-                            }
+                    if let article = Article(fromEntity: article) {
+                        let button = Button {
+                            list.removeContent(id: article.id)
+                        } label: {
+                            Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
                         }
+                        
+                        ArticleRow(passedSCP: article)
+                            .swipeActions(edge: .leading) { button }
+                    }
                 }
             }
             .navigationTitle(list.listid)
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
+            .onAppear {
+                if let scplistentity = con.getListByID(id: list.id), let scplist = SCPList(fromEntity: scplistentity) {
+                    list = scplist
+                }
+            }
+            .onChange(of: query) { _ in
+                articles = articles.filter{ query.isEmpty ? true : $0.title?.lowercased().contains(query.lowercased()) ?? false }
+            }
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Menu {
-                        Menu("Filter by Object Class") {
-                            Picker("", selection: $objFilter) {
-                                Label("SAFE", image: "safe-icon").tag(0)
-                                Label("EUCLID", image: "euclid-icon").tag(1)
-                                Label("KETER", image: "keter-icon").tag(2)
-                                Label("NEUTRALIZED", image: "neutralized-icon").tag(3)
-                                Label("PENDING", image: "pending-icon").tag(4)
-                                Label("EXPLAINED", image: "explained-icon").tag(5)
-                                Label("ESOTERIC", image: "esoteric-icon").tag(6)
-                            }
-                        }
-                        Menu("Filter by Esoteric Class") {
-                            Picker("", selection: $objFilter) {
-                                Label("APOLLYON", image: "apollyon-icon").tag(0)
-                                Label("ARCHON", image: "archon-icon").tag(1)
-                                Label("CERNUNNOS", image: "cernunnos-icon").tag(2)
-                                Label("DECOMMISSIONED", image: "decommissioned-icon").tag(3)
-                                Label("HIEMAL", image: "hiemal-icon").tag(4)
-                                Label("TIAMAT", image: "tiamat-icon").tag(5)
-                                Label("TICONDEROGA", image: "ticonderoga-icon").tag(6)
-                                Label("THAUMIEL", image: "thaumiel-icon").tag(7)
-                                Label("UNCONTAINED", image: "uncontained-icon").tag(8)
-                            }
-                        }
+                ToolbarItemGroup(placement: .secondaryAction) {
+                    Button {
+                        listTitlePresent = true
                     } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
+                        Label("CHANGE_LIST_TITLE", systemImage: "pencil")
                     }
+                    Button {
+                        listSubtitlePresent = true
+                    } label: {
+                        Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
+                    }
+                }
+            }
+            .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
+                TextField(list.listid, text: $updateQuery)
+                
+                Button("CHANGE") {
+                    list.updateTitle(newTitle: updateQuery)
+                    listTitlePresent = false
+                    query = ""
+                }
+                Button("CANCEL", role: .cancel) {
+                    listTitlePresent = false
+                    query = ""
+                }
+            }
+            .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
+                TextField(list.subtitle ?? "", text: $updateQuery)
+                
+                Button("CHANGE") {
+                    list.updateSubtitle(newTitle: updateQuery)
+                    listSubtitlePresent = false
+                    query = ""
+                }
+                Button("CANCEL", role: .cancel) {
+                    listSubtitlePresent = false
+                    query = ""
                 }
             }
             Spacer()

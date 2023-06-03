@@ -130,7 +130,7 @@
 
 // MARK: - History View
 "HISTORY_TITLE" = "History";
-"NO_HISTORY" = "You have not read an article yet.";
+"NO_HISTORY" = "No History Found.";
 "CLEAR_HISTORY_BUTTON" = "Clear All History";
 "CLEAR_HISTORY_CONFIRMATION" = "Clear All History?";
 
@@ -150,6 +150,7 @@
 "NO_SAVED_ARTICLES" = "There are no saved articles.";
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
+"REMOVE_FROM_%@" = "Remove from \"%@\"";
 
 // MARK: - Article View, Bar, and Info
 "LOADING_SAFARI" = "This article will open in safari.";
@@ -182,6 +183,7 @@
 "DOWNLOAD_ARTICLE_PROMPT" = "Download this article to see flavor text.";
 "SAVE_POSITION_PROMPT" = "Save Position";
 "TAB_END_INDICATOR" = "End Tab";
+"BLOCK_END_INDICATOR" = "End Block";
 
 // MARK: - Explore
 "RANDOM_CARD" = "Random Article";

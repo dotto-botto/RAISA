@@ -54,7 +54,6 @@ struct PersistenceController {
         if context.hasChanges {
             do {
                 try context.save()
-                let _ = PersistenceController(inMemory: false)
             } catch {
                 // Show some error here
             }
@@ -232,6 +231,43 @@ extension PersistenceController { // Lists
             print(error.localizedDescription)
         }
         return false
+    }
+    
+    func removeIdFromList(listIdentifier listid: String, idToRemove id: String, context: NSManagedObjectContext? = nil) {
+        let context = context ?? container.viewContext
+        
+        let object = NSFetchRequest<SCPListItem>(entityName: "SCPListItem")
+        object.predicate = NSPredicate(format: "identifier == %@", listid)
+        
+        do {
+            if let list = try context.fetch(object).first, let contents = list.contents {
+                list.contents = contents.filter { $0 != id }
+            }
+            
+            try context.save()
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    
+    /// Retrieve a list from the core data store using its id.
+    func getListByID(id: String, context: NSManagedObjectContext? = nil) -> SCPListItem? {
+        let context = context ?? container.viewContext
+        
+        let object = NSFetchRequest<SCPListItem>(entityName: "SCPListItem")
+        object.predicate = NSPredicate(format: "identifier == %@", id)
+
+        var newObject: SCPListItem?
+        
+        do {
+            newObject = try context.fetch(object).first
+            
+            try context.save()
+        } catch let error {
+            debugPrint(error.localizedDescription)
+        }
+        
+        return newObject
     }
     
     /// Delete all list items in core data.

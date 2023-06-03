@@ -45,6 +45,15 @@ struct SCPList: Identifiable {
         con.addArticleToListFromId(listid: self.listid, article: article)
     }
     
+    /// Remove an id from a list without deleting the article
+    mutating func removeContent(id: String) {
+        guard !(self.contents?.isEmpty ?? true) else { return }
+        
+        let newContents = self.contents?.filter { $0 != id }
+        self.contents = newContents
+        con.removeIdFromList(listIdentifier: self.id, idToRemove: id)
+    }
+    
     mutating func updateTitle(newTitle: String) {
         self.listid = newTitle
         con.updateListTitle(newTitle: newTitle, list: self)
