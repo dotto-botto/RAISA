@@ -82,9 +82,9 @@ struct RAISAText: View {
             // Check if the next items are also forbidden, because check of the one item would fail in cases where it isn't unique.
             guard !Set(itemAndNext.components(separatedBy: .newlines)).isSubset(of: Set(forbiddenLines)) else { continue }
             
-            if item.contains("anomaly-class") {
+            if item.contains("anomaly-class") || item.contains("object-warning-box") {
                 let slice = source.slice(with: item, and: "]]")
-                items.append(.acs(slice))
+                items.append(.component(slice))
                 source.removeText(from: item, to: "]]")
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
@@ -170,7 +170,8 @@ struct RAISAText: View {
                 returnArray.append(slice)
                 source = source.replacingOccurrences(of: slice, with: "")
             } else if item.contains(":image-block") {
-                let slice = item.contains("]]") ? item : source.slice(with: item + "\n" + list[index + 1], and: "]]")
+                let itemAndNext = item + "\n" + list[index + 1]
+                let slice = item.contains("]]") ? item : (itemAndNext.contains("]]") ? itemAndNext: source.slice(with: itemAndNext, and: "]]"))
                 returnArray.append(slice)
                 source = source.replacingOccurrences(of: slice, with: "")
             } else if item.contains("[[") && item.contains("image ") {
@@ -188,6 +189,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
+        text = try! text.replacing(Regex(#"\[!--[\s\S]*--]"#), with: "")
         for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
         text.removeText(from: "[[include component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
@@ -226,29 +228,38 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
         }
         
-        text = text.replacingOccurrences(of: "@@@@", with: "\n")
+        for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
+        }
+        for match in matches(for: #"\/\/[\s\S]*\/\/"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
+        }
+        
         text = text.replacingOccurrences(of: "@@ @@", with: "\n")
-        text = text.replacingOccurrences(of: "//", with: "*")
+        for match in matches(for: "@@.*@@", in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@@", with: ""))
+        }
+        
+        text = text.replacingOccurrences(of: "@@@@", with: "\n")
         text = text.replacingOccurrences(of: "{{", with: "")
         text = text.replacingOccurrences(of: "}}", with: "")
-        text = text.replacingOccurrences(of: ":*scp-wiki", with: "://scp-wiki")
         text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
         text = try! text.replacing(Regex("===+\n"), with: "---\n")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
-        text = try! text.replacing(Regex(#" --"#), with: " ~~") // strikethrough
-        text = try! text.replacing(Regex(#"-- "#), with: "~~ ")
         text = try! text.replacing(Regex(#"\n="#), with: "\n")
-        text = try! text.replacing(Regex(#"-- "#), with: "~~ ")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         
         let supportedIncludes: [String] = [
             "image-features-source",
             "image-block",
             "anomaly-class",
+            "object-warning-box",
         ]
         
         let regex = try! Regex("\\[\\[include(?!.*(\(supportedIncludes.joined(separator: "|"))))[^\\]]*\\]\\](?![^\\[]*\\])")
         text = text.replacing(regex, with: "")
+        
+        text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         
         completion(text)
     }

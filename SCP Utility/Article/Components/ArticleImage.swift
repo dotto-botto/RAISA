@@ -81,7 +81,7 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
                 .replacingOccurrences(of: "http:", with: "https:")
         } else {
             let stringURL = articleURL.formatted()
-            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? "")
+            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
         }
     }
     

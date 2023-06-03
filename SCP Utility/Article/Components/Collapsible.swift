@@ -21,8 +21,8 @@ struct Collapsible: View {
     init(article: Article, text: String) {
         let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? "no content"
 
-        let show = text.slice(from: " show=\"", to: "\"") ?? "+ show block"
-        let hide = text.slice(from: " hide=\"", to: "\"") ?? "- hide block"
+        let show = text.slice(from: "show=\"", to: "\"") ?? "+ show block"
+        let hide = text.slice(from: "hide=\"", to: "\"") ?? "- hide block"
 
         self.article = article
         self.text = text
@@ -42,6 +42,15 @@ struct Collapsible: View {
             }
             if showed {
                 RAISAText(article: article, text: content)
+                
+                HStack {
+                    Text("BLOCK_END_INDICATOR").foregroundColor(.secondary)
+                    Image(systemName: "chevron.right.2").foregroundColor(.secondary)
+                    Rectangle()
+                        .frame(height: 0.5)
+                        .foregroundColor(.secondary)
+                    Image(systemName: "chevron.left.2").foregroundColor(.secondary)
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ import MarkdownUI
 
 enum RTItem: Hashable {
     case text(_ raw: String)
-    case acs(_ raw: String) // anomaly class bar or any of its variants
+    case component(_ raw: String) // anomaly class bar or object warning box
     case tabview(_ raw: String)
     case collapsible(_ raw: String)
     case image(_ raw: String) // any component that is used to display an image
@@ -29,8 +29,12 @@ enum RTItem: Hashable {
                         Label("SAVE_POSITION_PROMPT", systemImage: "bookmark")
                     }
                 })
-        case .acs(let str):
-            return AnyView(ACSView(component: str))
+        case .component(let str):
+            if str.contains("object-warning-box") {
+                return AnyView(ObjectWarningBoxView(source: str))
+            } else {
+                return AnyView(ACSView(component: str))
+            }
         case .tabview(let str):
             return AnyView(TabViewComponent(article: article, text: str))
         case .collapsible(let str):

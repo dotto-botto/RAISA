@@ -13,14 +13,13 @@ struct ArticleTable: View {
     @State var article: Article
     @State var doc: String
     var body: some View {
-        var headers: [String] = findHeaders(doc)
-        if headers == [] { let _ = headers = [""] }
+        let headers: [String] = findHeaders(doc)
         let rows: [[String]] = parseTableContent(doc)
     
         VStack(spacing: 0) {
             Rectangle().frame(height: 1)
             HStack {
-                ForEach(headers, id: \.self) { header in
+                ForEach(headers.isEmpty ? [""] : headers, id: \.self) { header in
                     RAISAText(article: article, text: header)
                     Spacer()
                 }
