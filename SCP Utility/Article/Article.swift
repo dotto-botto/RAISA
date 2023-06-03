@@ -179,6 +179,16 @@ struct Article: Identifiable, Codable {
         
         return nil
     }
+    
+    func findLanguage() -> RAISALanguage? {
+        for lang in RAISALanguage.allCases {
+            guard let baseURL = lang.toURL().formatted().slice(from: "://") else { continue }
+            if self.url.formatted().contains(baseURL) {
+                return lang
+            }
+        }
+        return nil
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.

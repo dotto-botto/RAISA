@@ -343,3 +343,10 @@ query Search($query: URL! = "\(url)") {
         }
     }
 }
+
+func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALanguage, completion: @escaping (Article?) -> Void) {
+    let baseTitle = url.formatted().replacingOccurrences(of: fromLang.toURL().formatted(), with: "")
+    let newURL = URL(string: toLang.toURL().formatted() + baseTitle)!
+    
+    cromAPISearchFromURL(query: newURL) { article in completion(article) }
+}

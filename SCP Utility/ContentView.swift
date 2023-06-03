@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var frameSize : CGFloat = 0
     var body: some View {
         let ids = UserDefaults.standard.string(forKey: "articleBarIds") ?? ""
-        let frameSize: CGFloat = ids.isEmpty ? 0 : 40
         
         TabView {
             VStack {
@@ -29,6 +29,9 @@ struct ContentView: View {
                 HistoryView()
                 ArticleBar().frame(height: frameSize)
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
+        }
+        .onAppear {
+            frameSize = ids.isEmpty ? 0 : 40
         }
     }
 }

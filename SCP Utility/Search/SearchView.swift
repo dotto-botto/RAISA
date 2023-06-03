@@ -11,9 +11,7 @@ import SwiftUI
 struct SearchView: View {
     @State var query: String = ""
     @State var articles: [Article] = []
-    @State private var tokens: [RAISALanguage] = [
-        RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
-    ]
+    @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
     @State var recentSearches: [String] = []
     
     var body: some View {
@@ -53,12 +51,29 @@ struct SearchView: View {
                 Spacer()
             }
             .navigationTitle("SEARCH_TITLE")
+            .toolbar {
+                Menu {
+                    ForEach(RAISALanguage.allCases) { lang in
+                        Button {
+                            token = lang.rawValue
+                        } label: {
+                            HStack {
+                                Text(lang.toName())
+                                Spacer()
+                                if token == lang.rawValue {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: "globe")
+                }
+            }
         }
-        .searchable(text: $query, tokens: $tokens, prompt: "SEARCH_PROMPT", token: { token in
-            Text(token.toName())
-        })
+        .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
-            cromAPISearch(query: query, language: tokens.first ?? .english) { scp in
+            cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp in
                 articles = scp
             
                 if !recentSearches.contains(query) && defaults.bool(forKey: "trackSearchHistory") {

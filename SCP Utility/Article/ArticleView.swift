@@ -16,7 +16,6 @@ struct ArticleView: View {
     @State var presentSheet: Bool = false
     @State var showSafari: Bool = false
     @State private var showInfo: Bool = false
-    @State private var resume: Bool = false
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
     @State private var forbidden: Bool = true
@@ -141,9 +140,6 @@ struct ArticleView: View {
         .sheet(isPresented: $showComments) {
             CommentsView(article: scp)
         }
-        .fullScreenCover(isPresented: $showSafari) {
-            SFSafariViewWrapper(url: scp.url)
-        }
         .fullScreenCover(isPresented: $showNext) {
             NavigationStack { ArticleView(scp: nextArticle!, dismissText: scp.title) }
         }
@@ -166,14 +162,14 @@ struct ArticleView: View {
                                 .compactMap { $0 }
                                 .first?.windows
                                 .filter({ $0.isKeyWindow }).first?.rootViewController
-                            
+
                         rootViewController?.dismiss(animated: true)
                     } label: {
                         Label("AV_DISMISS_ALL", systemImage: "house")
                     }
                 }
             }
-            
+
             ToolbarItem {
                 Button {
                     showNext = true
@@ -204,7 +200,7 @@ struct ArticleView: View {
                     }
                 }
                 .disabled(containsExplicitContent)
-                
+
                 Spacer()
                 Button {
                     showInfo.toggle()
@@ -222,12 +218,18 @@ struct ArticleView: View {
                 .disabled(containsExplicitContent)
 
                 Spacer()
-                Button {
-                    showSafari.toggle()
+                Menu {
+                    ForEach(RAISALanguage.allCases) { lang in
+                        Button(lang.toName()) {
+                            cromTranslate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article in
+                                nextArticle = article
+                                showNext = true
+                            }
+                        }
+                    }
                 } label: {
-                    Image(systemName: "safari")
+                    Image(systemName: "globe")
                 }
-                .disabled(containsExplicitContent)
 
                 Spacer()
                 Button {
