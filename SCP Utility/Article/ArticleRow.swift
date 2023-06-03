@@ -156,28 +156,23 @@ struct ArticleRow: View {
                             case "neutralized": passedSCP.updateAttribute(objectClass: .neutralized); break
                             case "pending": passedSCP.updateAttribute(objectClass: .pending); break
                             case "explained": passedSCP.updateAttribute(objectClass: .explained); break
-                            case "esoteric-class": passedSCP.updateAttribute(objectClass: .esoteric); break
+                                
+                            case "apollyon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .apollyon); break
+                            case "archon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .archon); break
+                            case "cernunnos": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .cernunnos); break
+                            case "decommissioned": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .decommissioned); break
+                            case "hiemal": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .hiemal); break
+                            case "tiamat": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .tiamat); break
+                            case "ticonderoga": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .ticonderoga); break
                             case "thaumiel": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .thaumiel); break
+                            case "uncontained": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .uncontained); break
                             default: continue
                             }
                         }
-                    }
-                    
-                    if passedSCP.objclass == .esoteric && passedSCP.esoteric == .unknown {
-                        var newEso: EsotericClass? = nil
-                        let doc = passedSCP.pagesource.lowercased()
-                        if doc.contains("apollyon") { newEso = .apollyon }
-                        else if doc.contains("archon") { newEso = .archon }
-                        else if doc.contains("cernunnos") { newEso = .cernunnos }
-                        else if doc.contains("decommissioned") { newEso = .decommissioned }
-                        else if doc.contains("hiemal") { newEso = .hiemal }
-                        else if doc.contains("tiamat") { newEso = .tiamat }
-                        else if doc.contains("ticonderoga") { newEso = .ticonderoga }
-                        else if doc.contains("thaumiel") { newEso = .thaumiel }
-                        else if doc.contains("uncontained") { newEso = .uncontained }
                         
-                        if newEso != nil { passedSCP.updateAttribute(esotericClass: newEso!) }
-                        else { passedSCP.updateAttribute(esotericClass: .thaumiel) }
+                        if passedSCP.objclass == .unknown {
+                            passedSCP.updateAttribute(objectClass: .esoteric)
+                        }
                     }
                 }
             }

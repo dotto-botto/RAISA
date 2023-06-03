@@ -26,6 +26,13 @@ struct UpdateAttributeView: View {
                                 .resizable()
                                 .scaledToFit()
                         }
+                        .background {
+                            if article.objclass == obj {
+                                Capsule()
+                                    .foregroundColor(.accentColor)
+                                    .opacity(0.7)
+                            }
+                        }
                     }
                 }
                 .frame(height: 45)
@@ -39,11 +46,23 @@ struct UpdateAttributeView: View {
                 HStack {
                     ForEach(EsotericClass.allCases.filter { $0 != .unknown }, id: \.self) { obj in
                         Button {
-                            article.updateAttribute(esotericClass: obj)
+                            if article.esoteric == obj {
+                                article.updateAttribute(esotericClass: .unknown)
+                            } else {
+                                article.updateAttribute(objectClass: .esoteric)
+                                article.updateAttribute(esotericClass: obj)
+                            }
                         } label: {
                             Image(obj.toImage())
                                 .resizable()
                                 .scaledToFit()
+                        }
+                        .background {
+                            if article.esoteric == obj {
+                                Capsule()
+                                    .foregroundColor(.accentColor)
+                                    .opacity(0.7)
+                            }
                         }
                     }
                 }
@@ -64,6 +83,13 @@ struct UpdateAttributeView: View {
                                 .resizable()
                                 .scaledToFit()
                         }
+                        .background {
+                            if article.risk == obj {
+                                Capsule()
+                                    .foregroundColor(.accentColor)
+                                    .opacity(0.7)
+                            }
+                        }
                     }
                 }
                 .frame(height: 45)
@@ -82,6 +108,13 @@ struct UpdateAttributeView: View {
                             Image(obj.toImage())
                                 .resizable()
                                 .scaledToFit()
+                        }
+                        .background {
+                            if article.disruption == obj {
+                                Capsule()
+                                    .foregroundColor(.accentColor)
+                                    .opacity(0.7)
+                            }
                         }
                     }
                 }
