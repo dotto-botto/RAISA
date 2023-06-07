@@ -16,9 +16,9 @@ struct Collapsible: View {
     var show: String
     var hide: String
     var content: String
-    @State private var showed: Bool = false
+    @State var showed: Bool
 
-    init(article: Article, text: String) {
+    init(article: Article, text: String, openOnLoad open: Bool = false) {
         let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? "no content"
 
         let show = text.slice(from: "show=\"", to: "\"") ?? "+ show block"
@@ -30,6 +30,8 @@ struct Collapsible: View {
         self.show = show
         self.hide = hide
         self.content = content
+        
+        self._showed = State(initialValue: open)
     }
 
     var body: some View {
@@ -73,7 +75,7 @@ This text is in a collapsible.
 [[collapsible hide="SECURITY MEMETIC: WE DID NOT FAIL THEM" show="Incident Report 2001-19██-A: LEVEL 4 CLEARANCE REQUIRED" hideLocation=both]]
 This text is also in a collapsible.
 [[/collapsible]]
-"""
+""", openOnLoad: true
         )
     }
 }

@@ -13,9 +13,10 @@ import MarkdownUI
 struct RAISAText: View {
     @State var article: Article
     @State var text: String? = nil
+    @State var openOnLoad: Bool = false
     
-    @State var filtered: Bool = false
-    @State var filteredText: String = ""
+    @State private var filtered: Bool = false
+    @State private var filteredText: String = ""
     var body: some View {
         let defaults = UserDefaults.standard
         let mode = defaults.integer(forKey: "articleViewSetting")
@@ -33,7 +34,7 @@ struct RAISAText: View {
                     }
                     
                     if filtered && mode == 0 { // Default
-                        let list = parseRT(filteredText)
+                        let list = parseRT(filteredText, openOnLoad: openOnLoad)
                         ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
                             item.toCorrespondingView(article: article)
                         }
@@ -62,7 +63,7 @@ struct RAISAText: View {
     }
     
     /// Parse text that has already been filtered.
-    private func parseRT(_ text: String) -> [RTItem] {
+    private func parseRT(_ text: String, openOnLoad: Bool = false) -> [RTItem] {
         var source = text
         var items: [RTItem] = []
         let list = source.components(separatedBy: .newlines)
@@ -96,7 +97,7 @@ struct RAISAText: View {
                 
             } else if item.lowercased().contains("[[collapsible") {
                 let slice = source.slice(with: itemAndNext, and: "[[/collapsible]]")
-                items.append(.collapsible(slice))
+                items.append(.collapsible(slice, openOnLoad: openOnLoad))
                 forbiddenLines += slice.components(separatedBy: .newlines)
                 
             } else if item.contains("[[table") {
@@ -231,7 +232,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
         }
-        for match in matches(for: #"\/\/[\s\S]*\/\/"#, in: text) {
+        for match in matches(for: #"\/\/.*\/\/"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
         }
         

@@ -91,7 +91,7 @@ struct ArticleView: View {
             
             if !forbidden && !containsExplicitContent && !isBuiltIn {
                 if sourceLoaded {
-                    RAISAText(article: scp)
+                    RAISAText(article: scp, openOnLoad: scp.currenttext != nil)
                 } else {
                     ProgressView()
                 }
