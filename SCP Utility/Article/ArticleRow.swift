@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
+import MarkdownUI
 
 /// The main view used to display articles that are saved by the user.
 /// Meant to be used inside of a List or a VStack.
 struct ArticleRow: View {
     @State var passedSCP: Article
-    @State private var showSheet: Bool = false // list add view
-    @State private var showArticle: Bool = false // article view
     @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
-    @State private var bookmarkStatus: Bool = false
+    @State private var flavorText: String? = nil
+    @State private var showArticle: Bool = false // article view
     @State private var showUpdateView: Bool = false
+    @State private var showListAddView: Bool = false
     var body: some View {
         let con = PersistenceController.shared
         
@@ -44,31 +45,22 @@ struct ArticleRow: View {
                     }
                     
                     HStack {
-                        if passedSCP.pagesource != "" {
-                            Image(systemName: "arrow.down.circle.fill")
-                                .resizable()
-                                .foregroundColor(.accentColor)
-                                .scaledToFit()
-                                .frame(width: 15, height: 14)
-                        }
+                        Image(systemName: "arrow.down.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 14)
                         
-                        var text = passedSCP.currenttext ??
-                        passedSCP.pagesource.slice(from: "Description:** ") ??
-                        passedSCP.pagesource
-                        
-                        if text == "" { // offloaded
-                            let _ = text = NSLocalizedString("DOWNLOAD_ARTICLE_PROMPT", comment: "")
-                        }
-                            
-                        Text(text)
+                        Markdown(flavorText ?? "")
                             .lineLimit(1)
-                            .foregroundColor(.secondary)
-                            .font(.monospaced(.caption2)())
+                            .markdownTextStyle(\.text) {
+                                FontFamilyVariant(.monospaced)
+                                FontSize(.em(0.5))
+                                ForegroundColor(.secondary)
+                            }
                         Spacer()
                     }
                 }
                 Spacer()
-                #if os(iOS)
                 ZStack {
                     if let im = passedSCP.esoteric?.toImage(), im != "" {
                         if passedSCP.objclass == .esoteric {
@@ -87,10 +79,15 @@ struct ArticleRow: View {
                             .frame(width: 30, height: 30)
                     }
                 }
-                #endif
             }
         }
         .contextMenu {
+            Button {
+                showListAddView = true
+            } label: {
+                Label("LISTADDVIEW_TITLE", systemImage: "bookmark")
+            }
+            
             Button {
                 addIDToBar(id: passedSCP.id)
             } label: {
@@ -108,24 +105,6 @@ struct ArticleRow: View {
             } label: {
                 Label("UPDATE_ATTRIBUTE", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
             }
-            
-            Divider()
-            
-            if passedSCP.pagesource == "" {
-                Button {
-                    cromGetSourceFromURL(url: passedSCP.url) { source in
-                        con.updatePageSource(id: passedSCP.id, newPageSource: source)
-                    }
-                } label: {
-                    Label("DOWNLOAD", systemImage: "square.and.arrow.down")
-                }
-            } else {
-                Button {
-                    con.deletePageSource(id: passedSCP.id)
-                } label: {
-                    Label("OFFLOAD", systemImage: "square.and.arrow.up")
-                }
-            }
         } preview: {
             NavigationStack { RAISAText(article: passedSCP) }
         }
@@ -134,16 +113,32 @@ struct ArticleRow: View {
                 con.deleteArticleEntity(id: passedSCP.id)
             } label: { Image(systemName: "trash") }
         }
-        .sheet(isPresented: $showSheet) {
-            ListAdd(isPresented: $showSheet, article: passedSCP)
-        }
         .sheet(isPresented: $showUpdateView) {
             UpdateAttributeView(article: passedSCP)
         }
-        .fullScreenCover(isPresented: $showArticle) {
+        .fullScreenCover(isPresented: $showArticle, onDismiss: {
+            if let articleitem = con.getArticleByID(id: passedSCP.id), let article = Article(fromEntity: articleitem) {
+                passedSCP = article
+            }
+        }) {
             NavigationStack { ArticleView(scp: passedSCP) }
         }
+        .sheet(isPresented: $showListAddView) {
+            ListAdd(isPresented: $showListAddView, article: passedSCP)
+        }
         .onAppear {
+            if flavorText == nil && passedSCP.currenttext == nil {
+                let list = passedSCP.pagesource.components(separatedBy: .newlines)
+                let middleIndex = Int(list.count / 2)
+                let secondHalf = list[middleIndex..<list.count].joined(separator: " ")
+                
+                FilterToMarkdown(doc: secondHalf) { doc in
+                    flavorText = doc
+                }
+            } else if passedSCP.currenttext != nil {
+                flavorText = passedSCP.currenttext!
+            }
+            
             if passedSCP.objclass == .unknown {
                 // MARK: Article Scanning
                 DispatchQueue.main.async {
