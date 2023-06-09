@@ -117,7 +117,8 @@ struct RAISAText: View {
                 quickTableIndex += 1
                 
             } else if item.contains("[[[") {
-                items.append(.inlinebuton(item.replacingOccurrences(of: "://*", with: "://")))
+                // terniary operator to fix crash when the closing tag is on a newline
+                items.append(.inlinebuton(item.contains("]]]") ? item : source.slice(with: item, and: "]]]")))
             } else if !forbiddenLines.contains(item) {
                 items.append(.text(item))
             }
@@ -210,6 +211,15 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: "[[size", to: "]]")
             text.removeText(from: "[[/size", to: "]]")
         }
+        
+        // Table of Contents markings
+        for _ in text.indicesOf(string: "[[#") {
+            text.removeText(from: "[[#", to: "]]")
+        }
+        for _ in text.indicesOf(string: ",,[#toc") {
+            text.removeText(from: ",,[#toc", to: "],,")
+        }
+        
         // "--]" is used in customizable acs, and it doesnt match anything, so it causes problems
         text = text.replacingOccurrences(of: "= --]", with: "")
         text.removeText(from: "[[>", to: "]]")
@@ -236,9 +246,16 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
         }
         
-        text = text.replacingOccurrences(of: "@@ @@", with: "\n")
+        text = text.replacingOccurrences(of: "@@ @@", with: "     ")
         for match in matches(for: "@@.*@@", in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@@", with: ""))
+        }
+        
+        // Superscript "^^2^^"
+        for num in text.indicesOf(string: "^^") {
+            if let range = text.range(of: "^^") {
+                text = text.replacingCharacters(in: range, with: num % 2 == 0 ? "" : "^")
+            }
         }
         
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
@@ -247,6 +264,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
         text = try! text.replacing(Regex("===+\n"), with: "---\n")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
+        text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
         text = try! text.replacing(Regex(#"\n="#), with: "\n")
         text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
         

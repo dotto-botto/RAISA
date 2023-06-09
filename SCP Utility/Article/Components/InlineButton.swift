@@ -68,6 +68,7 @@ fileprivate func parseLink(_ content: String) -> String {
         }
     }
 
+    doc = doc.replacingOccurrences(of: "\n", with: "")
     return doc
 }
 
