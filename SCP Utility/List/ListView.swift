@@ -22,6 +22,23 @@ struct ListView: View {
         let con = PersistenceController.shared
         
         NavigationStack {
+            NavigationLink {
+                AllArticleView().navigationTitle("ALL_SAVED_ARTICLES")
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("ALL_SAVED_ARTICLES")
+                            .lineLimit(1)
+                        Text("ALL_SAVED_ARTICLES_SUBTITLE")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 13))
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    Image(systemName: "arrow.forward")
+                }
+                .padding(.horizontal, 20)
+            }
             List(items!) { item in
                 ListRow(fromEntity: item)
             }
