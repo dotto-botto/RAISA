@@ -54,7 +54,7 @@ struct ArticleBar: View {
                 Spacer()
             }
         }
-        .frame(height: 40)
+        .frame(height: articles.isEmpty ? 0 : 40)
         .fullScreenCover(isPresented: $toArticle) {
             NavigationStack { ArticleTabView(selectedID: selectedID) }
         }

@@ -8,30 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var frameSize : CGFloat = 0
     var body: some View {
-        let ids = UserDefaults.standard.string(forKey: "articleBarIds") ?? ""
-        
         TabView {
             VStack {
                 ExploreView()
-                ArticleBar().frame(height: frameSize)
+                ArticleBar()
             }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
             VStack {
                 ListView()
-                ArticleBar().frame(height: frameSize)
+                ArticleBar()
             }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
             VStack {
                 SearchView()
-                ArticleBar().frame(height: frameSize)
+                ArticleBar()
             }.tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }
             VStack {
                 HistoryView()
-                ArticleBar().frame(height: frameSize)
+                ArticleBar()
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
-        }
-        .onAppear {
-            frameSize = ids.isEmpty ? 0 : 40
         }
     }
 }
