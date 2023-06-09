@@ -17,7 +17,6 @@
 		F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608B71829E09D8600B583EF /* ArticleImage.swift */; };
 		F615611B29D87332003561CD /* RandomCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F615611A29D87332003561CD /* RandomCard.swift */; };
 		F6236F6929A2F43F007A5A61 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F6DFECFD299AED80002C3F1A /* Model.xcdatamodeld */; };
-		F62A5D7629D9F8F200661DE0 /* SafariWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F615611C29D9CE92003561CD /* SafariWrapper.swift */; };
 		F62A5D7729D9F90300661DE0 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DFED00299AEFC6002C3F1A /* DataController.swift */; };
 		F62A5D7829D9F91200661DE0 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DFECD72990A2FA002C3F1A /* ArticleView.swift */; };
 		F62A5D7929D9F92100661DE0 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F604054A29624A3F003577D7 /* SearchView.swift */; };
@@ -92,7 +91,6 @@
 		F604054A29624A3F003577D7 /* SearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F608B71829E09D8600B583EF /* ArticleImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleImage.swift; sourceTree = "<group>"; };
 		F615611A29D87332003561CD /* RandomCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomCard.swift; sourceTree = "<group>"; };
-		F615611C29D9CE92003561CD /* SafariWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWrapper.swift; sourceTree = "<group>"; };
 		F64BEEC229F45CEC00AEB15B /* ArticleTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTabView.swift; sourceTree = "<group>"; };
 		F64BEEC429F9C80C00AEB15B /* TabViewComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewComponent.swift; sourceTree = "<group>"; };
 		F64BEEC629FC6B2700AEB15B /* RAISAText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAISAText.swift; sourceTree = "<group>"; };
@@ -179,7 +177,6 @@
 				F6040514296248F8003577D7 /* SCP_UtilityApp.swift */,
 				F6DFED00299AEFC6002C3F1A /* DataController.swift */,
 				F604054029624A21003577D7 /* ContentView.swift */,
-				F615611C29D9CE92003561CD /* SafariWrapper.swift */,
 				F65A11092A1AD33C00B096F7 /* Language */,
 				F6A092A729C7EA5C00E661A0 /* Settings */,
 				F6921A0229BAA5DE00EF19D0 /* History */,
@@ -480,7 +477,6 @@
 				F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */,
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
 				F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */,
-				F62A5D7629D9F8F200661DE0 /* SafariWrapper.swift in Sources */,
 				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
@@ -647,7 +643,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = RAISA;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = "raisa-icon-transparent";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
