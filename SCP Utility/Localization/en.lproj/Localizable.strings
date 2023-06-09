@@ -101,6 +101,7 @@
 
 "GENERAL_OPTIONS" = "General";
 "OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
+"MANAGE_STORAGE" = "Manage Storage";
 
 "DATA_OPTIONS" = "Save Data";
 "DELETE_ALL_LISTS" = "Delete All Saved Lists";
@@ -127,6 +128,12 @@
 "AUTO_SCROLL_SETTING" = "Open Reader to Bookmarked Text";
 "DETECT_COMPONENTS_SETTING" = "Detect Unsupported Components";
 "REMOVE_BAR_ITEMS_SETTING" = "Remove All Bar Items";
+
+"SV_TITLE" = "Storage";
+"CACHE" = "Cache";
+"CACHE_SIZE" = "Cache Size";
+"CLEAR_CACHE" = "Clear Cache";
+"MB_SYMBOL%@" = "%@ MB";
 
 // MARK: - History View
 "HISTORY_TITLE" = "History";

@@ -33,6 +33,7 @@
 		F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED62A03057A00AEB15B /* ListRow.swift */; };
 		F65A110B2A1AD34F00B096F7 /* RAISALanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */; };
 		F65A110E2A1D4FCC00B096F7 /* ChangeLanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65A110D2A1D4FCC00B096F7 /* ChangeLanguageView.swift */; };
+		F66AD54A2A33A77C003DF992 /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66AD5492A33A77C003DF992 /* StorageView.swift */; };
 		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
 		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
 		F66DF2432A0DACEE004437AC /* SCP001View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2422A0DACEE004437AC /* SCP001View.swift */; };
@@ -103,6 +104,7 @@
 		F64BEED62A03057A00AEB15B /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
 		F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAISALanguage.swift; sourceTree = "<group>"; };
 		F65A110D2A1D4FCC00B096F7 /* ChangeLanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeLanguageView.swift; sourceTree = "<group>"; };
+		F66AD5492A33A77C003DF992 /* StorageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageView.swift; sourceTree = "<group>"; };
 		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
 		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
 		F66DF2422A0DACEE004437AC /* SCP001View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP001View.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				F6921A0029BA9D3F00EF19D0 /* SettingsView.swift */,
+				F66AD5492A33A77C003DF992 /* StorageView.swift */,
 				F65A110D2A1D4FCC00B096F7 /* ChangeLanguageView.swift */,
 			);
 			path = Settings;
@@ -460,6 +463,7 @@
 				F6921A0129BA9D3F00EF19D0 /* SettingsView.swift in Sources */,
 				F62A5D7729D9F90300661DE0 /* DataController.swift in Sources */,
 				F64BEEC329F45CEC00AEB15B /* ArticleTabView.swift in Sources */,
+				F66AD54A2A33A77C003DF992 /* StorageView.swift in Sources */,
 				F62A5D7A29D9F92C00661DE0 /* SCPList.swift in Sources */,
 				F6EFF42629DF879500605E40 /* Collapsible.swift in Sources */,
 				F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */,

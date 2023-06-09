@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 /// View that displays a settings menu to the user.
 struct SettingsView: View {
@@ -19,10 +20,6 @@ struct SettingsView: View {
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     
     @State private var historyConf = false
-    @State private var listConf = false
-    @State private var articleConf = false
-    @State private var allDataConf = false
-    @State private var raisaView = false
     @Environment(\.dismiss) private var dismiss
 
     let con = PersistenceController.shared
@@ -31,12 +28,11 @@ struct SettingsView: View {
         Form {
             Section("SUPPORT_OPTIONS") {
                 HStack {
-                    Button("SUPPORT_RAISA_PROMPT") {
-                        raisaView = true
-                    }.foregroundColor(.primary)
+                    Link("SUPPORT_RAISA_PROMPT", destination: URL(string: "https://patreon.com/RAISAapp")!)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
+                .foregroundColor(.primary)
 
                 HStack {
                     Link("SUPPORT_CROM_PROMPT", destination: URL(string: "https://www.patreon.com/crombird")!)
@@ -46,9 +42,11 @@ struct SettingsView: View {
                 .foregroundColor(.primary)
             }
             
-//            Section("GENERAL_OPTIONS") {
-//
-//            }
+            Section("GENERAL_OPTIONS") {
+                NavigationLink("MANAGE_STORAGE") {
+                    StorageView()
+                }
+            }
             
             Section("READER_OPTIONS") {
                 Picker("DEFAULT_OPEN_SETTING", selection: $defaultOpen) {
@@ -84,37 +82,8 @@ struct SettingsView: View {
                     }
                 }
             }
-            
-            Section("DATA_OPTIONS") {
-                Button("DELETE_ALL_LISTS") {
-                    listConf = true
-                }.confirmationDialog("DELETE_LIST_TOOLTIP", isPresented: $listConf, titleVisibility: .visible) {
-                    Button("DELETE", role: .destructive) {
-                        con.deleteAllLists()
-                    }
-                }
-                Button("DELETE_ALL_ARTICLES") {
-                    articleConf = true
-                }.confirmationDialog("ASSURANCE", isPresented: $articleConf) {
-                    Button("ASSURANCE", role: .destructive) {
-                        con.deleteAllLists()
-                    }
-                }
-                   
-                Button("DELETE_ALL_DATA") {
-                    allDataConf = true
-                }.confirmationDialog("ASSURANCE", isPresented: $allDataConf) {
-                    Button("ASSURANCE", role: .destructive) {
-                        con.deleteAllData()
-                    }
-                }
-            }
         }
         .navigationTitle("SETTINGS_TITLE")
-        .alert("You can't donate yet.", isPresented: $raisaView) {
-        } message: {
-            Text("Thank you for downloading the app!")
-        }
         .toolbar {
             Button {
                 dismiss()
