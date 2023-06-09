@@ -49,7 +49,7 @@ struct OnlineArticleRow: View {
                 Spacer()
             }
             Button {
-                if bookmarkStatus {
+                if !bookmarkStatus {
                     cromAPISearchFromURL(query: url) { article in
                         guard let article = article else { return }
                         con.createArticleEntity(article: article)
@@ -80,7 +80,6 @@ struct OnlineArticleRow: View {
                 bookmarkStatus = true
             }
         }
-        
         .padding(.horizontal, 40)
         .frame(height: 25)
     }

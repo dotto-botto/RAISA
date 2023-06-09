@@ -50,10 +50,12 @@ struct ArticleRow: View {
                             .scaledToFit()
                             .frame(width: 15, height: 14)
                         
+                        Text(passedSCP.findLanguage()?.toAbbr() ?? RAISALanguage.english.toAbbr())
+                        
                         Markdown(flavorText ?? "")
                             .lineLimit(1)
                             .markdownTextStyle(\.text) {
-                                FontFamilyVariant(.monospaced)
+                                FontFamilyVariant(.normal)
                                 FontSize(.em(0.5))
                                 ForegroundColor(.secondary)
                             }
@@ -133,7 +135,7 @@ struct ArticleRow: View {
                 let secondHalf = list[middleIndex..<list.count].joined(separator: " ")
                 
                 FilterToMarkdown(doc: secondHalf) { doc in
-                    flavorText = doc
+                    flavorText = doc.trimmingCharacters(in: .whitespaces)
                 }
             } else if passedSCP.currenttext != nil {
                 flavorText = passedSCP.currenttext!

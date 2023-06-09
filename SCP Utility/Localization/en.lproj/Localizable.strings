@@ -158,6 +158,7 @@
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
 "REMOVE_FROM_%@" = "Remove from \"%@\"";
+"ALL_SAVED_ARTICLES_SUBTITLE" = "View every article that you have saved.";
 
 // MARK: - Article View, Bar, and Info
 "LOADING_SAFARI" = "This article will open in safari.";

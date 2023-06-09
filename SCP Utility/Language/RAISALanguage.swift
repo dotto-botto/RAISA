@@ -145,4 +145,41 @@ enum RAISALanguage: Int, CaseIterable, Identifiable, Codable {
     func toImage() -> String {
         return "SCP-\(self.toAbbr())"
     }
+    
+    func emoji() -> String {
+        switch self {
+        case .english:
+            return "🇺🇸"
+        case .russian:
+            return "🇷🇺"
+        case .korean:
+            return "🇰🇷"
+        case .chinese:
+            return "🇨🇳"
+        case .french:
+            return "🇫🇷"
+        case .polish:
+            return "🇵🇱"
+        case .spanish:
+            return "🇪🇸"
+        case .thai:
+            return "🇹🇭"
+        case .japanese:
+            return "🇯🇵"
+        case .german:
+            return "🇩🇪"
+        case .italian:
+            return "🇮🇹"
+        case .ukranian:
+            return "🇺🇦"
+        case .portuguese:
+            return "🇵🇹"
+        case .czech:
+            return "🇨🇿"
+        case .traditionalch:
+            return "🇨🇳*"
+        case .vietnamese:
+            return "🇻🇳"
+        }
+    }
 }
