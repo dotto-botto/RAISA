@@ -221,6 +221,12 @@
 "LANGUAGEVIEW_TOOLTIP1" = "This changes the language articles will appear in.";
 "LANGUAGEVIEW_TOOLTIP2" = "To change the app's language, go to your device settings.";
 
+// MARK: - About
+"ABOUT_RAISA" = "About RAISA";
+"LIBRARIES" = "Libraries";
+"LIST_OF_LIBRARIES" = "List of Libraries Used";
+"CONTENT_LICENSE" = "Content License";
+
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
 "RECENT_SEARCHES" = "Recent Searches";

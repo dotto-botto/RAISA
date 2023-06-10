@@ -40,6 +40,10 @@ struct SettingsView: View {
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
                 .foregroundColor(.primary)
+                
+                NavigationLink("ABOUT_RAISA") {
+                    AboutView()
+                }
             }
             
             Section("GENERAL_OPTIONS") {
@@ -67,9 +71,9 @@ struct SettingsView: View {
                 }
             }
             
-            Section("ICLOUD") {
-                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
-            }
+//            Section("ICLOUD") {
+//                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
+//            }
             
             Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)
