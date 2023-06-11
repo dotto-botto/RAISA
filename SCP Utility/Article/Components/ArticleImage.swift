@@ -30,6 +30,15 @@ struct ArticleImage: View {
                         .resizable()
                         .scaledToFit()
                 }
+            .contextMenu {
+                Menu {
+                    Text(parsed?.value?.formatted() ?? "error finding url")
+                    Text(parsed?.key ?? "no caption")
+                } label: {
+                    Label("IMAGE_INFO", systemImage: "ladybug")
+                }
+                .frame(maxWidth: .infinity)
+            }
             Text(parsed?.key ?? "")
                 .font(.headline)
         }
@@ -37,20 +46,20 @@ struct ArticleImage: View {
     }
 }
 
-fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [String?:URL?] {
+fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String?:URL?] {
     var newURL = ""
     var caption: String? = ""
     // New Format
+    let content = try! source.replacing(Regex(#"htt(p|ps):(\/\/|\*)"#), with: "https://")
+    let stringArticleURL = try! articleURL.formatted().replacing(Regex(#"htt(p|ps):"#), with: "https:")
+    
     if content.contains(":scp-wiki:component:image-features-source") {
-        let stringURL = articleURL.formatted()
         guard let tempURL = content.slice(from: "url=", to: "|")  else { return [nil:nil] }
         
         if content.contains("http") {
             newURL = tempURL
-                .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
-                .replacingOccurrences(of: "http:", with: "https:")
         } else {
-            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + tempURL
+            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringArticleURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + tempURL
         }
     
         if content.contains("add-caption") {
@@ -58,30 +67,25 @@ fileprivate func parseArticleImage(_ content: String, articleURL: URL) -> [Strin
         } else {
             caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
         }
+        
     } else if content.contains(":image-block") {
         // Old Format
-        let stringURL = articleURL.formatted()
-        let name = (content.slice(from: "name=", to: " |") ?? content.slice(from: "name=", to: "|") ?? "")
-            .replacingOccurrences(of: "= ", with: "")
-            .replacingOccurrences(of: "\n", with: "")
-            .replacingOccurrences(of: " ", with: "")
-            .replacingOccurrences(of: " http", with: "http")
+        guard var name = matches(for: #"name=.*?\|"#, in: content).first else { return [nil:nil] }
+        name = name.slice(from: "name=", to: "|") ?? ""
+        name = name.replacingOccurrences(of: " ", with: "")
+ 
         if name.contains("http") {
             newURL = name
-                .replacingOccurrences(of: "*", with: "//") // Text filtering replaces "//" with "*"
-                .replacingOccurrences(of: "http:", with: "https:")
         } else {
-            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + name
+            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringArticleURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + name
         }
         caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
+        
     } else if content.contains("[[") && content.contains("image ") {
         if content.contains("http") {
             newURL = (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
-                .replacingOccurrences(of: "*", with: "//")
-                .replacingOccurrences(of: "http:", with: "https:")
         } else {
-            let stringURL = articleURL.formatted()
-            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
+            newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringArticleURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
         }
     }
     

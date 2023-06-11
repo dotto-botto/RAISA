@@ -91,6 +91,11 @@
 "FEATURED_GOI" = "Featured GOI Format";
 "REVIEWER_SPOTLIGHT" = "Reviewer's Spotlight";
 "FEATURED_ART" = "Art Spotlight";
+"RANDOM_CARD" = "Random Article";
+"RESUME_CARD" = "Continue Reading";
+"SERIES_CARD" = "Series";
+"SERIES_TITLE%lld" = "Series %lld";
+"TOP_CARD" = "Popular Articles";
 
 // MARK: - Settings
 "SETTINGS_TITLE" = "Settings";
@@ -192,13 +197,7 @@
 "SAVE_POSITION_PROMPT" = "Save Position";
 "TAB_END_INDICATOR" = "End Tab";
 "BLOCK_END_INDICATOR" = "End Block";
-
-// MARK: - Explore
-"RANDOM_CARD" = "Random Article";
-"RESUME_CARD" = "Continue Reading";
-"SERIES_CARD" = "Series";
-"SERIES_TITLE%lld" = "Series %lld";
-"TOP_CARD" = "Popular Articles";
+"IMAGE_INFO" = "Image Info";
 
 // MARK: - Languages
 "ENGLISH" = "English";

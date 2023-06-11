@@ -16,7 +16,11 @@ struct InlineButton: View {
     @State private var links: [String:URL] = [:]
     var body: some View {
         let body = parseLink(content)
-        RAISAText(article: article, text: body)
+        let list = parseRT(body, stopRecursiveFunction: true)
+        ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
+            item.toCorrespondingView(article: article)
+        }
+        
     }
 }
 
@@ -36,7 +40,7 @@ fileprivate func findLinks(_ doc: String) -> [String:URL] {
 }
 
 fileprivate func parseLink(_ content: String) -> String {
-    var doc = content
+    var doc = try! content.replacing(Regex(#"htt(p|ps):\*"#), with: "https://")
     for _ in doc.indicesOf(string: "[[[") {
         let element = doc.slice(with: "[[[", and: "]]]")
         if let link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
@@ -62,8 +66,8 @@ fileprivate func parseLink(_ content: String) -> String {
     for _ in doc.indicesOf(string: "[http") {
         if let link = doc.slice(from: "[http", to: " "), let text = doc.slice(from: link + " ", to: "]") {
             doc = doc.replacingOccurrences(
-                of: "[" + link.replacingOccurrences(of: ":*www", with: "://www") + text + "]",
-                with: "[\(text)](\(link))"
+                of: "[http" + link + " " + text + "]",
+                with: "[\(text)](http\(link))"
             )
         }
     }

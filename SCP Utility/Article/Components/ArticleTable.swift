@@ -91,9 +91,10 @@ fileprivate func parseTableContent(_ doc: String) -> [[String]] {
     } else if doc.contains("||") {
          //Remove first row
         var content = doc.replacingOccurrences(of: doc.slice(with: "||", and: "||\n"), with: "")
-        for _ in content.indicesOf(string: "||\n") {
+        for line in content.components(separatedBy: .newlines) {
             var madeRow: [String] = []
-            var stringRow = content.slice(with: "||", and: "||\n")
+
+            var stringRow = line
             for _ in stringRow.indicesOf(string: "||") {
                 if let cell = stringRow.slice(from: "||", to: "||") {
                     madeRow.append(cell)
@@ -102,7 +103,7 @@ fileprivate func parseTableContent(_ doc: String) -> [[String]] {
             }
             
             rows.append(madeRow)
-            content.removeText(from: "||", to: "||\n")
+            content = content.replacingOccurrences(of: line, with: "")
         }
     }
     
