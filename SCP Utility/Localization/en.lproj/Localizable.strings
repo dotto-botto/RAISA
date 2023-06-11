@@ -145,6 +145,10 @@
 "NO_HISTORY" = "No History Found.";
 "CLEAR_HISTORY_BUTTON" = "Clear All History";
 "CLEAR_HISTORY_CONFIRMATION" = "Clear All History?";
+"TODAY" = "Today";
+"THIS_WEEK" = "This Week";
+"THIS_MONTH" = "This Month";
+"OLDER" = "Older";
 
 // MARK: - List View
 "LIST_TITLE" = "Lists";
