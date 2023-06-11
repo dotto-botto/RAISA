@@ -28,7 +28,11 @@ struct ACSView: View {
     ///    ]]
     /// - Parameter component: The raw string
     init?(component: String) {
-        guard let num = Int(component.slice(from: "|item-number=", to: "\n")?.replacingOccurrences(of: " ", with: "") ?? "") else { return nil }
+        guard let num: Int = {
+            let str = component.slice(from: "|item-number=SCP-", to: "\n") ??
+            component.slice(from: "|item-number=", to: "\n")
+            return Int(str ?? "")
+        }() else { return nil }
         guard let clearance = Int(component.slice(from: "|clearance=", to: "\n")?.replacingOccurrences(of: " ", with: "") ?? "") else { return nil }
         
         var object: ObjectClass
@@ -99,9 +103,13 @@ struct ACSView: View {
             }
             
             Rectangle().frame(height: 20)
-            ACSCellView(.object(object))
-            ACSCellView(.disruption(disruption))
-            ACSCellView(.risk(risk))
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                ACSCellView(.object(object))
+                ACSCellView(.disruption(disruption))
+                ACSCellView(.risk(risk))
+            } else {
+                
+            }
         }
     }
 }
