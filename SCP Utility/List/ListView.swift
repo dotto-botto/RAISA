@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Foundation
 
 // MARK: - Many List View
 
@@ -22,24 +21,25 @@ struct ListView: View {
         let con = PersistenceController.shared
         
         NavigationStack {
-            NavigationLink {
-                AllArticleView().navigationTitle("ALL_SAVED_ARTICLES")
-            } label: {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("ALL_SAVED_ARTICLES")
-                            .lineLimit(1)
-                        Text("ALL_SAVED_ARTICLES_SUBTITLE")
-                            .foregroundColor(.gray)
-                            .font(.system(size: 13))
-                            .lineLimit(1)
-                    }
-                    Spacer()
-                    Image(systemName: "arrow.forward")
-                }
-                .padding(.horizontal, 20)
-            }
             List(items!) { item in
+                if item.identifier == items!.first!.identifier {
+                    NavigationLink {
+                        AllArticleView().navigationTitle("ALL_SAVED_ARTICLES")
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("ALL_SAVED_ARTICLES")
+                                    .foregroundColor(.accentColor)
+                                    .lineLimit(1)
+                                Text("ALL_SAVED_ARTICLES_SUBTITLE")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(size: 13))
+                                    .lineLimit(1)
+                            }
+                        }
+                    }
+                }
+                
                 ListRow(fromEntity: item)
             }
             .listStyle(.plain)
