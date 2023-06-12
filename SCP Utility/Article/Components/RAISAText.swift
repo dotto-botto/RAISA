@@ -40,11 +40,10 @@ struct RAISAText: View {
     
     var body: some View {
         let defaults = UserDefaults.standard
-        let mode = defaults.integer(forKey: "articleViewSetting")
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading, spacing: 5) {
-                    if mode == 0 && !filtered {
+                    if !filtered {
                         ProgressView()
                             .onAppear {
                                 FilterToMarkdown(doc: text ?? article.pagesource) { str in
@@ -54,7 +53,7 @@ struct RAISAText: View {
                             }
                     }
                     
-                    if filtered && mode == 0 { // Default
+                    if filtered {
                         let list = parseRT(filteredText, openOnLoad: openOnLoad)
                         ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
                             item.toCorrespondingView(article: article)
@@ -63,19 +62,6 @@ struct RAISAText: View {
                             if article.currenttext != nil && defaults.bool(forKey: "autoScroll") && filtered {
                                 value.scrollTo(article.currenttext!)
                             }
-                        }
-                    } else if mode == 1 { // Raw
-                        let list = article.pagesource.components(separatedBy: .newlines)
-                        ForEach(list, id: \.self) { item in
-                            Text(item)
-                                .id(item)
-                                .contextMenu {
-                                    Button {
-                                        article.setScroll(item)
-                                    } label: {
-                                        Label("Save Position", systemImage: "bookmark")
-                                    }
-                                }
                         }
                     }
                 }

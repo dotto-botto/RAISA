@@ -12,7 +12,6 @@ import Kingfisher
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
-    @AppStorage("articleViewSetting") var articleViewSetting = 0
     @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 0
     @AppStorage("storeIcloud") var storeIcloud = true
@@ -58,11 +57,6 @@ struct SettingsView: View {
                     Text("READER_SETTING").tag(1)
                     Text("BOTH").tag(2)
                 }
-                Picker("DEFAULT_READER_SETTING", selection: $articleViewSetting) {
-                    Text("PARSED_SOURCE_SETTING").tag(0)
-                    Text("RAW_SOURCE_SETTING").tag(1)
-                    Text("SAFARI_SETTING").tag(2)
-                }
                 Toggle("SHOW_IMAGES", isOn: $showImages)
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
                 Toggle("DETECT_COMPONENTS_SETTING", isOn: $showComponentPrompt)
@@ -70,10 +64,6 @@ struct SettingsView: View {
                     defaults.set("", forKey: "articleBarIds")
                 }
             }
-            
-//            Section("ICLOUD") {
-//                Toggle("UPLOAD_ICLOUD", isOn: $storeIcloud)
-//            }
             
             Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)
@@ -94,6 +84,10 @@ struct SettingsView: View {
             } label: {
                 Image(systemName: "xmark")
             }
+        }
+        .onAppear {
+            // Remove deleted userdefaults values
+            defaults.removeObject(forKey: "articleViewSetting")
         }
     }
 }
