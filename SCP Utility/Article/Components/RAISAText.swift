@@ -275,10 +275,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         // Superscript "^^2^^"
-        for num in text.indicesOf(string: "^^") {
-            if let range = text.range(of: "^^") {
-                text = text.replacingCharacters(in: range, with: num % 2 == 0 ? "" : "^")
-            }
+        for match in matches(for: #"\^\^.*\^\^"#, in: text) {
+            text = text.replacingOccurrences(
+                of: match, with: "^" + (match.slice(from: "^^", to: "^^") ?? match)
+            )
         }
         
         // Color
