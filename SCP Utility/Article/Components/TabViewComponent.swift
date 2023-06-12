@@ -15,15 +15,15 @@ struct TabViewComponent: View {
     @State var text: String
     @State var currentKey: String = ""
     @State private var showText: Bool = false
+    @State private var contentKeys: [String] = []
+    @State private var contentValues: [String] = []
     var body: some View {
-        let content = parseTabView(text).sorted(by: <)
-        
         VStack {
             HStack {
                 Image(systemName: "chevron.left.2").foregroundColor(.secondary)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(content, id: \.key) { key, value in
+                        ForEach(Array(zip(contentKeys, contentValues)), id: \.0) { key, value in
                             Button {
                                 currentKey = key
                                 showText = true
@@ -42,7 +42,7 @@ struct TabViewComponent: View {
                 Image(systemName: "chevron.right.2").foregroundColor(.secondary)
             }
             
-            ForEach(content, id: \.key) { key, value in
+            ForEach(Array(zip(contentKeys, contentValues)), id: \.0) { key, value in
                 if key == currentKey {
                     RAISAText(article: article, text: value)
                 }
@@ -58,13 +58,17 @@ struct TabViewComponent: View {
             }
         }
         .onAppear {
-            currentKey = content.first?.key ?? ""
+            let content = parseTabView(text)
+            contentKeys = content.map { $0.0 }
+            contentValues = content.map { $0.1 }
+            
+            currentKey = contentKeys.first ?? ""
         }
     }
 }
 
-fileprivate func parseTabView(_ doc: String) -> [String:String] {
-    var returnDict: [String:String] = [:]
+fileprivate func parseTabView(_ doc: String) -> [(String,String)] {
+    var returnDict: [(String,String)] = []
     var content = doc
     for index in doc.indicesOf(string: "[[tab ") {
         var tabContent = ""
@@ -74,7 +78,7 @@ fileprivate func parseTabView(_ doc: String) -> [String:String] {
         } else {
             tabContent = content.slice(from: "[[tab]]", to: "[[/tab]]") ?? ""
         }
-        returnDict[header ?? (index + 1).formatted()] = tabContent
+        returnDict.append((header ?? (index + 1).formatted(), tabContent))
         content.removeText(from: "[[tab", to: "[[/tab]]")
     }
     return returnDict
