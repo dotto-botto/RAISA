@@ -196,7 +196,9 @@ struct Article: Identifiable, Codable {
 func findNextArticle(currentTitle title: String, completion: @escaping (Article?) -> Void) {
     if var key = title.slice(from: "SCP-"), let num = Int(key) {
         key = String(format: "%03d", num + 1)
-        cromGetSourceFromTitle(title: key) { article in
+        
+        let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+        cromGetSourceFromTitle(title: key, language: userIntBranch) { article in
             completion(article)
         }
     } else { completion(nil) }

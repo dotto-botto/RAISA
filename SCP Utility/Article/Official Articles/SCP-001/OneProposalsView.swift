@@ -15,7 +15,9 @@ struct OneProposalsView: View {
         VStack {
             ForEach(SCP001Proposals.sorted(by: <), id: \.key) { key, value in
                 Button {
-                    cromGetSourceFromTitle(title: value) { article in
+                    let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                    
+                    cromGetSourceFromTitle(title: value, language: userIntBranch) { article in
                         proposal = article
                         showSheet = true
                     }

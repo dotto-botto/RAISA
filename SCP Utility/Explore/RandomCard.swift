@@ -13,6 +13,7 @@ struct RandomCard: View {
     @State private var showArticle: Bool = false
     @State private var article = Article(title: "", pagesource: "", url: placeholderURL)
     @State private var beenLoaded: Bool = false
+    @State private var userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     var body: some View {
         VStack {
             HStack {
@@ -26,7 +27,9 @@ struct RandomCard: View {
                     .onTapGesture {
                         if article.title != "" { // if not already loading
                             article = Article(title: "", pagesource: "", url: placeholderURL)
-                            cromRandom { scp in
+                            
+                            userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                            cromRandom(language: userIntBranch) { scp in
                                 article = scp
                             }
                         }
@@ -67,7 +70,7 @@ struct RandomCard: View {
         .onAppear {
             #if !targetEnvironment(simulator)
             if !beenLoaded {
-                cromRandom { scp in
+                cromRandom(language: userIntBranch) { scp in
                     article = scp
                 }
                 beenLoaded = true
@@ -76,10 +79,6 @@ struct RandomCard: View {
             article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
             #endif
         }
-    }
-    
-    mutating func refreshRandom() {
-        
     }
 }
 

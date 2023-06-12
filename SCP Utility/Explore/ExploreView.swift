@@ -12,6 +12,7 @@ import SwiftUI
 struct ExploreView: View {
     @State private var settings: Bool = false
     @State private var language: Bool = false
+    @State private var editor: Bool = false
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {

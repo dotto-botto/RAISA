@@ -87,10 +87,10 @@ query Search($query: URL! = "\(url)") {
 }
 
 /// Returns an article without its source
-func cromRandom(completion: @escaping (Article) -> Void) {
+func cromRandom(language: RAISALanguage = .english, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search {
-  randomPage(filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+  randomPage(filter: {anyBaseUrl: "\(language.toURL())"}) {
     page {
       url
       wikidotInfo {
@@ -262,10 +262,10 @@ query Search($query: URL! = "\(url)") {
 }
 
 /// Retruns an article from a title
-func cromGetSourceFromTitle(title: String, completion: @escaping (Article) -> Void) {
+func cromGetSourceFromTitle(title: String, language: RAISALanguage = .english, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(title)") {
-  searchPages(query: $query, filter: {anyBaseUrl: "http://scp-wiki.wikidot.com"}) {
+  searchPages(query: $query, filter: {anyBaseUrl: "\(language.toURL())"}) {
     url
     wikidotInfo {
       title

@@ -26,7 +26,9 @@ struct TopCard: View {
             
             ForEach(titles, id: \.self) { title in
                 Button {
-                    cromGetSourceFromTitle(title: title) { art in
+                    let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                    
+                    cromGetSourceFromTitle(title: title, language: userIntBranch) { art in
                         article = art
                         showArticle = true
                     }
