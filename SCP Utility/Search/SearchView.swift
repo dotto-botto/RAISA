@@ -47,6 +47,7 @@ struct SearchView: View {
             VStack {
                 ForEach(articles) { article in
                     OnlineArticleRow(article: article)
+                        .padding(.vertical, 1)
                 }
                 Spacer()
             }

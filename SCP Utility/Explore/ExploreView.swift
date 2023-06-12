@@ -21,8 +21,8 @@ struct ExploreView: View {
                     SeriesCard()
                     TopCard()
                 }
+                .padding(.horizontal, 60)
             }
-            .frame(width: 400)
             .navigationTitle("RAISA_HEADER")
             .toolbar {
                 Button {

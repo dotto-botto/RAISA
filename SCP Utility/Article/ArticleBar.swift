@@ -33,6 +33,7 @@ struct ArticleBar: View {
                                     .lineLimit(1)
                                     .foregroundColor(.accentColor)
                             }
+                            .dynamicTypeSize(.xSmall ... .accessibility1)
                         }
                         .contextMenu {
                             Button {

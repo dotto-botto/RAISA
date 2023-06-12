@@ -24,6 +24,7 @@ struct SeriesView: View {
                         title: "SCP-" + String(format: "%03d", num),
                         url: URL(string: "http://scp-wiki.wikidot.com/scp-\(String(format: "%03d", num))")!
                     )
+                    .padding(.vertical, 1)
                 }
             }
         }

@@ -61,8 +61,6 @@ struct OnlineArticleRow: View {
                 }
             } label: {
                 Image(systemName: bookmarkStatus ? "bookmark.fill" : "bookmark")
-                    .resizable()
-                    .scaledToFit()
             }
             .onLongPressGesture { showSheet.toggle() }
         }
@@ -81,7 +79,6 @@ struct OnlineArticleRow: View {
             }
         }
         .padding(.horizontal, 40)
-        .frame(height: 25)
     }
 }
 

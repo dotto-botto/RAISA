@@ -18,14 +18,23 @@ struct SeriesCard: View {
                     .padding(.leading)
                 Spacer()
             }
-            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-                GridRow {
-                    ForEach(1...4, id: \.self) { series in
-                        SeriesButton(series: series)
+            
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
+                        ForEach(1...4, id: \.self) { series in
+                            SeriesButton(series: series)
+                        }
+                    }
+                    GridRow {
+                        ForEach(5...8, id: \.self) { series in
+                            SeriesButton(series: series)
+                        }
                     }
                 }
-                GridRow {
-                    ForEach(5...8, id: \.self) { series in
+            } else {
+                HStack {
+                    ForEach(1...8, id: \.self) { series in
                         SeriesButton(series: series)
                     }
                 }
@@ -64,6 +73,7 @@ struct SeriesButton: View {
             .font(.custom("", size: 60))
             .foregroundColor(.white)
             .fontWeight(.black)
+            .dynamicTypeSize(.xSmall ... .xLarge)
         }
         .frame(width: 100, height: 100)
         .background {
