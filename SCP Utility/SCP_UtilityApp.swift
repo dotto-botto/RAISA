@@ -30,6 +30,7 @@ struct SCP_UtilityApp: App {
                             "storeIcloud" : true,
                             "autoScroll" : true,
                             "showComponentPrompt" : true,
+                            "articleBarIds" : ""
                         ])
                     }
                     isFirstLaunch = false

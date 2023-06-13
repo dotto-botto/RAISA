@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
     var body: some View {
         TabView {
             VStack {

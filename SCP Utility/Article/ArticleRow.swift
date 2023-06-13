@@ -129,6 +129,8 @@ struct ArticleRow: View {
             ListAdd(isPresented: $showListAddView, article: passedSCP)
         }
         .onAppear {
+            open = UserDefaults.standard.integer(forKey: "defaultOpen")
+            
             if flavorText == nil && passedSCP.currenttext == nil {
                 let list = passedSCP.pagesource.components(separatedBy: .newlines)
                 let middleIndex = Int(list.count / 2)
