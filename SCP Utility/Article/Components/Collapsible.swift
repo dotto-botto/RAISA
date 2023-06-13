@@ -19,7 +19,7 @@ struct Collapsible: View {
     @State var showed: Bool
 
     init(article: Article, text: String, openOnLoad open: Bool = false) {
-        let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? "no content"
+        let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? text.slice(from: "]]", to: "[[/Collapsible]]") ?? "no content"
 
         let show = text.slice(from: "show=\"", to: "\"") ?? "+ show block"
         let hide = text.slice(from: "hide=\"", to: "\"") ?? "- hide block"
