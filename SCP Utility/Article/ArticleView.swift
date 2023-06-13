@@ -14,7 +14,6 @@ struct ArticleView: View {
     @State var scp: Article
     @State var dismissText: String? = ""
     @State var presentSheet: Bool = false
-    @State var showSafari: Bool = false
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
@@ -52,14 +51,8 @@ struct ArticleView: View {
                         Text(comp).foregroundColor(.gray)
                     }
                     
-                    HStack {
-                        Button("AV_DISPLAY_AS_IS") {
-                            forbidden = false
-                        }
-                        Text("LOWERCASE_OR").foregroundColor(.gray)
-                        Button("SAFARI_SETTING") {
-                            showSafari = true
-                        }
+                    Button("AV_DISPLAY_AS_IS") {
+                        forbidden = false
                     }
                     .padding(.vertical, 10)
                     
@@ -99,6 +92,10 @@ struct ArticleView: View {
         }
         .navigationTitle(scp.title)
         .onAppear {
+            if scp.title == "Could not find title" {
+                dismiss()
+            }
+            
             con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
             defaults.set(scp.url, forKey: "lastReadUrl")
             
