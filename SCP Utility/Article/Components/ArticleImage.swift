@@ -70,8 +70,8 @@ fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String
         
     } else if content.contains(":image-block") {
         // Old Format
-        guard var name = matches(for: #"name=.*?\|"#, in: content).first else { return [nil:nil] }
-        name = name.slice(from: "name=", to: "|") ?? ""
+        guard var name = matches(for: #"name=.*?(\n|\|)"#, in: content).first else { return [nil:nil] }
+        name = name.slice(from: "name=", to: "\n") ?? name.slice(from: "name=", to: "|") ?? ""
         name = name.replacingOccurrences(of: " ", with: "")
  
         if name.contains("http") {

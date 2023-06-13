@@ -171,7 +171,7 @@ func findAllQuickTables(_ source: String) -> [String] {
 /// Finds and returns all text inside of collapsible tags, including those tags.
 func findAllCollapsibles(_ doc: String) -> [String] {
     var returnArray: [String] = []
-    let regex = #"\[\[collapsible.*?\]\]([\s\S]*?)\[\[\/collapsible\]\]"#
+    let regex = #"\[\[(c|C)ollapsible.*?\]\]([\s\S]*?)\[\[\/(c|C)ollapsible\]\]"#
     for match in matches(for: regex, in: doc) {
 //        if !match.contains("[[collapsible") {
             returnArray.append(match)
