@@ -14,6 +14,7 @@ struct RandomCard: View {
     @State private var article = Article(title: "", pagesource: "", url: placeholderURL)
     @State private var beenLoaded: Bool = false
     @State private var userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+    @State private var badLanguageAlert: Bool = false
     var body: some View {
         VStack {
             HStack {
@@ -26,9 +27,14 @@ struct RandomCard: View {
                     .padding([.top, .trailing], 5)
                     .onTapGesture {
                         if article.title != "" { // if not already loading
-                            article = Article(title: "", pagesource: "", url: placeholderURL)
-                            
                             userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                            
+                            guard userIntBranch != .russian && userIntBranch != .korean else {
+                                badLanguageAlert = true
+                                return
+                            }
+                                    
+                            article = Article(title: "", pagesource: "", url: placeholderURL)
                             cromRandom(language: userIntBranch) { scp in
                                 article = scp
                             }
@@ -50,6 +56,12 @@ struct RandomCard: View {
                     article.pagesource = source
                     showArticle = true
                 }
+            }
+        }
+        .alert("LANGUAGE_\(userIntBranch.toName())_NOT_SUPPORTED", isPresented: $badLanguageAlert) {
+            Text("HOW_TO_CHANGE_LANGUAGE")
+            Button("OK", role: .cancel) {
+                badLanguageAlert = false
             }
         }
         .foregroundColor(.primary)
