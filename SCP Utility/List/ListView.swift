@@ -19,28 +19,37 @@ struct ListView: View {
     @State private var items = PersistenceController.shared.getAllLists()
     var body: some View {
         let con = PersistenceController.shared
-        
-        NavigationStack {
-            List(items!) { item in
-                if item.identifier == items!.first!.identifier {
-                    NavigationLink {
-                        AllArticleView().navigationTitle("ALL_SAVED_ARTICLES")
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text("ALL_SAVED_ARTICLES")
-                                    .foregroundColor(.accentColor)
-                                    .lineLimit(1)
-                                Text("ALL_SAVED_ARTICLES_SUBTITLE")
-                                    .foregroundColor(.secondary)
-                                    .font(.system(size: 13))
-                                    .lineLimit(1)
-                            }
-                        }
+        let builtInLists = {
+            NavigationLink {
+                AllArticleView().navigationTitle("ALL_SAVED_ARTICLES")
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("ALL_SAVED_ARTICLES")
+                            .foregroundColor(.accentColor)
+                            .lineLimit(1)
+                        Text("ALL_SAVED_ARTICLES_SUBTITLE")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 13))
+                            .lineLimit(1)
                     }
                 }
+            }
+        }
+        
+        NavigationStack {
+            VStack {
+                if items == nil || (items ?? []).isEmpty {
+                    List { builtInLists() }
+                }
                 
-                ListRow(fromEntity: item)
+                List(items ?? []) { item in
+                    if item.identifier == items!.first!.identifier {
+                        builtInLists()
+                    }
+                    
+                    ListRow(fromEntity: item)
+                }
             }
             .listStyle(.plain)
             .navigationTitle("LIST_TITLE")
