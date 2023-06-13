@@ -26,19 +26,30 @@ struct ExploreView: View {
             }
             .navigationTitle("RAISA_HEADER")
             .toolbar {
-                Button {
-                    language = true
-                } label: {
-                    Image(systemName: "globe")
-                }
+//                ToolbarItemGroup(placement: .navigationBarLeading) {
+//                    Button {
+//                        editor = true
+//                    } label: {
+//                        Image(systemName: "plus")
+//                    }
+//                }
                 
-                Button {
-                    settings = true
-                } label: {
-                    Image(systemName: "gear")
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        language = true
+                    } label: {
+                        Image(systemName: "globe")
+                    }
+                    
+                    Button {
+                        settings = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
                 }
             }
             .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
+            .fullScreenCover(isPresented: $editor) { NavigationStack { EditorView() } }
             .fullScreenCover(isPresented: $language) { NavigationStack { ChangeLanguageView() } }
         }
     }

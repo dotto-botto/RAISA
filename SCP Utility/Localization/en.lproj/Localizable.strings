@@ -230,6 +230,14 @@
 "LIST_OF_LIBRARIES" = "List of Libraries Used";
 "CONTENT_LICENSE" = "Content License";
 
+// MARK: - Editor
+"EDITOR" = "Editor";
+"BODY" = "Body";
+"PREVIEW" = "Preview";
+"SET_TITLE" = "Set Title";
+"ACS" = "ACS";
+"COLLAPSIBLE" = "Collapsible";
+
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
 "RECENT_SEARCHES" = "Recent Searches";
