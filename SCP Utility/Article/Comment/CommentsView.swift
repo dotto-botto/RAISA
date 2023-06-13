@@ -19,7 +19,7 @@ struct CommentsView: View {
                 }
             }
             .navigationTitle("CV_TITLE\(article.title)")
-            .frame(width: 400)
+            .padding(.horizontal, 20)
         }
         .onAppear {
             parseComments(articleURL: article.url) { com in

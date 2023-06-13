@@ -21,7 +21,7 @@ struct SearchView: View {
                 VStack(alignment: .leading) {
                     HStack {
                         Image(systemName: "clock.arrow.circlepath")
-                        Text("RECENT_SEARCHES")
+                        Text("RECENT_SEARCHES").bold()
                         Spacer()
                         Button {
                             defaults.set([], forKey: "recentSearches")
