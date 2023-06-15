@@ -344,6 +344,50 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
+func cromGetChildren(url: URL, sortByCreation: Bool? = nil, completion: @escaping ([(String,URL)]) -> Void) {
+    let graphQLQuery = """
+query Search($query: URL! = "\(url)") {
+    page(url: $query) {
+    wikidotInfo {
+      children {
+        url
+        wikidotInfo {
+          title
+          createdAt
+        }
+      }
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            var returnDict: [(String,URL)] = []
+            for child in responseJSON["data"]["page"]["wikidotInfo"]["children"].arrayValue {
+                guard let url = child["url"].url else { continue }
+                returnDict.append((child["wikidotInfo"]["title"].stringValue, url))
+            }
+            
+            completion(returnDict)
+        }
+    }
+}
+
 func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALanguage, completion: @escaping (Article?) -> Void) {
     let baseTitle = url.formatted().replacingOccurrences(of: fromLang.toURL().formatted(), with: "")
     let newURL = URL(string: toLang.toURL().formatted() + baseTitle)!

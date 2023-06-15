@@ -21,16 +21,15 @@ struct ArticleView: View {
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
     @State private var forbiddenComponents: [String] = []
-    @State private var sourceLoaded: Bool = false
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
     @State private var isBuiltIn: Bool = false
+    @State private var isFragmented: Bool = true
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
-        let mode: Int = defaults.integer(forKey: "articleViewSetting")
         if scp.url.formatted().contains("://scp-wiki.wikidot.com/scp-001") && scp.title == "SCP-001" {
             ScrollView {
                 SCP001View()
@@ -82,12 +81,8 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden && !containsExplicitContent && !isBuiltIn {
-                if sourceLoaded {
-                    RAISAText(article: scp, openOnLoad: scp.currenttext != nil)
-                } else {
-                    ProgressView()
-                }
+            if !forbidden && !containsExplicitContent && !isBuiltIn && !isFragmented {
+                RAISAText(article: scp, openOnLoad: scp.currenttext != nil)
             }
         }
         .navigationTitle(scp.title)
@@ -99,7 +94,18 @@ struct ArticleView: View {
             con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
             defaults.set(scp.url, forKey: "lastReadUrl")
             
-            if mode == 0 && forbidden {
+            if scp.pagesource.contains("[[module ListPages") {
+                isFragmented = true
+                replaceFragmentsWithSource(article: scp) { newArticle in
+                    con.updatePageSource(id: scp.id, newPageSource: newArticle.pagesource)
+                    scp = newArticle
+                    isFragmented = false
+                }
+            } else {
+                isFragmented = false
+            }
+            
+            if forbidden {
                 if let list = scp.findForbiddenComponents(), showComponentPrompt {
                     forbiddenComponents = list
                     forbidden = true
@@ -119,13 +125,6 @@ struct ArticleView: View {
             findNextArticle(currentTitle: scp.title) { article in
                 nextArticle = article
             }
-            
-            if scp.pagesource == "" {
-                cromGetSourceFromURL(url: scp.url) { source in
-                    scp.updateSource(source)
-                    sourceLoaded = true
-                }
-            } else { sourceLoaded = true }
         }
         .padding(.horizontal, 20)
         .sheet(isPresented: $presentSheet) {
@@ -138,7 +137,7 @@ struct ArticleView: View {
             CommentsView(article: scp)
         }
         .fullScreenCover(isPresented: $showNext) {
-            NavigationStack { ArticleView(scp: nextArticle!, dismissText: scp.title) }
+            NavigationStack { ArticleView(scp: nextArticle ?? scp, dismissText: scp.title) }
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

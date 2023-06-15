@@ -123,7 +123,6 @@ struct Article: Identifiable, Codable {
     /// Checks page source for unsupported components and returns the components.
     func findForbiddenComponents() -> [String]? {
         let forbidden: [String:String] = [
-            "Fragments" : "[[module ListPages",
             "Audio Players": "[[include :snippets:html5player",
             "HTML": "[[html",
             "Math" : "[[math",

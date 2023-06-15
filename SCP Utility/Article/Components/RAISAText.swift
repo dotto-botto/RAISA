@@ -213,9 +213,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
-        text = try! text.replacing(Regex(#"\[!--[\s\S]*--]"#), with: "")
+        text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
         for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
-        text.removeText(from: "[[include :scp-wiki:component:license-box", to: "license-box-end]]")
+        text = try! text.replacing(Regex(#"\[\[include.*license-box]][\s\S]*?license-box-end.*?]]"#), with: "")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
         text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
@@ -240,6 +240,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text.removeText(from: ",,[#toc", to: "],,")
         }
         
+        text.removeText(from: "[[include component:info-ayers", to: "]]")
+        text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
+        text.removeText(from: "[[include :scp-wiki:component:author-label-source start=--", to: "[[include :scp-wiki:component:author-label-source end=--]]")
+        
         // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
         text = text.replacingOccurrences(of: "--]", with: "")
         text.removeText(from: "[[>", to: "]]")
@@ -258,9 +262,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
             text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
         }
-        
-        text.removeText(from: "[[include component:info-ayers", to: "]]")
-        text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
         
         for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
