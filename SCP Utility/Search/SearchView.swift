@@ -13,11 +13,19 @@ struct SearchView: View {
     @State var articles: [Article] = []
     @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
     @State var recentSearches: [String] = []
+    @State private var showPrompt: Bool = false
     
     var body: some View {
         let defaults = UserDefaults.standard
         NavigationStack {
-            if articles.isEmpty && !recentSearches.isEmpty {
+            if showPrompt {
+                Text("NO_RESULTS_FOR_\(query)")
+                    .bold()
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 10)
+            }
+            
+            if articles.isEmpty && !recentSearches.isEmpty && !showPrompt {
                 VStack(alignment: .leading) {
                     HStack {
                         Image(systemName: "clock.arrow.circlepath")
@@ -76,6 +84,8 @@ struct SearchView: View {
         .onSubmit(of: .search) {
             cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp in
                 articles = scp
+                
+                showPrompt = scp.isEmpty
             
                 if !recentSearches.contains(query) && defaults.bool(forKey: "trackSearchHistory") {
                     recentSearches.append(query)
@@ -87,6 +97,7 @@ struct SearchView: View {
                 }
             }
         }
+        .onChange(of: query) { _ in showPrompt = false }
         .onAppear {
             recentSearches = defaults.stringArray(forKey: "recentSearches") ?? []
         }
