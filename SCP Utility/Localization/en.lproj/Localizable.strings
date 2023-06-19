@@ -81,6 +81,7 @@
 "LOWERCASE_OR" = "or";
 "CONTINUE" = "Continue";
 "BACK" = "Back";
+"USER_OFFLINE" = "You are not connected to the internet.";
 
 // MARK: - Explore
 "EXPLORE_TITLE" = "Explore";

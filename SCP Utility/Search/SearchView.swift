@@ -14,7 +14,8 @@ struct SearchView: View {
     @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
     @State var recentSearches: [String] = []
     @State private var showPrompt: Bool = false
-    
+    @EnvironmentObject var networkMonitor: NetworkMonitor
+    @State private var connected: Bool = true
     var body: some View {
         let defaults = UserDefaults.standard
         NavigationStack {
@@ -25,7 +26,16 @@ struct SearchView: View {
                     .padding(.horizontal, 10)
             }
             
-            if articles.isEmpty && !recentSearches.isEmpty && !showPrompt {
+            if !connected {
+                VStack {
+                    Image(systemName: "wifi.slash")
+                    Text("USER_OFFLINE")
+                }
+                .padding(.vertical, 300)
+                .foregroundColor(.secondary)
+            }
+            
+            if articles.isEmpty && !recentSearches.isEmpty && !showPrompt && connected {
                 VStack(alignment: .leading) {
                     HStack {
                         Image(systemName: "clock.arrow.circlepath")
@@ -97,8 +107,10 @@ struct SearchView: View {
                 }
             }
         }
+        .onChange(of: networkMonitor.isConnected) { connected = $0 }
         .onChange(of: query) { _ in showPrompt = false }
         .onAppear {
+            connected = networkMonitor.isConnected
             recentSearches = defaults.stringArray(forKey: "recentSearches") ?? []
         }
     }

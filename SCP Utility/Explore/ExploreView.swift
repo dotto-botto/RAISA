@@ -13,16 +13,32 @@ struct ExploreView: View {
     @State private var settings: Bool = false
     @State private var language: Bool = false
     @State private var editor: Bool = false
+    
+    @State private var connected: Bool = true
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
-                    RandomCard().clipped()
-                    ResumeCard()
-                    SeriesCard()
-                    TopCard()
+                    if connected {
+                        RandomCard().clipped()
+                        ResumeCard()
+                        SeriesCard()
+                        TopCard()
+                    } else {
+                        VStack {
+                            Image(systemName: "wifi.slash")
+                            Text("USER_OFFLINE")
+                        }
+                        .padding(.vertical, 300)
+                        .foregroundColor(.secondary)
+                    }
                 }
-                .padding(.horizontal, 60)
+                .padding(.horizontal, 40)
+            }
+            .onAppear { connected = networkMonitor.isConnected }
+            .onChange(of: networkMonitor.isConnected) { bool in
+                connected = bool
             }
             .navigationTitle("RAISA_HEADER")
             .toolbar {
@@ -56,7 +72,8 @@ struct ExploreView: View {
 }
 
 struct ExploreView_Previews: PreviewProvider {
+    static let networkMonitor = NetworkMonitor()
     static var previews: some View {
-        ExploreView()
+        ExploreView().environmentObject(networkMonitor)
     }
 }

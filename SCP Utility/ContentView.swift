@@ -9,16 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
+    @StateObject var networkMonitor = NetworkMonitor()
+    @State private var selection: Int = 0
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             VStack {
                 ExploreView()
                 ArticleBar()
             }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
+                .tag(0)
             VStack {
                 ListView()
                 ArticleBar()
             }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
+                .tag(1)
             VStack {
                 SearchView()
                 ArticleBar()
@@ -27,6 +31,9 @@ struct ContentView: View {
                 HistoryView()
                 ArticleBar()
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
+        }
+        .onAppear {
+            selection = networkMonitor.isConnected ? 0 : 1
         }
     }
 }
