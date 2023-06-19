@@ -40,7 +40,6 @@ struct SeriesCard: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: 250)
     }
 }
 
@@ -73,7 +72,7 @@ struct SeriesButton: View {
             .font(.custom("", size: 60))
             .foregroundColor(.white)
             .fontWeight(.black)
-            .dynamicTypeSize(.xSmall ... .xLarge)
+            .dynamicTypeSize(.xSmall ... .large)
         }
         .frame(width: 100, height: 100)
         .background {

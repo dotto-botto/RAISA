@@ -12,7 +12,7 @@ func replaceFragmentsWithSource(article: Article, completion: @escaping (Article
     guard let module = article.pagesource.slice(from: "[[module ListPages", to: "]]") else { completion(article); return }
     
     let parent = module.slice(from: "parent=\"", to: "\"") ?? "."
-    guard parent == "." else { print("parent paramater \"\(parent)\" unsupported"); completion(article); return }
+    guard parent == "." else { print("parent parameter \"\(parent)\" unsupported"); completion(article); return }
     
     let limit = Int(module.slice(from: "limit=\"", to: "\"") ?? "") ?? -1
     
@@ -28,6 +28,11 @@ func replaceFragmentsWithSource(article: Article, completion: @escaping (Article
         }
         
         // Filter based on limit
+        guard dict.count >= limit && limit != -1 else {
+            print("Limit is higher than dict length, article: \(article.title)")
+            completion(article)
+            return
+        }
         dict = limit == -1 ? dict : Array(dict[..<limit])
         
         var newSource: String = ""

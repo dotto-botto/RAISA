@@ -40,6 +40,18 @@ struct AllArticleView: View {
                     }
                 }
             }
+            
+            VStack {
+                if (articles ?? []).isEmpty {
+                    if !query.isEmpty {
+                        Text("NO_RESULTS_FOR_\(query)")
+                    } else {
+                        Text("NO_SAVED_ARTICLES")
+                    }
+                }
+                Spacer()
+            }
+            .foregroundColor(.secondary)
         }
         .searchable(text: $query)
     }

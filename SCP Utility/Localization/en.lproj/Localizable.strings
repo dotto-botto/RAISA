@@ -166,7 +166,7 @@
 "ALL_SAVED_ARTICLES" = "All Saved Articles";
 "ALL_READ_ARTICLES" = "All Read Articles";
 "ALL_UNREAD_ARTICLES" = "All Unread Articles";
-"NO_SAVED_ARTICLES" = "There are no saved articles.";
+"NO_SAVED_ARTICLES" = "You have no saved articles.";
 "NO_SAVED_ARTICLES_WATCH" = "Save articles on your iPhone using the bookmark icon to continue.";
 "DELETE_LIST_TOOLTIP" = "Deleting a list won't delete it's articles.";
 "REMOVE_FROM_%@" = "Remove from \"%@\"";

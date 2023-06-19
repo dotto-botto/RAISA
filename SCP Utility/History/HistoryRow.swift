@@ -14,6 +14,7 @@ struct HistoryRow: View {
     @State private var associatedArticle: Article = placeHolderArticle
     @State private var gotCrom: Bool = false
     @State private var showSheet: Bool = false
+    @State private var callingAPI: Bool = false
     
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
@@ -34,9 +35,12 @@ struct HistoryRow: View {
             }
         }
         .onTapGesture {
-            cromGetSourceFromTitle(title: item.articletitle) { article in
-                associatedArticle = article
-                gotCrom = true
+            if !callingAPI {
+                callingAPI = true
+                cromGetSourceFromTitle(title: item.articletitle) { article in
+                    associatedArticle = article
+                    gotCrom = true
+                }
             }
         }
         .onChange(of: gotCrom) { _ in

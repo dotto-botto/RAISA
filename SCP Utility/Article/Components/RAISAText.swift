@@ -189,13 +189,13 @@ func findAllImages(_ doc: String) -> [String] {
     
     let list = source.components(separatedBy: .newlines)
     for (item, index) in zip(list, list.indices) {
+        let itemAndNext = list.indices.contains(index + 1) ? "\(item)\n\(list[index + 1])" : item
+        
         if item.contains(":scp-wiki:component:image-features-source") {
-            let itemAndNext = item + "\n" + list[index + 1]
             let slice = source.slice(with: itemAndNext, and: "]]")
             returnArray.append(slice)
             source = source.replacingOccurrences(of: slice, with: "")
         } else if item.contains(":image-block") {
-            let itemAndNext = item + "\n" + list[index + 1]
             let slice = item.contains("]]") ? item : (itemAndNext.contains("]]") ? itemAndNext: source.slice(with: itemAndNext, and: "]]"))
             returnArray.append(slice)
             source = source.replacingOccurrences(of: slice, with: "")
