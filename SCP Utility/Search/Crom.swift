@@ -137,8 +137,15 @@ query Search {
 }
 
 func cromAPISearchFromURL(query: URL, completion: @escaping (Article?) -> Void) {
+    let formattedURL = try! query
+        .formatted()
+        .replacing(Regex("https?"), with: "http")
+        .lowercased()
+        .replacingOccurrences(of: "www.", with: "")
+        .replacingOccurrences(of: ".net", with: ".wikidot.com")
+    
     let graphQLQuery = """
-query Search($query: URL! = "\(query)") {
+query Search($query: URL! = "\(formattedURL)") {
     page(url: $query) {
     wikidotInfo {
       title

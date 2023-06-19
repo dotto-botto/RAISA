@@ -14,66 +14,88 @@ struct InlineButton: View {
     
     @State private var showDialog: Bool = false
     @State private var links: [String:URL] = [:]
+    
+    @State private var nextArticle: Article = placeHolderArticle
+    @State private var showSheet: Bool = false
+    
     var body: some View {
         let body = parseLink(content)
         let list = parseRT(body, stopRecursiveFunction: true)
         ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
             item.toCorrespondingView(article: article)
+                .environment(\.openURL, OpenURLAction { url in
+                    guard url.formatted().contains("scp") else { return .systemAction }
+                    callAPI(url: url)
+                    return .handled
+                })
         }
-        
-    }
-}
-
-fileprivate func findLinks(_ doc: String) -> [String:URL] {
-    var content = doc
-    var returnDict: [String:URL] = [:]
-    for _ in content.indicesOf(string: "http") {
-        let urlString = "http" + (content.slice(from: "(http", to: ")") ?? "")
-        let title = content.slice(from: "[", to: "](http") ?? ""
-        
-        content.removeText(from: "[\(title)", to: "\(urlString)]")
-        
-        returnDict[title] = URL(string: urlString)
+        .onChange(of: nextArticle.id) { _ in
+            showSheet = true
+        }
+        .fullScreenCover(isPresented: $showSheet) {
+            NavigationStack { ArticleView(scp: nextArticle, dismissText: article.title) }
+        }
     }
     
-    return returnDict
-}
+    private func callAPI(url: URL) {
+        cromAPISearchFromURL(query: url) { article in
+            guard let article = article else { return }
+            nextArticle = article
+        }
+    }
+    
+    private func findLinks(_ parsedDoc: String) -> [String:URL] {
+        var returnDict: [String:URL] = [:]
 
-fileprivate func parseLink(_ content: String) -> String {
-    var doc = try! content.replacing(Regex(#"htt(p|ps):\*"#), with: "https://")
-    for _ in doc.indicesOf(string: "[[[") {
-        let element = doc.slice(with: "[[[", and: "]]]")
-        if let link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
-            if link.contains("http") {
+        for match in matches(for: #"\[.*?]\(.*?\)"#, in: parsedDoc) {
+            if let text = match.slice(from: "[", to: "]"), let url = match.slice(from: "(", to: ")") {
+                returnDict[text] = URL(string: url)
+            }
+        }
+
+        return returnDict
+    }
+
+    private func parseLink(_ content: String) -> String {
+        var doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
+            .replacingOccurrences(of: "[[[/", with: "[[[") // some articles put a slash in front of the link
+        for _ in doc.indicesOf(string: "[[[") {
+            let element = doc.slice(with: "[[[", and: "]]]")
+            if var link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
+                link = link
+                    .trimmingCharacters(in: .whitespaces)
+                    .replacingOccurrences(of: " ", with: "-")
+                if link.contains("http") {
+                    doc = doc.replacingOccurrences(
+                        of: element,
+                        with: "[\(text)](\(link))"
+                    )
+                } else {
+                    doc = doc.replacingOccurrences(
+                        of: element,
+                        with: "[\(text)](https://scp-wiki.wikidot.com/\(link))"
+                    )
+                }
+            } else if let combined = element.slice(from: "[[[", to: "]]]") {
                 doc = doc.replacingOccurrences(
                     of: element,
-                    with: "[\(text)](\(link.replacingOccurrences(of: " ", with: "-")))"
-                )
-            } else {
-                doc = doc.replacingOccurrences(
-                    of: element,
-                    with: "[\(text)](https://scp-wiki.wikidot.com/\(link.replacingOccurrences(of: " ", with: "-")))"
+                    with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined.replacingOccurrences(of: " ", with: "-")))"
                 )
             }
-        } else if let combined = element.slice(from: "[[[", to: "]]]") {
-            doc = doc.replacingOccurrences(
-                of: element,
-                with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined.replacingOccurrences(of: " ", with: "-")))"
-            )
         }
-    }
-    
-    for _ in doc.indicesOf(string: "[http") {
-        if let link = doc.slice(from: "[http", to: " "), let text = doc.slice(from: link + " ", to: "]") {
-            doc = doc.replacingOccurrences(
-                of: "[http" + link + " " + text + "]",
-                with: "[\(text)](http\(link))"
-            )
+        
+        for _ in doc.indicesOf(string: "[http") {
+            if let link = doc.slice(from: "[http", to: " "), let text = doc.slice(from: link + " ", to: "]") {
+                doc = doc.replacingOccurrences(
+                    of: "[http" + link + " " + text + "]",
+                    with: "[\(text)](http\(link))"
+                )
+            }
         }
-    }
 
-    doc = doc.replacingOccurrences(of: "\n", with: "")
-    return doc
+        doc = doc.replacingOccurrences(of: "\n", with: "")
+        return doc
+    }
 }
 
 struct InlineButton_Previews: PreviewProvider {
