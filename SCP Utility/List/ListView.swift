@@ -124,17 +124,19 @@ struct OneListView: View {
             let con = PersistenceController.shared
             var articles = con.getAllListArticles(list: list)!
             
-            List {
-                ForEach(articles, id: \.self) { article in
-                    if let article = Article(fromEntity: article) {
-                        let button = Button {
-                            list.removeContent(id: article.id)
-                        } label: {
-                            Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+            VStack {
+                List {
+                    ForEach(articles, id: \.self) { article in
+                        if let article = Article(fromEntity: article) {
+                            let button = Button {
+                                list.removeContent(id: article.id)
+                            } label: {
+                                Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+                            }
+                            
+                            ArticleRow(passedSCP: article)
+                                .swipeActions(edge: .leading) { button }
                         }
-                        
-                        ArticleRow(passedSCP: article)
-                            .swipeActions(edge: .leading) { button }
                     }
                 }
             }
