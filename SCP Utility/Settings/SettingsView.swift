@@ -27,7 +27,7 @@ struct SettingsView: View {
         Form {
             Section("SUPPORT_OPTIONS") {
                 HStack {
-                    Link("SUPPORT_RAISA_PROMPT", destination: URL(string: "https://patreon.com/RAISAapp")!)
+                    Link("SUPPORT_RAISA_PROMPT", destination: URL(string: "https://ko-fi.com/dottobotto")!)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
