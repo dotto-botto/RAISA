@@ -48,8 +48,8 @@ struct AllArticleView: View {
                     } else {
                         Text("NO_SAVED_ARTICLES")
                     }
+                    Spacer()
                 }
-                Spacer()
             }
             .foregroundColor(.secondary)
         }
