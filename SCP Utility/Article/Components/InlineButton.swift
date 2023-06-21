@@ -59,37 +59,40 @@ struct InlineButton: View {
     private func parseLink(_ content: String) -> String {
         var doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
             .replacingOccurrences(of: "[[[/", with: "[[[") // some articles put a slash in front of the link
-        for _ in doc.indicesOf(string: "[[[") {
-            let element = doc.slice(with: "[[[", and: "]]]")
-            if var link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
-                link = link
-                    .trimmingCharacters(in: .whitespaces)
-                    .replacingOccurrences(of: " ", with: "-")
-                if link.contains("http") {
+        
+        if doc.contains("[[[") {
+            for _ in doc.indicesOf(string: "[[[") {
+                let element = doc.slice(with: "[[[", and: "]]]")
+                if var link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
+                    link = link
+                        .trimmingCharacters(in: .whitespaces)
+                        .replacingOccurrences(of: " ", with: "-")
+                    if link.contains("http") {
+                        doc = doc.replacingOccurrences(
+                            of: element,
+                            with: "[\(text)](\(link))"
+                        )
+                    } else {
+                        doc = doc.replacingOccurrences(
+                            of: element,
+                            with: "[\(text)](https://scp-wiki.wikidot.com/\(link))"
+                        )
+                    }
+                } else if let combined = element.slice(from: "[[[", to: "]]]") {
                     doc = doc.replacingOccurrences(
                         of: element,
-                        with: "[\(text)](\(link))"
-                    )
-                } else {
-                    doc = doc.replacingOccurrences(
-                        of: element,
-                        with: "[\(text)](https://scp-wiki.wikidot.com/\(link))"
+                        with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined.replacingOccurrences(of: " ", with: "-")))"
                     )
                 }
-            } else if let combined = element.slice(from: "[[[", to: "]]]") {
-                doc = doc.replacingOccurrences(
-                    of: element,
-                    with: "[\(combined)](https://scp-wiki.wikidot.com/\(combined.replacingOccurrences(of: " ", with: "-")))"
-                )
             }
-        }
-        
-        for _ in doc.indicesOf(string: "[http") {
-            if let link = doc.slice(from: "[http", to: " "), let text = doc.slice(from: link + " ", to: "]") {
-                doc = doc.replacingOccurrences(
-                    of: "[http" + link + " " + text + "]",
-                    with: "[\(text)](http\(link))"
-                )
+        } else {
+            for match in matches(for: #"\[.*?http"#, in: doc) {
+                if let link = doc.slice(from: match, to: " "), let text = doc.slice(from: link + " ", to: "]") {
+                    doc = doc.replacingOccurrences(
+                        of: match + link + " " + text + "]",
+                        with: "[\(text)](http\(link))"
+                    )
+                }
             }
         }
 
