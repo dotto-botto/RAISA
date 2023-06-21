@@ -80,12 +80,13 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
     
     let collapsibles = findAllCollapsibles(source)
     let imageStrings = findAllImages(source)
-
     let quickTables = findAllQuickTables(source)
+    let htmls = findAllHTML(source)
     
     var collapsibleIndex = 0
     var imageIndex = 0
     var quickTableIndex = 0
+    var htmlIndex = 0
     
     for (item, index) in zip(list, list.indices) {
         let itemAndNext: String = index + 3 < list.count - 1 ?
@@ -127,13 +128,18 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
         } else if item.contains("||") && quickTableIndex < quickTables.count {
             for firstline in quickTables.map({ $0.components(separatedBy: .newlines).first ?? "" }) {
                 let table = quickTables[quickTableIndex]
-
+                
                 if firstline == item && !table.contains(lastItem) {
                     items.append(.table(table))
                     forbiddenLines += table.components(separatedBy: .newlines)
                     quickTableIndex += 1
                 }
             }
+            
+        } else if item.contains("[[html") && htmls.indices.contains(htmlIndex) {
+            let html = htmls[htmlIndex]
+            items.append(.html(html))
+            forbiddenLines += html.components(separatedBy: .newlines)
             
         } else if item.contains("[[[") {
             // terniary operator to fix crash when the closing tag is on a newline
@@ -209,6 +215,10 @@ func parseBlockQuoteDivs(_ doc: String) -> String {
     return returnDoc
 }
 
+func findAllHTML(_ doc: String) -> [String] {
+    return matches(for: #"\[\[html[\s\S]*?\[\[\/html]]"#, in: doc)
+}
+
 func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     DispatchQueue.main.async {
         var text = doc
@@ -265,7 +275,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
         }
         
-        for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
+        for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
         }
         for match in matches(for: #"\/\/.*\/\/"#, in: text) {
@@ -292,8 +302,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
         text = text.replacingOccurrences(of: "{{", with: "``")
         text = text.replacingOccurrences(of: "}}", with: "``")
-        text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
-        text = try! text.replacing(Regex("===+\n"), with: "---\n")
+        text = try! text.replacing(Regex("^---+$"), with: "---") // horizontal rule
+        text = try! text.replacing(Regex("^===$"), with: "^---$")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
         text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
         text = try! text.replacing(Regex(#"\n="#), with: "\n")

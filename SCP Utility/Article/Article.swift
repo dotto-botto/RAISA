@@ -124,7 +124,6 @@ struct Article: Identifiable, Codable {
     func findForbiddenComponents() -> [String]? {
         let forbidden: [String:String] = [
             "Audio Players": "[[include :snippets:html5player",
-            "HTML": "[[html",
             "Math" : "[[math",
         ]
         

@@ -16,6 +16,7 @@ enum RTItem: Hashable {
     case image(_ raw: String) // any component that is used to display an image
     case table(_ raw: String) // "[[table" or "||"
     case inlinebuton(_ raw: String)
+    case html(_ raw: String) // raw html including or excluding the [[html]] tags
     
     func toCorrespondingView(article: Article) -> AnyView {
         switch self {
@@ -45,6 +46,8 @@ enum RTItem: Hashable {
             return AnyView(ArticleTable(article: article, doc: str))
         case .inlinebuton(let str):
             return AnyView(InlineButton(article: article, content: str))
+        case .html(let str):
+            return AnyView(ArticleHTML(htmlContent: str))
         }
     }
 }
