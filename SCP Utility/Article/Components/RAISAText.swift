@@ -151,21 +151,8 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
 
 /// Finds all tables that use the "||" syntax
 func findAllQuickTables(_ source: String) -> [String] {
-    var tables: [String] = []
-    let list = source.components(separatedBy: .newlines)
-    for item in list {
-        if item.contains("||~") {
-            let pipeCount: Int = Array(item).filter { $0 == "|" }.count
-            
-             // ((\|\|.*?){3}(\|\|)(\n|$))+
-            let regex = #"((\|\|.*?){"# + String((pipeCount - 2) / 2) + #"}(\|\|)(\n|$))+"#
-            for match in matches(for: regex, in: source) {
-                tables.append(match.trimmingCharacters(in: .newlines))
-            }
-        }
-    }
-    
-    return tables
+    let matches = matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
+    return matches
 }
 
 /// Finds and returns all text inside of collapsible tags, including those tags.
@@ -210,7 +197,7 @@ func findAllImages(_ doc: String) -> [String] {
 
 func parseBlockQuoteDivs(_ doc: String) -> String {
     var returnDoc = doc
-    for match in matches(for: #"\[\[div class="blockquote"]][\s\S]*?\[\[\/div]]"#, in: doc) {
+    for match in matches(for: #"\[\[div class="blockquote".*?]][\s\S]*?\[\[\/div]]"#, in: doc) {
         var newlist: [String] = []
         let list = match.components(separatedBy: .newlines)
         for item in list {
@@ -303,8 +290,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
-        text = text.replacingOccurrences(of: "{{", with: "")
-        text = text.replacingOccurrences(of: "}}", with: "")
+        text = text.replacingOccurrences(of: "{{", with: "``")
+        text = text.replacingOccurrences(of: "}}", with: "``")
         text = try! text.replacing(Regex("---+\n"), with: "---\n") // horizontal rule
         text = try! text.replacing(Regex("===+\n"), with: "---\n")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings

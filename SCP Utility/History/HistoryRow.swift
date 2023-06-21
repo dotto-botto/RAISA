@@ -40,11 +40,13 @@ struct HistoryRow: View {
                 cromGetSourceFromTitle(title: item.articletitle) { article in
                     associatedArticle = article
                     gotCrom = true
+                    callingAPI = false
                 }
             }
         }
         .onChange(of: gotCrom) { _ in
             showSheet = true
+            gotCrom = false
         }
         .fullScreenCover(isPresented: $showSheet) {
             NavigationStack {
