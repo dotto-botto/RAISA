@@ -299,9 +299,21 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: match, with: match.slice(from: "|", to: "##") ?? match)
         }
         
+        // Monospace
+        // It wont parse links or bold text so this needs to happen
+        for match in matches(for: #"\{\{.*?\}\}"#, in: text) {
+            if try! match.contains("**") || match.contains("[[[") || match.contains("~~") || match.contains("*") || match.contains(Regex(#"\[.*?http"#)) {
+                text = text.replacingOccurrences(of: match, with: match.slice(from: "{{", to: "}}") ?? match)
+            } else {
+                text = text.replacingOccurrences(of: match, with:
+                                                    match
+                    .replacingOccurrences(of: "{{", with: "``")
+                    .replacingOccurrences(of: "}}", with: "``")
+                )
+            }
+        }
+        
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
-        text = text.replacingOccurrences(of: "{{", with: "``")
-        text = text.replacingOccurrences(of: "}}", with: "``")
         text = try! text.replacing(Regex("^---+$"), with: "---") // horizontal rule
         text = try! text.replacing(Regex("^===$"), with: "^---$")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
