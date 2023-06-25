@@ -45,7 +45,7 @@ struct OnlineArticleRow: View {
             } label: {
                 Text(title)
                     .font(.monospaced(.title3)())
-                    .lineLimit(1)
+                    .lineLimit(2)
                 Spacer()
             }
             Button {
