@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import MarkdownUI
 
 /// The main view used to display articles that are saved by the user.
 /// Meant to be used inside of a List or a VStack.
@@ -51,14 +50,11 @@ struct ArticleRow: View {
                             .frame(width: 15, height: 14)
                         
                         Text(passedSCP.findLanguage()?.toAbbr() ?? RAISALanguage.english.toAbbr())
-                        
-                        Markdown(flavorText ?? "")
+                                                
+                        Text(flavorText ?? "...")
                             .lineLimit(1)
-                            .markdownTextStyle(\.text) {
-                                FontFamilyVariant(.normal)
-                                FontSize(.em(0.5))
-                                ForegroundColor(.secondary)
-                            }
+                            .foregroundColor(.secondary)
+                            .font(.caption)
                         Spacer()
                     }
                 }
@@ -115,7 +111,11 @@ struct ArticleRow: View {
                 con.deleteArticleEntity(id: passedSCP.id)
             } label: { Image(systemName: "trash") }
         }
-        .sheet(isPresented: $showUpdateView) {
+        .sheet(isPresented: $showUpdateView, onDismiss: {
+            if let articleitem = con.getArticleByID(id: passedSCP.id), let article = Article(fromEntity: articleitem) {
+                passedSCP = article
+            }
+        }) {
             UpdateAttributeView(article: passedSCP)
         }
         .fullScreenCover(isPresented: $showArticle, onDismiss: {
@@ -128,19 +128,17 @@ struct ArticleRow: View {
         .sheet(isPresented: $showListAddView) {
             ListAdd(isPresented: $showListAddView, article: passedSCP)
         }
-        .onAppear {
+        .task {
             open = UserDefaults.standard.integer(forKey: "defaultOpen")
             
-            if flavorText == nil && passedSCP.currenttext == nil {
-                let list = passedSCP.pagesource.components(separatedBy: .newlines)
-                let middleIndex = Int(list.count / 2)
-                let secondHalf = list[middleIndex..<list.count].joined(separator: " ")
-                
-                FilterToMarkdown(doc: secondHalf) { doc in
-                    flavorText = doc.trimmingCharacters(in: .whitespaces)
-                }
-            } else if passedSCP.currenttext != nil {
-                flavorText = passedSCP.currenttext!
+            if flavorText == nil {
+                flavorText = {
+                    if passedSCP.currenttext != nil { return FilterToPure(doc: passedSCP.currenttext!) }
+                    if let description = passedSCP.pagesource.slice(from: "**Description:**") { return FilterToPure(doc: description) }
+                    
+                    let list = passedSCP.pagesource.components(separatedBy: .newlines)
+                    return FilterToPure(doc: list[(Int(list.count) / 2)..<list.count].joined(separator: " "))
+                }()
             }
             
             if passedSCP.objclass == .unknown {
