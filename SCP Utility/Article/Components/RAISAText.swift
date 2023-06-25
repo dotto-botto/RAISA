@@ -17,7 +17,8 @@ struct RAISAText: View {
     
     @State private var filtered: Bool = false
     @State private var filteredText: String = ""
-        
+    @State private var itemList: [RTItem] = []
+
     init(article: Article) {
         self._article = State(initialValue: article)
     }
@@ -32,12 +33,6 @@ struct RAISAText: View {
         self._text = State(initialValue: text)
     }
     
-    init(article: Article, parsedText: String) {
-        self._article = State(initialValue: article)
-        self._filtered = State(initialValue: true)
-        self._filteredText = State(initialValue: parsedText)
-    }
-    
     var body: some View {
         let defaults = UserDefaults.standard
         ScrollViewReader { value in
@@ -45,23 +40,26 @@ struct RAISAText: View {
                 VStack(alignment: .leading, spacing: 5) {
                     if !filtered {
                         ProgressView()
-                            .onAppear {
-                                FilterToMarkdown(doc: text ?? article.pagesource) { str in
-                                    filteredText = str
-                                    filtered = true
-                                }
-                            }
-                    }
-                    
-                    if filtered {
-                        let list = parseRT(filteredText, openOnLoad: openOnLoad)
-                        ForEach(Array(zip(list, list.indices)), id: \.1) { item, _ in
+                    } else {
+                        ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
                             item.toCorrespondingView(article: article)
                         }
                         .onAppear {
-                            if article.currenttext != nil && defaults.bool(forKey: "autoScroll") && filtered {
+                            if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
                                 value.scrollTo(article.currenttext!)
                             }
+                        }
+                    }
+                }
+                .task {
+                    if !filtered {
+                        FilterToMarkdown(doc: text ?? article.pagesource) { str in
+                            filteredText = str
+                            
+                            if itemList.isEmpty {
+                                itemList = parseRT(filteredText, openOnLoad: openOnLoad)
+                            }
+                            filtered = true
                         }
                     }
                 }
@@ -82,11 +80,13 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
     let imageStrings = findAllImages(source)
     let quickTables = findAllQuickTables(source)
     let htmls = findAllHTML(source)
+    let audios = findAllAudio(source)
     
     var collapsibleIndex = 0
     var imageIndex = 0
     var quickTableIndex = 0
     var htmlIndex = 0
+    var audioIndex = 0
     
     for (item, index) in zip(list, list.indices) {
         let itemAndNext: String = index + 3 < list.count - 1 ?
@@ -121,20 +121,17 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
             
         } else if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") ||
             (item.contains("[[") && item.contains("image ")) {
+            guard imageStrings.indices.contains(imageIndex) else { continue }
             items.append(.image(imageStrings[imageIndex]))
             forbiddenLines += imageStrings[imageIndex].components(separatedBy: .newlines)
             imageIndex += 1
             
-        } else if item.contains("||") && quickTableIndex < quickTables.count {
-            for firstline in quickTables.map({ $0.components(separatedBy: .newlines).first ?? "" }) {
-                let table = quickTables[quickTableIndex]
-                
-                if firstline == item && !table.contains(lastItem) {
-                    items.append(.table(table))
-                    forbiddenLines += table.components(separatedBy: .newlines)
-                    quickTableIndex += 1
-                }
-            }
+        } else if item.contains("||") {
+            guard quickTables.indices.contains(quickTableIndex) else { continue }
+            let tableItem: RTItem = .table(quickTables[quickTableIndex])
+            guard !items.contains(tableItem) else { continue }
+            items.append(tableItem)
+            quickTableIndex += 1
             
         } else if item.contains("[[html") && htmls.indices.contains(htmlIndex) {
             let html = htmls[htmlIndex]
@@ -164,48 +161,18 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
 
 /// Finds all tables that use the "||" syntax
 func findAllQuickTables(_ source: String) -> [String] {
-    let matches = matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
-    return matches
+    return matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
 }
 
 /// Finds and returns all text inside of collapsible tags, including those tags.
 func findAllCollapsibles(_ doc: String) -> [String] {
-    var returnArray: [String] = []
-    let regex = #"\[\[(c|C)ollapsible.*?\]\]([\s\S]*?)\[\[\/(c|C)ollapsible\]\]"#
-    for match in matches(for: regex, in: doc) {
-//        if !match.contains("[[collapsible") {
-            returnArray.append(match)
-//        }
-    }
-    
-//    returnArray = returnArray.map { $0.replacingOccurrences(of: "[[/collapsible]]", with: "") }
-    return returnArray
+    return matches(for: #"\[\[(c|C)ollapsible.*?\]\]([\s\S]*?)\[\[\/(c|C)ollapsible\]\]"#, in: doc)
 }
 
 /// Finds and returns all text that displays an image.
 func findAllImages(_ doc: String) -> [String] {
-    var returnArray: [String] = []
-    var source = doc
-    
-    let list = source.components(separatedBy: .newlines)
-    for (item, index) in zip(list, list.indices) {
-        let itemAndNext = list.indices.contains(index + 1) ? "\(item)\n\(list[index + 1])" : item
-        
-        if item.contains(":scp-wiki:component:image-features-source") {
-            let slice = source.slice(with: itemAndNext, and: "]]")
-            returnArray.append(slice)
-            source = source.replacingOccurrences(of: slice, with: "")
-        } else if item.contains(":image-block") {
-            let slice = item.contains("]]") ? item : (itemAndNext.contains("]]") ? itemAndNext: source.slice(with: itemAndNext, and: "]]"))
-            returnArray.append(slice)
-            source = source.replacingOccurrences(of: slice, with: "")
-        } else if item.contains("[[") && item.contains("image ") {
-            returnArray.append(item)
-            source = source.replacingOccurrences(of: item, with: "")
-        }
-    }
-    
-    return returnArray
+    let regex = #"(\[\[include[\s\S]*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#
+    return matches(for: regex, in: doc)
 }
 
 func parseBlockQuoteDivs(_ doc: String) -> String {
@@ -235,9 +202,12 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
+        if let firstLicense = matches(for: #"\[\[include.*license-box.*?]]"#, in: text).first,
+           let lastLicense = matches(for: #"\[\[include.*?license-box-end.*?]]"#, in: text).first {
+            text.removeText(from: firstLicense, to: lastLicense)
+        }
         text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
         for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
-        text = try! text.replacing(Regex(#"\[\[include.*license-box]][\s\S]*?license-box-end.*?]]"#), with: "")
         text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
         text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
@@ -335,13 +305,134 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "snippets:html5player",
         ]
         
-        let regex = try! Regex("\\[\\[include(?!.*(\(supportedIncludes.joined(separator: "|"))))[^\\]]*\\]\\](?![^\\[]*\\])")
+        let regex = try! Regex(#"\[\[include(?!.*("# + supportedIncludes.joined(separator: "|") + #"))[^\]]*\]\](?![^\[]*\])"#)
         text = text.replacing(regex, with: "")
         
         text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         
         completion(text)
     }
+}
+
+func FilterToPure(doc: String) -> String {
+    var text = doc
+    
+    // Basic Divs
+    if let firstLicense = matches(for: #"\[\[include.*license-box.*?]]"#, in: text).first,
+       let lastLicense = matches(for: #"\[\[include.*?license-box-end.*?]]"#, in: text).first {
+        text.removeText(from: firstLicense, to: lastLicense)
+    }
+    text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
+    for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
+    text.removeText(from: "[[include info:start", to: "include info:end]]")
+    text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
+    text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
+    text = parseBlockQuoteDivs(text)
+    for _ in text.indicesOf(string: "[[div") {
+        text.removeText(from: "[[div", to: "]]")
+        text.removeText(from: "[[/div", to: "]]")
+    }
+    for _ in text.indicesOf(string: "[[span") {
+        text.removeText(from: "[[span", to: "]]")
+        text.removeText(from: "[[/span", to: "]]")
+    }
+    for _ in text.indicesOf(string: "[[size") {
+        text.removeText(from: "[[size", to: "]]")
+        text.removeText(from: "[[/size", to: "]]")
+    }
+    
+    // Table of Contents markings
+    for _ in text.indicesOf(string: "[[#") {
+        text.removeText(from: "[[#", to: "]]")
+    }
+    for _ in text.indicesOf(string: ",,[#toc") {
+        text.removeText(from: ",,[#toc", to: "],,")
+    }
+    
+    text.removeText(from: "[[include component:info-ayers", to: "]]")
+    text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
+    text.removeText(from: "[[include :scp-wiki:component:author-label-source start=--", to: "[[include :scp-wiki:component:author-label-source end=--]]")
+    
+    // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
+    text = text.replacingOccurrences(of: "--]", with: "")
+    text.removeText(from: "[[>", to: "]]")
+    text.removeText(from: "[[/>", to: "]]")
+    text.removeText(from: "[[<", to: "]]")
+    text.removeText(from: "[[/<", to: "]]")
+    text.removeText(from: "[[=", to: "]]")
+    text.removeText(from: "[[/=", to: "]]")
+    text.removeText(from: "[[==", to: "]]")
+    text.removeText(from: "[[/==", to: "]]")
+    text.removeText(from: "<< [[[", to: "]]] >>")
+    for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
+    
+    // Footnotes
+    for _ in text.indicesOf(string: "[[footnote") {
+        text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
+        text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
+    }
+    
+    for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {
+        text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: ""))
+    }
+    
+    text = text.replacingOccurrences(of: "@@ @@", with: "     ")
+    for match in matches(for: "@@.*@@", in: text) {
+        text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@@", with: ""))
+    }
+    
+    // Superscript "^^2^^"
+    for match in matches(for: #"\^\^.*\^\^"#, in: text) {
+        text = text.replacingOccurrences(
+            of: match, with: "^" + (match.slice(from: "^^", to: "^^") ?? match)
+        )
+    }
+    
+    // Color
+    for match in matches(for: #"##[^|]*\|(.*?)##"#, in: text) {
+        text = text.replacingOccurrences(of: match, with: match.slice(from: "|", to: "##") ?? match)
+    }
+    
+    let stringDeletes: [String] = [
+        "@@@@",
+        "{{",
+        "}}",
+        "``",
+        "//",
+        "***",
+        "**",
+        "--",
+        "[[/collapsible]]",
+        "[[footnoteblock]]",
+    ]
+    
+    for string in stringDeletes {
+        text = text.replacingOccurrences(of: string, with: "")
+    }
+
+    text = try! text.replacing(Regex("^---+$"), with: "") // horizontal rule
+    text = try! text.replacing(Regex("^===$"), with: "")
+    text = try! text.replacing(Regex(#"\n\++ "#), with: "") // header markings
+    text = try! text.replacing(Regex(#"\++\*"#), with: "") // header markings escaped from toc
+    text = try! text.replacing(Regex(#"\n="#), with: "")
+    text = try! text.replacing(Regex(#"\[\[collapsible.+?]]"#), with: "")
+    text = try! text.replacing(Regex(#"^> "#), with: "")
+    text = try! text.replacing(Regex(#"^\* "#), with: "") // bullets
+    
+    let supportedIncludes: [String] = [
+        "image-features-source",
+        "image-block",
+        "anomaly-class",
+        "object-warning-box",
+        "snippets:html5player",
+    ]
+    
+    let regex = try! Regex(#"\[\[include(?!.*("# + supportedIncludes.joined(separator: "|") + #"))[^\]]*\]\](?![^\[]*\])"#)
+    text = text.replacing(regex, with: "")
+    
+    text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    return text
 }
 
 struct RAISAText_Previews: PreviewProvider {
