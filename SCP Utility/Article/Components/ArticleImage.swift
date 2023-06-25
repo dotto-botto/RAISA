@@ -32,14 +32,21 @@ struct ArticleImage: View {
                 }
             .contextMenu {
                 Menu {
-                    Text(parsed?.value?.formatted() ?? "error finding url")
+                    if let url = parsed?.value {
+                        Link(destination: url) {
+                            Text(url.formatted())
+                        }
+                    } else {
+                        Text("error finding url")
+                    }
+                    
                     Text(parsed?.key ?? "no caption")
                 } label: {
                     Label("IMAGE_INFO", systemImage: "ladybug")
                 }
                 .frame(maxWidth: .infinity)
             }
-            Text(parsed?.key ?? "")
+            Text(FilterToPure(doc: parsed?.key ?? ""))
                 .font(.headline)
         }
         .padding(.vertical)
@@ -54,7 +61,7 @@ fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String
     let stringArticleURL = try! articleURL.formatted().replacing(Regex(#"htt(p|ps):"#), with: "https:")
     
     if content.contains(":scp-wiki:component:image-features-source") {
-        guard let tempURL = content.slice(from: "url=", to: "|")  else { return [nil:nil] }
+        guard let tempURL = matches(for: #"(?<=[^-]url=).*?(?=(]]|\n|\|))"#, in: content).first else { return [nil:nil] }
         
         if content.contains("http") {
             newURL = tempURL
@@ -62,12 +69,7 @@ fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String
             newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringArticleURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + tempURL
         }
     
-        if content.contains("add-caption") {
-            caption = content.slice(from: "| caption=", to: "|") ?? content.slice(from: "| caption=", to: "]]")
-        } else {
-            caption = content.slice(from: "caption=", to: "|") ?? content.slice(from: "caption=", to: "]]")
-        }
-        
+        caption = matches(for: #"(?<=[^-]caption=).*?(?=(]]|\n|\|))"#, in: content).first
     } else if content.contains(":image-block") {
         // Old Format
         guard var name = matches(for: #"name=.*?(\n|\|)"#, in: content).first else { return [nil:nil] }
