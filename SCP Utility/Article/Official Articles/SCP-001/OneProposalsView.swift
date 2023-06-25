@@ -14,19 +14,23 @@ struct OneProposalsView: View {
         var proposal: Article = placeHolderArticle
         VStack {
             ForEach(SCP001Proposals.sorted(by: <), id: \.key) { key, value in
-                Button {
-                    let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
-                    
-                    cromGetSourceFromTitle(title: value, language: userIntBranch) { article in
-                        proposal = article
-                        showSheet = true
-                    }
-                } label: {
-                    HStack {
+                HStack {
+                    Button {
+                        let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                        
+                        cromGetSourceFromTitle(title: value, language: userIntBranch) { article in
+                            proposal = article
+                            showSheet = true
+                        }
+                    } label: {
                         Text(key)
-                        Text(value)
                     }
+                    Rectangle()
+                        .foregroundColor(.primary)
+                        .frame(width: 8, height: 1)
+                    Text(value)
                 }
+                Divider()
             }
         }
         .fullScreenCover(isPresented: $showSheet) {
@@ -79,7 +83,8 @@ private let SCP001Proposals: [String:String] = [
     "D. Ulysses Foole's" : "Last Ride of the Day",
     "Nagiros" : "R ¦ A ¦ G ¦ E",
     "Rounderhouse Jade" : "MAMJUL & KORAR",
-    "Plague" : "The Ones That Got Away"
+    "Plague" : "The Ones That Got Away",
+    "Dafydd Utica Foolfellow's Proposal" : "[the] [HUMAN!] [element?]"
 ]
 
 struct OneProposalsView_Previews: PreviewProvider {
