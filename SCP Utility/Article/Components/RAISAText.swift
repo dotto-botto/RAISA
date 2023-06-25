@@ -140,6 +140,13 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
             let html = htmls[htmlIndex]
             items.append(.html(html))
             forbiddenLines += html.components(separatedBy: .newlines)
+            htmlIndex += 1
+            
+        } else if item.contains("[[include :snippets:html5player") && audios.indices.contains(audioIndex) {
+            let audio = audios[audioIndex]
+            items.append(.audio(audio))
+            forbiddenLines += audio.components(separatedBy: .newlines)
+            audioIndex += 1
             
         } else if item.contains("[[[") {
             // terniary operator to fix crash when the closing tag is on a newline
@@ -217,6 +224,10 @@ func parseBlockQuoteDivs(_ doc: String) -> String {
 
 func findAllHTML(_ doc: String) -> [String] {
     return matches(for: #"\[\[html[\s\S]*?\[\[\/html]]"#, in: doc)
+}
+
+func findAllAudio(_ doc: String) -> [String] {
+    return matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: doc)
 }
 
 func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
@@ -326,6 +337,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "image-block",
             "anomaly-class",
             "object-warning-box",
+            "snippets:html5player",
         ]
         
         let regex = try! Regex("\\[\\[include(?!.*(\(supportedIncludes.joined(separator: "|"))))[^\\]]*\\]\\](?![^\\[]*\\])")

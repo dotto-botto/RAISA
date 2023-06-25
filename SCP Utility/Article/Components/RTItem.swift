@@ -17,6 +17,7 @@ enum RTItem: Hashable {
     case table(_ raw: String) // "[[table" or "||"
     case inlinebuton(_ raw: String)
     case html(_ raw: String) // raw html including or excluding the [[html]] tags
+    case audio(_ raw: String)
     
     func toCorrespondingView(article: Article) -> AnyView {
         switch self {
@@ -48,6 +49,8 @@ enum RTItem: Hashable {
             return AnyView(InlineButton(article: article, content: str))
         case .html(let str):
             return AnyView(ArticleHTML(htmlContent: str))
+        case .audio(let str):
+            return AnyView(ArticleAudio(component: str))
         }
     }
 }
