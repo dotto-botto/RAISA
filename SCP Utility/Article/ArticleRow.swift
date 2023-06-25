@@ -145,33 +145,31 @@ struct ArticleRow: View {
             
             if passedSCP.objclass == .unknown {
                 // MARK: Article Scanning
-                DispatchQueue.main.async {
-                    cromGetTags(url: passedSCP.url) { tags in
-                        for tag in tags {
-                            switch tag {
-                            case "keter": passedSCP.updateAttribute(objectClass: .keter); break
-                            case "euclid": passedSCP.updateAttribute(objectClass: .euclid); break
-                            case "safe": passedSCP.updateAttribute(objectClass: .safe); break
-                            case "neutralized": passedSCP.updateAttribute(objectClass: .neutralized); break
-                            case "pending": passedSCP.updateAttribute(objectClass: .pending); break
-                            case "explained": passedSCP.updateAttribute(objectClass: .explained); break
-                                
-                            case "apollyon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .apollyon); break
-                            case "archon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .archon); break
-                            case "cernunnos": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .cernunnos); break
-                            case "decommissioned": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .decommissioned); break
-                            case "hiemal": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .hiemal); break
-                            case "tiamat": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .tiamat); break
-                            case "ticonderoga": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .ticonderoga); break
-                            case "thaumiel": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .thaumiel); break
-                            case "uncontained": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .uncontained); break
-                            default: continue
-                            }
+                raisaGetTags(url: passedSCP.url) { tags in
+                    for tag in tags {
+                        switch tag {
+                        case "keter": passedSCP.updateAttribute(objectClass: .keter); break
+                        case "euclid": passedSCP.updateAttribute(objectClass: .euclid); break
+                        case "safe": passedSCP.updateAttribute(objectClass: .safe); break
+                        case "neutralized": passedSCP.updateAttribute(objectClass: .neutralized); break
+                        case "pending": passedSCP.updateAttribute(objectClass: .pending); break
+                        case "explained": passedSCP.updateAttribute(objectClass: .explained); break
+                            
+                        case "apollyon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .apollyon); break
+                        case "archon": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .archon); break
+                        case "cernunnos": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .cernunnos); break
+                        case "decommissioned": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .decommissioned); break
+                        case "hiemal": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .hiemal); break
+                        case "tiamat": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .tiamat); break
+                        case "ticonderoga": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .ticonderoga); break
+                        case "thaumiel": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .thaumiel); break
+                        case "uncontained": passedSCP.updateAttribute(objectClass: .esoteric); passedSCP.updateAttribute(esotericClass: .uncontained); break
+                        default: continue
                         }
-                        
-                        if passedSCP.objclass == .unknown {
-                            passedSCP.updateAttribute(objectClass: .esoteric)
-                        }
+                    }
+                    
+                    if passedSCP.objclass == .unknown {
+                        passedSCP.updateAttribute(objectClass: .esoteric)
                     }
                 }
             }

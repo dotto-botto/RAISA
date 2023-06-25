@@ -8,6 +8,7 @@
 import Foundation
 import SwiftyJSON
 import Alamofire
+import SwiftSoup
 
 // https://api.crom.avn.sh/graphql
 func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) -> Void) {
@@ -28,8 +29,8 @@ func cromRequest(params: [String:String], completion: @escaping (Data?, Error?) 
 }
 
 func cromInfo(url: URL, completion: @escaping (ArticleInfo) -> Void) {
-    let graphQLQuery = """
-query Search($query: URL! = "\(url)") {
+    let graphQLQuery = try! """
+query Search($query: URL! = "\(url.formatted().replacing(Regex("https?"), with: "http"))") {
   page(url: $query) {
     wikidotInfo {
       rating
@@ -318,39 +319,6 @@ query Search($query: String! = "\(title)") {
     }
 }
 
-func cromGetTags(url: URL, completion: @escaping ([String]) -> Void) {
-    let graphQLQuery = """
-query Search($query: URL! = "\(url)") {
-  page(url: $query) {
-    wikidotInfo {
-      tags
-    }
-  }
-}
-"""
-    
-    let parameters: [String: String] = [
-        "query": (graphQLQuery)
-    ]
-
-    var responseJSON: JSON = JSON()
-    
-    cromRequest(params: parameters) { data, error in
-        if let error {
-            print(error)
-        } else if let myData = data {
-            do {
-                responseJSON = try JSON(data: myData)
-            } catch {
-                print(error)
-            }
-
-            let source = responseJSON["data"]["page"]["wikidotInfo"]["tags"].arrayValue.map { $0.stringValue }
-            completion(source)
-        }
-    }
-}
-
 func cromGetChildren(url: URL, sortByCreation: Bool? = nil, completion: @escaping ([(String,URL)]) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(url)") {
@@ -400,4 +368,27 @@ func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALangu
     let newURL = URL(string: toLang.toURL().formatted() + baseTitle)!
     
     cromAPISearchFromURL(query: newURL) { article in completion(article) }
+}
+
+// MARK: - Raisa Funcitons
+func raisaGetTags(url: URL, completion: @escaping ([String]) -> Void) {
+    guard let url = try! URL(string: url.formatted().replacing(Regex(#"https?"#), with: "https")) else { completion([]); return }
+    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        guard let data = data else { return }
+        do {
+            let articledoc = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
+            
+            var returnArray: [String] = []
+
+            if let table = try articledoc.getElementsByClass("page-tags").first() {
+                for ele in try table.select("a") {
+                    returnArray.append(try ele.text())
+                }
+            }
+            completion(returnArray)
+        } catch {
+            print(error)
+        }
+    }
+    task.resume()
 }
