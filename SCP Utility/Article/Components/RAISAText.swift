@@ -305,11 +305,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             )
         }
         
-        // Color
-        for match in matches(for: #"##[^|]*\|(.*?)##"#, in: text) {
-            text = text.replacingOccurrences(of: match, with: match.slice(from: "|", to: "##") ?? match)
-        }
-        
         // Monospace
         // It wont parse links or bold text so this needs to happen
         for match in matches(for: #"\{\{.*?\}\}"#, in: text) {

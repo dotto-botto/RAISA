@@ -22,15 +22,7 @@ enum RTItem: Hashable {
     func toCorrespondingView(article: Article) -> AnyView {
         switch self {
         case .text(let str):
-            return AnyView(Markdown(str)
-                .id(str)
-                .contextMenu {
-                    Button {
-                        PersistenceController.shared.setScroll(text: str, articleid: article.id)
-                    } label: {
-                        Label("SAVE_POSITION_PROMPT", systemImage: "bookmark")
-                    }
-                })
+            return AnyView(RTMarkdown(article: article, text: str))
         case .component(let str):
             if str.contains("object-warning-box") {
                 return AnyView(ObjectWarningBoxView(source: str))
