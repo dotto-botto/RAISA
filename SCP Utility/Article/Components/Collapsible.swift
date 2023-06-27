@@ -16,9 +16,10 @@ struct Collapsible: View {
     var show: String
     var hide: String
     var content: String
+    var proxy: ScrollViewProxy? = nil
     @State var showed: Bool
 
-    init(article: Article, text: String, openOnLoad open: Bool = false) {
+    init(article: Article, text: String, proxy: ScrollViewProxy? = nil) {
         let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? text.slice(from: "]]", to: "[[/Collapsible]]") ?? "no content"
 
         let show = text.slice(from: "show=\"", to: "\"") ?? "+ show block"
@@ -30,8 +31,9 @@ struct Collapsible: View {
         self.show = show
         self.hide = hide
         self.content = content
+        self.proxy = proxy
         
-        self._showed = State(initialValue: open)
+        self._showed = State(initialValue: false)
     }
 
     var body: some View {
@@ -55,6 +57,14 @@ struct Collapsible: View {
                 }
             }
         }
+        .onAppear {
+            guard let id = article.currenttext else { return }
+            
+            if content.contains(id) {
+                showed = true
+                proxy?.scrollTo(id)
+            }
+        }
     }
 }
 
@@ -75,7 +85,7 @@ This text is in a collapsible.
 [[collapsible hide="SECURITY MEMETIC: WE DID NOT FAIL THEM" show="Incident Report 2001-19██-A: LEVEL 4 CLEARANCE REQUIRED" hideLocation=both]]
 This text is also in a collapsible.
 [[/collapsible]]
-""", openOnLoad: true
+"""
         )
     }
 }

@@ -82,7 +82,7 @@ struct ArticleView: View {
             }
             
             if !forbidden && !containsExplicitContent && !isBuiltIn && !isFragmented {
-                RAISAText(article: scp, openOnLoad: scp.currenttext != nil)
+                RAISAText(article: scp)
             }
         }
         .navigationTitle(scp.title)
@@ -275,11 +275,8 @@ extension String {
     }
     
     mutating func removeText(from: String, to: String) {
-        let toSlice = self.slice(from: from, to: to)
-        if toSlice != nil {
-              self = self.replacingOccurrences(of: toSlice!, with: "")
-              self = self.replacingOccurrences(of: from + to, with: "")
-        }
+        let toSlice = self.slice(with: from, and: to)
+          self = self.replacingOccurrences(of: toSlice, with: "")
     }
     
     // https://stackoverflow.com/a/40413665/11248074

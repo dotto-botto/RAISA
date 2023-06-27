@@ -13,7 +13,6 @@ import MarkdownUI
 struct RAISAText: View {
     @State var article: Article
     @State var text: String? = nil
-    @State var openOnLoad: Bool = false
     
     @State private var filtered: Bool = false
     @State private var filteredText: String = ""
@@ -21,11 +20,6 @@ struct RAISAText: View {
 
     init(article: Article) {
         self._article = State(initialValue: article)
-    }
-    
-    init(article scp: Article, openOnLoad: Bool?) {
-        self._article = State(initialValue: scp)
-        self._openOnLoad = State(initialValue: openOnLoad ?? false)
     }
     
     init(article: Article, text: String) {
@@ -42,7 +36,7 @@ struct RAISAText: View {
                         ProgressView()
                     } else {
                         ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-                            item.toCorrespondingView(article: article)
+                            item.toCorrespondingView(article: article, proxy: value)
                         }
                         .onAppear {
                             if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
@@ -57,7 +51,7 @@ struct RAISAText: View {
                             filteredText = str
                             
                             if itemList.isEmpty {
-                                itemList = parseRT(filteredText, openOnLoad: openOnLoad)
+                                itemList = parseRT(filteredText)
                             }
                             filtered = true
                         }
@@ -68,8 +62,14 @@ struct RAISAText: View {
     }
 }
 
+//extension RAISAText {
+//    func onTextLoad(perform: (() -> Void)? = nil) -> RAISAText {
+//
+//    }
+//}
+
 /// Parse text that has already been filtered.
-func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop: Bool? = nil) -> [RTItem] {
+func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem] {
     var source = text
     var items: [RTItem] = []
     let list = source.components(separatedBy: .newlines)
@@ -110,7 +110,7 @@ func parseRT(_ text: String, openOnLoad: Bool? = nil, stopRecursiveFunction stop
             forbiddenLines += slice.components(separatedBy: .newlines)
             
         } else if item.lowercased().contains("[[collapsible") {
-            items.append(.collapsible(collapsibles[collapsibleIndex], openOnLoad: openOnLoad ?? false))
+            items.append(.collapsible(collapsibles[collapsibleIndex]))
             forbiddenLines += collapsibles[collapsibleIndex].components(separatedBy: .newlines)
             collapsibleIndex += 1
             
