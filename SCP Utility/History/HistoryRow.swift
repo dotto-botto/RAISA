@@ -24,6 +24,8 @@ struct HistoryRow: View {
                 Text(item.articletitle)
                     .lineLimit(1)
                 Text(item.date.formatted())
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
             Spacer()
             if item.thumbnail != nil && defaults.bool(forKey: "showImages") {

@@ -58,6 +58,7 @@ struct HistoryView: View {
                                     .contextMenu {
                                         Button(role: .destructive) {
                                             con.deleteHistoryFromId(id: history.id)
+                                            updateList()
                                         } label: {
                                             Label("DELETE", systemImage: "trash")
                                         }
@@ -82,22 +83,28 @@ struct HistoryView: View {
                 .confirmationDialog("ASSURANCE", isPresented: $clearConfirmation) {
                     Button("CLEAR_HISTORY_CONFIRMATION", role: .destructive) {
                         con.deleteAllHistory()
-                        items = con.getAllHistory()?.reversed()
+                        updateList()
                     }
                 }
             }
         }
         .searchable(text: $query)
         .onChange(of: query) { _ in
+            updateList()
             if query == "" {
-                items = con.getAllHistory()?.reversed()
+                items = items?.reversed()
             } else {
-                items = con.getAllHistory()?.reversed().filter { $0.articletitle?.lowercased().contains(query.lowercased()) ?? false }
+                items = items?.reversed().filter { $0.articletitle?.lowercased().contains(query.lowercased()) ?? false }
             }
         }
         .onAppear {
-            items = con.getAllHistory()?.reversed()
+            updateList()
         }
+    }
+    
+    private func updateList() {
+        items = con.getAllHistory()?.reversed()
+        items?.sort { ($0.date ?? Date()) > ($1.date ?? Date()) }
     }
 }
 
