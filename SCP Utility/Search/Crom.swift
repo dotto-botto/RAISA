@@ -144,6 +144,7 @@ func cromAPISearchFromURL(query: URL, completion: @escaping (Article?) -> Void) 
         .lowercased()
         .replacingOccurrences(of: "www.", with: "")
         .replacingOccurrences(of: ".net", with: ".wikidot.com")
+        .replacingOccurrences(of: "http:s", with: "http://s")
     
     let graphQLQuery = """
 query Search($query: URL! = "\(formattedURL)") {

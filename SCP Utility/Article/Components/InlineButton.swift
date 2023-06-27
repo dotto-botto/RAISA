@@ -44,18 +44,6 @@ struct InlineButton: View {
         }
     }
     
-    private func findLinks(_ parsedDoc: String) -> [String:URL] {
-        var returnDict: [String:URL] = [:]
-
-        for match in matches(for: #"\[.*?]\(.*?\)"#, in: parsedDoc) {
-            if let text = match.slice(from: "[", to: "]"), let url = match.slice(from: "(", to: ")") {
-                returnDict[text] = URL(string: url)
-            }
-        }
-
-        return returnDict
-    }
-
     private func parseLink(_ content: String) -> String {
         var doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
             .replacingOccurrences(of: "[[[/", with: "[[[") // some articles put a slash in front of the link
