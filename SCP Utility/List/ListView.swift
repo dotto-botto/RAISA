@@ -13,7 +13,6 @@ import SwiftUI
 struct ListView: View {
     @State private var alertPresent: Bool = false
     @State private var presentSheet: Bool = false
-    @State private var mode: Int = 0
     @State private var query: String = ""
     @State private var currentList: SCPList = SCPList(listid: "Placeholder")
     @State private var items = PersistenceController.shared.getAllLists()
@@ -56,8 +55,7 @@ struct ListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        mode = 0
-                        if mode == 0 { presentSheet = true }
+                        presentSheet = true
                     } label: {
                         Label("ALL_SAVED_ARTICLES", systemImage: "magnifyingglass")
                     }
@@ -84,22 +82,9 @@ struct ListView: View {
                         }
                     }
                 }
-                ToolbarItemGroup(placement: .secondaryAction) {
-                    Button {
-                        mode = 1
-                        if mode == 1 { presentSheet = true }
-                    } label: {
-                        Label("ALL_READ_ARTICLES", systemImage: "eye")
-                    }
-                    Button {
-                        mode = 2
-                        if mode == 2 { presentSheet = true }
-                    } label: {
-                        Label("ALL_UNREAD_ARTICLES", systemImage: "eye.slash")
-                    }
-                }
+
             }
-            .sheet(isPresented: $presentSheet) { AllArticleView(mode: mode) }
+            .sheet(isPresented: $presentSheet) { AllArticleView() }
             .onAppear {
                 items = con.getAllLists()
             }
