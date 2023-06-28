@@ -23,10 +23,10 @@ struct ObjectWarningBoxView: View {
     var body: some View {
         VStack {
             HStack(alignment: .center) {
-                Text(textTop).font(.largeTitle).bold()
+                Text(FilterToPure(doc: textTop)).font(.largeTitle).bold()
             }
             HStack(alignment: .center) {
-                Text(textBottom)
+                Text(FilterToPure(doc: textBottom))
             }
             HStack(alignment: .center) {
                 Text(objectNumber).monospaced().font(.title2)

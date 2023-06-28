@@ -46,6 +46,14 @@ struct Collapsible: View {
             }
             if showed {
                 RAISAText(article: article, text: content)
+                    .onTextLoad {
+                        guard let id = article.currenttext else { return }
+                        
+                        if content.contains(id) && UserDefaults.standard.bool(forKey: "autoScroll") {
+                            showed = true
+                            proxy?.scrollTo(id)
+                        }
+                    }
                 
                 HStack {
                     Text("BLOCK_END_INDICATOR").foregroundColor(.secondary)
@@ -55,14 +63,6 @@ struct Collapsible: View {
                         .foregroundColor(.secondary)
                     Image(systemName: "chevron.left.2").foregroundColor(.secondary)
                 }
-            }
-        }
-        .onAppear {
-            guard let id = article.currenttext else { return }
-            
-            if content.contains(id) {
-                showed = true
-                proxy?.scrollTo(id)
             }
         }
     }

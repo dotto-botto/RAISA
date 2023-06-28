@@ -17,6 +17,7 @@ struct RAISAText: View {
     @State private var filtered: Bool = false
     @State private var filteredText: String = ""
     @State private var itemList: [RTItem] = []
+    @State private var actionToPerform: (() -> Void)? = nil
 
     init(article: Article) {
         self._article = State(initialValue: article)
@@ -39,6 +40,10 @@ struct RAISAText: View {
                             item.toCorrespondingView(article: article, proxy: value)
                         }
                         .onAppear {
+                            if actionToPerform != nil {
+                                actionToPerform!()
+                            }
+                            
                             if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
                                 value.scrollTo(article.currenttext!)
                             }
@@ -62,11 +67,12 @@ struct RAISAText: View {
     }
 }
 
-//extension RAISAText {
-//    func onTextLoad(perform: (() -> Void)? = nil) -> RAISAText {
-//
-//    }
-//}
+extension RAISAText {
+    func onTextLoad(perform: (() -> Void)? = nil) -> RAISAText {
+        actionToPerform = perform
+        return self
+    }
+}
 
 /// Parse text that has already been filtered.
 func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem] {
@@ -202,10 +208,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
-        if let firstLicense = matches(for: #"\[\[include.*license-box.*?]]"#, in: text).first,
-           let lastLicense = matches(for: #"\[\[include.*?license-box-end.*?]]"#, in: text).first {
-            text.removeText(from: firstLicense, to: lastLicense)
-        }
+        text = try! text.replacing(Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#), with: "")
         text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
         for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
         text.removeText(from: "[[include info:start", to: "include info:end]]")
@@ -239,14 +242,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
         text = text.replacingOccurrences(of: "--]", with: "")
-        text.removeText(from: "[[>", to: "]]")
-        text.removeText(from: "[[/>", to: "]]")
-        text.removeText(from: "[[<", to: "]]")
-        text.removeText(from: "[[/<", to: "]]")
-        text.removeText(from: "[[=", to: "]]")
-        text.removeText(from: "[[/=", to: "]]")
-        text.removeText(from: "[[==", to: "]]")
-        text.removeText(from: "[[/==", to: "]]")
         text.removeText(from: "<< [[[", to: "]]] >>")
         for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
@@ -287,6 +282,20 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
                     .replacingOccurrences(of: "}}", with: "``")
                 )
             }
+        }
+        
+        let stringDeletes: [String] = [
+            "[[>]]",
+            "[[/>]]",
+            "[[<]]",
+            "[[/<]]",
+            "[[=]]",
+            "[[/=]]",
+            "[[==]]",
+            "[[/==]]",
+        ]
+        for string in stringDeletes {
+            text = text.replacingOccurrences(of: string, with: "")
         }
         
         text = text.replacingOccurrences(of: "@@@@", with: "\n")
@@ -393,6 +402,10 @@ func FilterToPure(doc: String) -> String {
         text = text.replacingOccurrences(of: match, with: match.slice(from: "|", to: "##") ?? match)
     }
     
+    for match in matches(for: #"\[.*?http.*? (.*?)]"#, in: text) {
+        text = text.replacingOccurrences(of: match, with: match.slice(from: " ", to: "]") ?? "")
+    }
+    
     let stringDeletes: [String] = [
         "@@@@",
         "{{",
@@ -409,26 +422,23 @@ func FilterToPure(doc: String) -> String {
     for string in stringDeletes {
         text = text.replacingOccurrences(of: string, with: "")
     }
-
-    text = try! text.replacing(Regex("^---+$"), with: "") // horizontal rule
-    text = try! text.replacing(Regex("^===$"), with: "")
-    text = try! text.replacing(Regex(#"\n\++ "#), with: "") // header markings
-    text = try! text.replacing(Regex(#"\++\*"#), with: "") // header markings escaped from toc
-    text = try! text.replacing(Regex(#"\n="#), with: "")
-    text = try! text.replacing(Regex(#"\[\[collapsible.+?]]"#), with: "")
-    text = try! text.replacing(Regex(#"^> "#), with: "")
-    text = try! text.replacing(Regex(#"^\* "#), with: "") // bullets
     
-    let supportedIncludes: [String] = [
-        "image-features-source",
-        "image-block",
-        "anomaly-class",
-        "object-warning-box",
-        "snippets:html5player",
+    let regexDeletes: [Regex] = try! [
+        Regex(#"^---+$"#), // horizontal rule
+        Regex("^===$"),
+        Regex(#"\n\++ "#), // header markings
+        Regex(#"\++\*"#), // header markings escaped from toc
+        Regex(#"\n="#),
+        Regex(#"\[\[collapsible.+?]]"#),
+        Regex(#"^> "#),
+        Regex(#"^\* "#), // bullets
+        Regex(#"\[\[.*?image.*?]]"#),
+        Regex(#"\[\[include[^\]]*\]\](?![^\[]*\])"#), // all componenets
     ]
     
-    let regex = try! Regex(#"\[\[include(?!.*("# + supportedIncludes.joined(separator: "|") + #"))[^\]]*\]\](?![^\[]*\])"#)
-    text = text.replacing(regex, with: "")
+    for regex in regexDeletes {
+        text = text.replacing(regex, with: "")
+    }
     
     text = text.trimmingCharacters(in: .whitespacesAndNewlines)
     
