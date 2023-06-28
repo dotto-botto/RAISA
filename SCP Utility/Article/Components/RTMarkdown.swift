@@ -19,13 +19,6 @@ struct RTMarkdown: View {
                 ForegroundColor(findTint() ?? .accentColor)
             }
             .id(text)
-            .contextMenu {
-                Button {
-                    article.setScroll(text)
-                } label: {
-                    Label("SAVE_POSITION_PROMPT", systemImage: "bookmark")
-                }
-            }
     }
     
     private func findTint() -> Color? {
@@ -44,7 +37,7 @@ struct RTMarkdown: View {
             newText = newText.replacingOccurrences(of: match, with: "`\(text)`")
         }
         
-        return FilterToPure(doc: newText)
+        return newText
     }
 }
 
