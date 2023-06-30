@@ -442,7 +442,7 @@ extension PersistenceController {
     }
     
     /// Update scroll progress.
-    func setScroll(text: String, articleid: String, context: NSManagedObjectContext? = nil) {
+    func setScroll(text: String?, articleid: String, context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext
 
         let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")

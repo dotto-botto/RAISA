@@ -134,10 +134,12 @@ struct ArticleRow: View {
             if flavorText == nil {
                 flavorText = {
                     if passedSCP.currenttext != nil { return FilterToPure(doc: passedSCP.currenttext!) }
-                    if let description = passedSCP.pagesource.slice(from: "**Description:**") { return FilterToPure(doc: description) }
+                    if let description = passedSCP.pagesource.slice(from: "**Description:**", to: "\n") { return FilterToPure(doc: description) }
                     
                     let list = passedSCP.pagesource.components(separatedBy: .newlines)
-                    return FilterToPure(doc: list[(Int(list.count) / 2)..<list.count].joined(separator: " "))
+                    let half = list[(Int(list.count) / 2)..<list.count].joined(separator: "\n")
+                    let firstLine = half.slice(from: list.first ?? "", to: "\n")
+                    return FilterToPure(doc: firstLine ?? half)
                 }()
             }
             

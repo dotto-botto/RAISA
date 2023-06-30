@@ -18,6 +18,7 @@ struct RAISAText: View {
     @State private var filteredText: String = ""
     @State private var itemList: [RTItem] = []
     @State private var actionToPerform: (() -> Void)? = nil
+    @State private var currentId: String?
 
     init(article: Article) {
         self._article = State(initialValue: article)
@@ -36,16 +37,35 @@ struct RAISAText: View {
                     if !filtered {
                         ProgressView()
                     } else {
-                        ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-                            item.toCorrespondingView(article: article, proxy: value)
+                        Group {
+                            if #available(iOS 17, *) {
+//                                ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+//                                    item.toCorrespondingView(article: article)
+//                                        .id(item)
+//                                }
+//                                .scrollPosition(id: $currentId)
+//                                .onDisappear {
+//                                    article.setScroll(currentId)
+//                                }
+//                                .onAppear {
+//                                    withAnimation {
+//                                        currentId = article.currenttext
+//                                    }
+//                                }
+                            } else {
+                                ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+                                    item.toCorrespondingView(article: article)
+                                }
+                                .onAppear {
+                                    if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
+                                        value.scrollTo(article.currenttext!)
+                                    }
+                                }
+                            }
                         }
                         .onAppear {
                             if actionToPerform != nil {
                                 actionToPerform!()
-                            }
-                            
-                            if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
-                                value.scrollTo(article.currenttext!)
                             }
                         }
                     }
@@ -203,6 +223,7 @@ func findAllAudio(_ doc: String) -> [String] {
     return matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: doc)
 }
 
+// MARK: Normal Filter
 func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     DispatchQueue.main.async {
         var text = doc
@@ -323,6 +344,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     }
 }
 
+// MARK: Pure Filter
 func FilterToPure(doc: String) -> String {
     var text = doc
     

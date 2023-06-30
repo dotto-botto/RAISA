@@ -23,18 +23,18 @@ struct ArticleAudio: View {
     
     var body: some View {
         HStack {
-            Spacer()
-            Button {
-                if audio.isPlaying {
-                    audio.stopAudio()
-                } else {
-                    audio.playAudioFromURL(url: url)
-                }
-            } label: {
-                Text("Audio")
-                Image(systemName: audio.isPlaying ? "pause.fill" : "play.fill")
-            }
-            Spacer()
+//            Spacer()
+//            Button {
+//                if audio.isPlaying {
+//                    audio.stopAudio()
+//                } else {
+//                    audio.playAudioFromURL(url: url)
+//                }
+//            } label: {
+//                Text("Audio")
+//                Image(systemName: audio.isPlaying ? "pause.fill" : "play.fill")
+//            }
+//            Spacer()
         }
         .foregroundColor(.accentColor)
     }

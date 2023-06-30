@@ -106,7 +106,7 @@ struct Article: Identifiable, Codable {
     
     /// Sets scroll variable of article to given string.
     /// - Parameter text: The text to set the current text to.
-    mutating func setScroll(_ text: String) {
+    mutating func setScroll(_ text: String?) {
         self.currenttext = text
         con.setScroll(text: text, articleid: self.id)
     }

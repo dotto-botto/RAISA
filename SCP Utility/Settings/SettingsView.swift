@@ -13,7 +13,7 @@ struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
     @AppStorage("showImages") var showImages = true
-    @AppStorage("defaultOpen") var defaultOpen = 0
+    @AppStorage("defaultOpen") var defaultOpen = 1
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoScroll") var autoScroll = true
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
