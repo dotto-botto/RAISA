@@ -16,6 +16,7 @@ struct ArticleRow: View {
     @State private var showArticle: Bool = false // article view
     @State private var showUpdateView: Bool = false
     @State private var showListAddView: Bool = false
+    @State private var disabled: Bool = false
     var body: some View {
         let con = PersistenceController.shared
         
@@ -79,6 +80,7 @@ struct ArticleRow: View {
                 }
             }
         }
+        .disabled(disabled)
         .contextMenu {
             Button {
                 showListAddView = true
@@ -121,6 +123,8 @@ struct ArticleRow: View {
         .fullScreenCover(isPresented: $showArticle, onDismiss: {
             if let articleitem = con.getArticleByID(id: passedSCP.id), let article = Article(fromEntity: articleitem) {
                 passedSCP = article
+            } else {
+                disabled = true
             }
         }) {
             NavigationStack { ArticleView(scp: passedSCP) }

@@ -87,6 +87,8 @@ struct ArticleView: View {
         }
         .navigationTitle(scp.title)
         .onAppear {
+            bookmarkStatus = scp.isSaved()
+            
             if scp.title == "Could not find title" {
                 dismiss()
             }
@@ -127,7 +129,9 @@ struct ArticleView: View {
             }
         }
         .padding(.horizontal, 20)
-        .sheet(isPresented: $presentSheet) {
+        .sheet(isPresented: $presentSheet, onDismiss: {
+            bookmarkStatus = scp.isSaved()
+        }) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
         .sheet(isPresented: $showInfo) {
@@ -181,19 +185,10 @@ struct ArticleView: View {
 
             // Bottom
             ToolbarItemGroup(placement: .bottomBar) {
-                Button {} label: {
-                    if scp.isSaved() || bookmarkStatus == true {
-                        Image(systemName: "bookmark.fill")
-                            .onTapGesture { presentSheet.toggle() }
-                            .onLongPressGesture { presentSheet.toggle() }
-                    } else {
-                        Image(systemName: "bookmark")
-                            .onTapGesture {
-                                con.createArticleEntity(article: scp)
-                                bookmarkStatus = true
-                            }
-                            .onLongPressGesture { presentSheet.toggle() }
-                    }
+                Button {
+                    presentSheet.toggle()
+                } label: {
+                    Image(systemName: bookmarkStatus ? "bookmark.fill": "bookmark")
                 }
                 .disabled(containsExplicitContent)
 

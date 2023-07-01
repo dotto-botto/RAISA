@@ -16,6 +16,8 @@ struct ListAdd: View {
     
     @State private var alertPresent: Bool = false
     @State private var query: String = ""
+    @State private var showConf: Bool = false
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         let con = PersistenceController.shared
         
@@ -40,10 +42,24 @@ struct ListAdd: View {
                 .listStyle(.plain)
                 .navigationTitle("LISTADDVIEW_TITLE")
                 .toolbar {
-                    Button {
-                        alertPresent = true
-                    } label: {
-                        Image(systemName: "plus")
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        Button("DELETE") {
+                            showConf = true
+                        }
+                        .confirmationDialog("LAV_DELETE_\(article.title)", isPresented: $showConf) {
+                            Button("LAV_DELETE_\(article.title)", role: .destructive) {
+                                con.deleteArticleEntity(id: article.id)
+                                dismiss()
+                            }
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            alertPresent = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
                 .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {

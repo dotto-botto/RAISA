@@ -162,6 +162,7 @@
 "ADD_LIST_PROMPT" = "Add new List";
 "SUBTITLE_PLACEHOLDER" = "Hold to add subtitle";
 "LISTADDVIEW_TITLE" = "Add to List";
+"LAV_DELETE_%@" = "Delete \"%@\"?";
 "LIST_ADD_GUIDE" = "Press the bookmark while reading an article to add it to a list.";
 "ALL_SAVED_ARTICLES" = "All Saved Articles";
 "ALL_READ_ARTICLES" = "All Read Articles";
