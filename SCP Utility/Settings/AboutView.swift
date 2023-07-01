@@ -10,25 +10,31 @@ import MarkdownUI
 
 struct AboutView: View {
     var body: some View {
-        Form {
-            Markdown(apiLicense)
-            
-            Section("LIBRARIES") {
-                NavigationLink("LIST_OF_LIBRARIES") {
-                    List {
-                        Link("Alamofire", destination: URL(string: "https://github.com/Alamofire/Alamofire")!)
-                        Link("Kingfisher", destination: URL(string: "https://github.com/onevcat/Kingfisher")!)
-                        Link("Swift Markdown UI", destination: URL(string: "https://github.com/gonzalezreal/swift-markdown-ui")!)
-                        Link("SwiftSoup", destination: URL(string: "https://github.com/scinfu/SwiftSoup")!)
-                        Link("SwiftyJSON", destination: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
+        VStack {
+            Form {
+                Markdown(apiLicense)
+                
+                Section("LIBRARIES") {
+                    NavigationLink("LIST_OF_LIBRARIES") {
+                        List {
+                            Link("Alamofire", destination: URL(string: "https://github.com/Alamofire/Alamofire")!)
+                            Link("Kingfisher", destination: URL(string: "https://github.com/onevcat/Kingfisher")!)
+                            Link("Swift Markdown UI", destination: URL(string: "https://github.com/gonzalezreal/swift-markdown-ui")!)
+                            Link("SwiftSoup", destination: URL(string: "https://github.com/scinfu/SwiftSoup")!)
+                            Link("SwiftyJSON", destination: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
+                        }
+                        .navigationTitle("LIST_OF_LIBRARIES")
                     }
-                    .navigationTitle("LIST_OF_LIBRARIES")
+                }
+                
+                Section("CONTENT_LICENSE") {
+                    Markdown(contentLicense)
                 }
             }
+            Spacer()
             
-            Section("CONTENT_LICENSE") {
-                Markdown(contentLicense)
-            }
+            Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "ERROR")
+                .foregroundColor(.secondary)
         }
         .navigationTitle("ABOUT_RAISA")
     }
