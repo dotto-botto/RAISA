@@ -11,19 +11,26 @@ import SwiftUI
 struct CommentsView: View {
     @State var article: Article
     @State private var comments: [Comment] = []
+    @State private var loading: Bool = true
     var body: some View {
         NavigationStack {
             ScrollView {
-                ForEach(comments, id: \.self) { comment in
-                    CommentView(comment: comment).padding(.vertical, 5)
+                if loading {
+                    ProgressView()
+                } else {
+                    ForEach(comments, id: \.self) { comment in
+                        CommentView(comment: comment).padding(.vertical, 5)
+                    }
                 }
             }
             .navigationTitle("CV_TITLE\(article.title)")
             .padding(.horizontal, 20)
+            .scrollDisabled(loading)
         }
         .onAppear {
             parseComments(articleURL: article.url) { com in
                 comments = com
+                loading = false
             }
         }
     }
