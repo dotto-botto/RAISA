@@ -99,92 +99,99 @@ struct ListView: View {
 struct OneListView: View {
     @State var list: SCPList
     @State private var query: String = ""
+    @State private var articles: [Article] = []
     
     @State private var listTitlePresent: Bool = false
     @State private var listSubtitlePresent: Bool = false
     @State private var updateQuery: String = ""
     
     var body: some View {
-        if list.contents != nil {
-            let con = PersistenceController.shared
-            var articles = con.getAllListArticles(list: list)!
-            
-            VStack {
+        VStack {
+            if articles.isEmpty {
+                Text("NO_ARTICLES_IN_LIST")
+                    .font(.title)
+                    .foregroundColor(.secondary)
+                Text("LIST_ADD_GUIDE")
+                    .foregroundColor(.secondary)
+            } else {
                 List {
-                    ForEach(articles, id: \.self) { article in
-                        if let article = Article(fromEntity: article) {
-                            let button = Button {
-                                list.removeContent(id: article.id)
-                            } label: {
-                                Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
-                            }
-                            
-                            ArticleRow(passedSCP: article)
-                                .swipeActions(edge: .leading) { button }
+                    ForEach(articles) { article in
+                        let button = Button {
+                            list.removeContent(id: article.id)
+                        } label: {
+                            Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
                         }
+                        
+                        ArticleRow(passedSCP: article)
+                            .swipeActions(edge: .leading) { button }
                     }
                 }
             }
-            .navigationTitle(list.listid)
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
-            .onAppear {
-                if let scplistentity = con.getListByID(id: list.id), let scplist = SCPList(fromEntity: scplistentity) {
-                    list = scplist
-                }
-            }
-            .onChange(of: query) { _ in
-                articles = articles.filter{ query.isEmpty ? true : $0.title?.lowercased().contains(query.lowercased()) ?? false }
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .secondaryAction) {
-                    Button {
-                        listTitlePresent = true
-                    } label: {
-                        Label("CHANGE_LIST_TITLE", systemImage: "pencil")
-                    }
-                    Button {
-                        listSubtitlePresent = true
-                    } label: {
-                        Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
-                    }
-                }
-            }
-            .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
-                TextField(list.listid, text: $updateQuery)
-                
-                Button("CHANGE") {
-                    list.updateTitle(newTitle: updateQuery)
-                    listTitlePresent = false
-                    query = ""
-                }
-                Button("CANCEL", role: .cancel) {
-                    listTitlePresent = false
-                    query = ""
-                }
-            }
-            .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
-                TextField(list.subtitle ?? "", text: $updateQuery)
-                
-                Button("CHANGE") {
-                    list.updateSubtitle(newTitle: updateQuery)
-                    listSubtitlePresent = false
-                    query = ""
-                }
-                Button("CANCEL", role: .cancel) {
-                    listSubtitlePresent = false
-                    query = ""
-                }
-            }
-            Spacer()
-        } else {
-            Spacer()
-            Text("NO_ARTICLES_IN_LIST")
-                .font(.largeTitle)
-                .foregroundColor(.gray)
-            Text("LIST_ADD_GUIDE")
-                .foregroundColor(.gray)
-            Spacer()
         }
+        .navigationTitle(list.listid)
+        .task { updateArticles() }
+        .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
+        .onAppear {
+            if let scplistentity = PersistenceController.shared.getListByID(id: list.id), let scplist = SCPList(fromEntity: scplistentity) {
+                list = scplist
+            }
+        }
+        .onChange(of: query) { _ in
+            updateArticles()
+            articles = articles.filter{ query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .secondaryAction) {
+                Button {
+                    listTitlePresent = true
+                } label: {
+                    Label("CHANGE_LIST_TITLE", systemImage: "pencil")
+                }
+                Button {
+                    listSubtitlePresent = true
+                } label: {
+                    Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
+                }
+            }
+        }
+        .alert("CHANGE_LIST_TITLE", isPresented: $listTitlePresent) {
+            TextField(list.listid, text: $updateQuery)
+            
+            Button("CHANGE") {
+                list.updateTitle(newTitle: updateQuery)
+                listTitlePresent = false
+                query = ""
+            }
+            Button("CANCEL", role: .cancel) {
+                listTitlePresent = false
+                query = ""
+            }
+        }
+        .alert("CHANGE_LIST_SUBTITLE", isPresented: $listSubtitlePresent) {
+            TextField(list.subtitle ?? "", text: $updateQuery)
+            
+            Button("CHANGE") {
+                list.updateSubtitle(newTitle: updateQuery)
+                listSubtitlePresent = false
+                query = ""
+            }
+            Button("CANCEL", role: .cancel) {
+                listSubtitlePresent = false
+                query = ""
+            }
+        }
+        Spacer()
+    }
+    
+    private func updateArticles() {
+        var articlelist: [Article] = []
+        for article in PersistenceController.shared.getAllListArticles(list: self.list) ?? [] {
+            if let article = Article(fromEntity: article) {
+                articlelist.append(article)
+            }
+        }
+        
+        self.articles = articlelist
     }
 }
 

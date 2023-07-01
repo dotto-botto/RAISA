@@ -18,25 +18,25 @@ struct AllArticleView: View {
     let con = PersistenceController.shared
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(articles) { article in
-                    ArticleRow(passedSCP: article)
-                }
-            }
-            
             VStack {
                 if articles.isEmpty {
                     if !query.isEmpty {
                         Text("NO_RESULTS_FOR_\(query)")
+                            .foregroundColor(.secondary)
                     } else {
                         Text("NO_SAVED_ARTICLES")
+                            .foregroundColor(.secondary)
                     }
-                    Spacer()
+                } else {
+                    List {
+                        ForEach(articles) { article in
+                            ArticleRow(passedSCP: article)
+                        }
+                    }
                 }
             }
-            .foregroundColor(.secondary)
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
         }
-        .searchable(text: $query)
         .toolbar {
             ToolbarItemGroup(placement: .secondaryAction) {
                 Button {
