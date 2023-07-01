@@ -21,10 +21,10 @@ struct CommentsView: View {
                     ForEach(comments, id: \.self) { comment in
                         CommentView(comment: comment).padding(.vertical, 5)
                     }
+                    .padding(.horizontal, 20)
                 }
             }
             .navigationTitle("CV_TITLE\(article.title)")
-            .padding(.horizontal, 20)
             .scrollDisabled(loading)
         }
         .onAppear {

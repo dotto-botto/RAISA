@@ -25,19 +25,29 @@ func parseComments(articleURL: URL, completion: @escaping ([Comment]) -> Void) {
             var returnComments: [Comment] = []
             for element in comments {
                 let img = try element.getElementsByClass("small").attr("src").asURL()
+                
                 var user = ""
                 if try element.getElementsByClass("printuser deleted").first() == nil {
-                    user = try element.getElementsByClass("printuser avatarhover").select("a").array().last?.text() ?? "unknown user"
+                    user = try element.getElementsByClass("printuser avatarhover").first()?.select("a").array().last?.text() ?? "unknown user"
                 } else { user = "(account deleted)" }
-                let date = try element.getElementsByClass("odate time_1388720063 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%7Cagohover").toString()
+                
+                let keyword = matches(for: #"odate.*?agohover"#, in: element.description).first ?? "÷"
+                let dateElement = try element.getElementsByClass(keyword).text()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "dd MMM yyyy HH:mm"
+                let date = dateFormatter.date(from: dateElement)
+                
                 let content = try element.getElementsByClass("content").first()?.text() ?? ""
+                
+                let subject = try element.getElementsByClass("title").first()?.text()
                 
                 returnComments.append(
                     Comment(
                         username: user,
+                        subject: subject,
                         content: content,
                         profilepic: img,
-                        date: nil
+                        date: date
                     )
                     
                 )

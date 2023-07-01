@@ -13,6 +13,7 @@ import Kingfisher
 struct CommentView: View {
     @State var comment: Comment
     @State var inset: Int? = nil
+    @State private var folded: Bool = false
     var body: some View {
         
         let Guide = {
@@ -36,14 +37,36 @@ struct CommentView: View {
                         .frame(width: 30, height: 30)
                         .clipped()
                     Text(comment.username)
+                        .font(.system(size: 16))
+                        .bold()
                     if comment.date != nil {
                         Guide()
-                        Text(comment.date!.formatted())
+                        Text(comment.date!
+                            .formatted(date: .long, time: .shortened)
+                            .replacingOccurrences(of: "at", with: "")
+                        )
+                            .font(.system(size: 14))
+                            .bold()
                     }
                     Spacer()
                 }
                 
-                Text(comment.content)
+                HStack {
+                    Text(comment.subject ?? "")
+                        .font(.system(size: 18))
+                        .bold()
+                    
+                    Spacer()
+                    
+                    Button(folded ? "CV_UNFOLD" : "CV_FOLD") {
+                        folded.toggle()
+                    }
+                }
+                .padding(.bottom, 3)
+                
+                if !folded {
+                    Text(comment.content)
+                }
             }
         }
     }

@@ -195,6 +195,8 @@
 "IMAGE_INFO" = "Image Info";
 "TAP_FOR_HTML" = "Tap to View HTML";
 "CV_TITLE%@" = "Discuss: %@";
+"CV_FOLD" = "Fold";
+"CV_UNFOLD" = "Unfold";
 
 // Article Bar
 "ADD_TO_BAR" = "Add to Bar";

@@ -10,6 +10,7 @@ import Foundation
 /// Struct that defines comments.
 struct Comment: Hashable {
     let username: String
+    let subject: String?
     let content: String
     let profilepic: URL?
     let date: Date?
@@ -20,11 +21,13 @@ struct Comment: Hashable {
     ///   - date: The time the coment was made. (unused)
     init(
         username: String,
+        subject: String? = nil,
         content: String,
         profilepic: URL?,
         date: Date?
     ) {
         self.username = username
+        self.subject = subject
         self.content = content
         self.profilepic = profilepic
         self.date = date
@@ -33,6 +36,7 @@ struct Comment: Hashable {
 
 let placeHolderComment = Comment(
     username: "Zyn",
+    subject: "Staff Post",
     content: """
 Posting at the top of the discussion for visibility.
 
