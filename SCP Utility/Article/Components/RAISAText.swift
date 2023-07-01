@@ -291,6 +291,16 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             )
         }
         
+        // Links that dont start with http (SCP-7579)
+        for match in matches(for: #"\[\*\/.*? .*?\]"#, in: text) {
+            if let url = matches(for: #"(?<=\*\/).*?(?= )"#, in: match).first {
+                // TODO: Fix for international branches
+                text = text.replacingOccurrences(of: match, with:
+                                                    match.replacingOccurrences(of: "*/\(url)", with: "https://scp-wiki.wikidot.com/\(url)")
+                )
+            }
+        }
+        
         // Monospace
         // It wont parse links or bold text so this needs to happen
         for match in matches(for: #"\{\{.*?\}\}"#, in: text) {
