@@ -52,6 +52,12 @@ struct ListAdd: View {
                                 dismiss()
                             }
                         }
+                        
+                        Button("LAV_SAVE_TO_LIBRARY") {
+                            con.createArticleEntity(article: article)
+                            dismiss()
+                        }
+                        .disabled(con.isArticleSaved(url: article.url))
                     }
                     
                     ToolbarItem(placement: .navigationBarTrailing) {
