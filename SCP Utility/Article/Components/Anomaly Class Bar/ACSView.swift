@@ -15,6 +15,8 @@ struct ACSView: View {
     let esoteric: EsotericClass?
     let disruption: DisruptionClass
     let risk: RiskClass
+    var customSecondary: String? = nil
+    let secondaryIcon: String?
     
     /// Init from a raw wikidot component string. Example:
     /// [[include :scp-wiki:component:anomaly-class-bar-source
@@ -29,55 +31,92 @@ struct ACSView: View {
     /// - Parameter component: The raw string
     init?(component: String) {
         guard let num: Int = {
-            let str = component.slice(from: "|item-number=SCP-", to: "\n") ??
-            component.slice(from: "|item-number=", to: "\n")
-            return Int(str ?? "")
+            Int(matches(for: #"(?<=item-number=).*?(?=\n|\|)"#, in: component).first?.replacingOccurrences(of: " ", with: "") ?? "")
         }() else { return nil }
-        guard let clearance = Int(component.slice(from: "|clearance=", to: "\n")?.replacingOccurrences(of: " ", with: "") ?? "") else { return nil }
         
-        var object: ObjectClass
-        if component.contains("safe") { object = .safe }
-        else if component.contains("euclid") { object = .euclid }
-        else if component.contains("keter") { object = .keter }
-        else if component.contains("neutralized") { object = .neutralized }
-        else if component.contains("pending") { object = .pending }
-        else if component.contains("explained") { object = .explained }
-        else if component.contains("esoteric") { object = .esoteric }
-        else { return nil }
+        guard let clearance: Int = {
+            Int(matches(for: #"(?<=clearance=).*?(?=\n|\|)"#, in: component).first?.replacingOccurrences(of: " ", with: "") ?? "")
+        }() else { return nil }
         
-        var newEso: EsotericClass? = nil
-        if component.contains("apollyon") { newEso = .apollyon }
-        else if component.contains("archon") { newEso = .archon }
-        else if component.contains("cernunnos") { newEso = .cernunnos }
-        else if component.contains("decommissioned") { newEso = .decommissioned }
-        else if component.contains("hiemal") { newEso = .hiemal }
-        else if component.contains("tiamat") { newEso = .tiamat }
-        else if component.contains("ticonderoga") { newEso = .ticonderoga }
-        else if component.contains("thaumiel") { newEso = .thaumiel }
-        else if component.contains("uncontained") { newEso = .uncontained }
+        let obj: String = {
+            matches(for: #"(?<=container-class=).*?(?=\n|\|)"#, in: component).first ?? ""
+        }().replacingOccurrences(of: " ", with: "")
         
-        var dis: DisruptionClass
-        if component.contains("dark") { dis = .dark }
-        else if component.contains("vlam") { dis = .vlam }
-        else if component.contains("keneq") { dis = .keneq }
-        else if component.contains("ekhi") { dis = .ekhi }
-        else if component.contains("amida") { dis = .amida }
-        else { return nil }
         
-        var ris: RiskClass
-        if component.contains("notice") { ris = .notice }
-        else if component.contains("caution") { ris = .caution }
-        else if component.contains("warning") { ris = .warning }
-        else if component.contains("danger") { ris = .danger }
-        else if component.contains("critical") { ris = .critical }
-        else { return nil }
+        let secondaryClass: String = {
+            matches(for: #"(?<=secondary-class=).*?(?=\n|\|)"#, in: component).first ?? ""
+        }().replacingOccurrences(of: " ", with: "")
+        
+        let dis: String = {
+            matches(for: #"(?<=disruption-class=).*?(?=\n|\|)"#, in: component).first ?? ""
+        }().replacingOccurrences(of: " ", with: "")
+        
+        let ris: String = {
+            matches(for: #"(?<=risk-class=).*?(?=\n|\|)"#, in: component).first ?? ""
+        }().replacingOccurrences(of: " ", with: "")
+        
+        let secondaryIcon = matches(for: #"(?<=secondary-icon=).*?(?=\n|\|)"#, in: component).first?
+            .replacingOccurrences(of: "http:", with: "https:")
+            .trimmingCharacters(in: .whitespaces)
         
         self.itemnumber = num
         self.clearance = clearance
-        self.object = object
-        self.esoteric = newEso
-        self.disruption = dis
-        self.risk = ris
+        
+        self.object = {
+            switch obj.lowercased() {
+            case "safe": return .safe
+            case "euclid": return .euclid
+            case "keter": return .keter
+            case "neutralized": return .neutralized
+            case "pending": return .pending
+            case "explained": return .explained
+            case "esoteric": return .esoteric
+            default: return .unknown
+            }
+        }()
+        
+        self.esoteric = {
+            switch secondaryClass.lowercased() {
+            case "apollyon": return .apollyon
+            case "archon": return .archon
+            case "cernunnos": return .cernunnos
+            case "decommissioned": return .decommissioned
+            case "hiemal": return .hiemal
+            case "tiamat": return .tiamat
+            case "ticonderoga": return .ticonderoga
+            case "thaumiel": return .thaumiel
+            case "uncontained": return .uncontained
+            default: return .unknown
+            }
+        }()
+        
+        if self.esoteric == .unknown {
+            self.customSecondary = secondaryClass
+        }
+        
+        self.disruption = {
+            switch dis.lowercased() {
+            case "dark": return .dark
+            case "vlam": return .vlam
+            case "keneq": return .keneq
+            case "ekhi": return .ekhi
+            case "amida": return .amida
+            default: return .unknown
+            }
+        }()
+        
+        self.risk = {
+            switch ris.lowercased() {
+            case "notice": return .notice
+            case "caution": return .caution
+            case "warning": return .warning
+            case "danger": return .danger
+            case "critical": return .critical
+            default: return .unknown
+            }
+        }()
+        
+        self.secondaryIcon = (secondaryClass == "none" || secondaryClass == "") ? nil : secondaryIcon
     }
     
     var body: some View {
@@ -104,7 +143,16 @@ struct ACSView: View {
             
             Rectangle().frame(height: 20)
             if UIDevice.current.userInterfaceIdiom == .phone {
-                ACSCellView(.object(object))
+                if esoteric == .unknown && secondaryIcon != nil {
+                    ACSCellView(
+                        secondaryname: customSecondary ?? "",
+                        secondaryIconURL: URL(string: secondaryIcon ?? "")
+                    )
+                } else if esoteric != nil && esoteric != .unknown {
+                    ACSCellView(.esoteric(esoteric!))
+                } else {
+                    ACSCellView(.object(object))
+                }
                 ACSCellView(.disruption(disruption))
                 ACSCellView(.risk(risk))
             } else {

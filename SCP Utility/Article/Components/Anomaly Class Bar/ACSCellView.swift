@@ -10,9 +10,15 @@ import SwiftUI
 /// Container for the attribute icons used in ACSView.
 struct ACSCellView: View {
     @State var componentClass: ArticleAttribute
+    @State var customIcon: [String:URL?] = [:]
     
     init(_ attr: ArticleAttribute) {
         componentClass = attr
+    }
+    
+    init?(secondaryname: String, secondaryIconURL url: URL?) {
+        customIcon = [secondaryname:url]
+        componentClass = .object(.unknown)
     }
     
     var body: some View {
@@ -22,7 +28,7 @@ struct ACSCellView: View {
                 .frame(width: 20)
             // MARK: - Text
             VStack {
-                Text(componentClass.toLocalString().uppercased())
+                Text(customIcon.first?.key.uppercased() ?? componentClass.toLocalString().uppercased())
                     .font(.title)
                     .bold()
             }
@@ -43,12 +49,25 @@ struct ACSCellView: View {
                     
                     
                     ZStack {
-                        Circle().foregroundColor(componentClass.toColor())
+                        Circle()
+                            .foregroundColor(
+                                componentClass.toColor() == Color("Pending Black") ? .white : componentClass.toColor()
+                            )
                             .frame(height: 80)
-                        Image(componentClass.toImage())
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 65)
+                        
+                        if let url = customIcon.first?.value {
+                            AsyncImage(url: url) {
+                                $0
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 65)
+                            } placeholder: {}
+                        } else {
+                            Image(componentClass.toImage())
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 65)
+                        }
                     }
                 }
                 .scaledToFit()
@@ -65,6 +84,7 @@ struct ACSCellView_Previews: PreviewProvider {
             ACSCellView(.object(.keter))
             ACSCellView(.risk(.caution))
             ACSCellView(.esoteric(.apollyon))
+            ACSCellView(secondaryname: "enochian", secondaryIconURL: URL(string: "https://scp-sandbox-3.wdfiles.com/local--files/collab%3Acalibri-bold-and-omega-fallon/enochian.png"))
         }
     }
 }
