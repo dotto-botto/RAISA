@@ -13,6 +13,7 @@ struct OnlineArticleRow: View {
     var title: String
     var url: URL
     @State var bookmarkStatus: Bool
+    @State private var checkmarkStatus: Bool
     
     @State var toArticle: Bool = false
     @State var observedBool: Bool = false // solely used to trigger onchange()
@@ -24,6 +25,7 @@ struct OnlineArticleRow: View {
         self.url = url
         
         _bookmarkStatus = State(initialValue: PersistenceController.shared.isArticleSaved(url: url))
+        _checkmarkStatus = State(initialValue: (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted()))
     }
     
     init(article: Article) {
@@ -31,6 +33,7 @@ struct OnlineArticleRow: View {
         self.url = article.url
         
         _bookmarkStatus = State(initialValue: article.isSaved())
+        _checkmarkStatus = State(initialValue: (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted()))
     }
     
     var body: some View {
@@ -48,6 +51,11 @@ struct OnlineArticleRow: View {
                     .lineLimit(2)
                 Spacer()
             }
+            
+            if checkmarkStatus {
+                Image(systemName: "checkmark")
+            }
+            
             Button {
                 if !bookmarkStatus {
                     cromAPISearchFromURL(query: url) { article in
@@ -67,7 +75,10 @@ struct OnlineArticleRow: View {
         .onChange(of: observedBool) { _ in
             toArticle = true
         }
-        .fullScreenCover(isPresented: $toArticle) {
+        .fullScreenCover(isPresented: $toArticle, onDismiss: {
+            checkmarkStatus = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted())
+            bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
+        }) {
             NavigationStack { ArticleView(scp: currentArticle) }
         }
         .sheet(isPresented: $showSheet) {

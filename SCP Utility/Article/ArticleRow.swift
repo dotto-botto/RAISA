@@ -37,7 +37,7 @@ struct ArticleRow: View {
                         Text(passedSCP.title)
                             .foregroundColor(.primary)
                             .lineLimit(1)
-                        if con.completionStatus(article: passedSCP) {
+                        if passedSCP.isComplete() {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.accentColor)
                         }

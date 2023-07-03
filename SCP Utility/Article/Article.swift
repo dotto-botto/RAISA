@@ -187,6 +187,28 @@ struct Article: Identifiable, Codable {
         }
         return nil
     }
+    
+    // Toggle an article's completion status by adding it to a userdefaults array of urls
+    mutating func complete(updateTo bool: Bool) {
+        var completed: [String] = UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []
+        
+        if bool == true {
+            guard !completed.contains(self.url.formatted()) else { return }
+            completed.append(self.url.formatted())
+            UserDefaults.standard.set(completed, forKey: "completedArticles")
+        } else {
+            UserDefaults.standard.set(
+                completed.filter { $0 != self.url.formatted() },
+                forKey: "completedArticles"
+            )
+        }
+        
+        self.completed = bool
+    }
+    
+    func isComplete() -> Bool {
+        return (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(self.url.formatted())
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.

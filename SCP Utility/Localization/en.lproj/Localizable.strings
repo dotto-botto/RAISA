@@ -72,6 +72,7 @@
 "CHANGE" = "Change";
 "ASSURANCE" = "Are You Sure?";
 "DELETE" = "Delete";
+"DELETE_ALL" = "Delete All";
 "DOWNLOAD" = "Download";
 "OFFLOAD" = "Offload";
 "YES" = "Yes";
@@ -112,6 +113,9 @@
 "MANAGE_STORAGE" = "Manage Storage";
 
 "DATA_OPTIONS" = "Save Data";
+"MANAGE_READ_ARTICLES" = "Manage Read Articles";
+"COMPLETED_ARTICLES" = "Completed Articles";
+"NO_READ_ARTICLES" = "You have not marked any articles as complete";
 "DELETE_ALL_LISTS" = "Delete All Saved Lists";
 "DELETE_ALL_ARTICLES" = "Delete All Saved Articles";
 "DELETE_ALL_DATA" = "Delete All Data";

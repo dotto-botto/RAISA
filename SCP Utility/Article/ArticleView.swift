@@ -17,6 +17,7 @@ struct ArticleView: View {
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
+    @State private var checkmarkStatus: Bool = false
     @State private var forbidden: Bool = true
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
@@ -88,6 +89,7 @@ struct ArticleView: View {
         .navigationTitle(scp.title)
         .onAppear {
             bookmarkStatus = scp.isSaved()
+            checkmarkStatus = scp.isComplete()
             
             if scp.title == "Could not find title" {
                 dismiss()
@@ -128,7 +130,6 @@ struct ArticleView: View {
                 nextArticle = article
             }
         }
-        .padding(.horizontal, 20)
         .sheet(isPresented: $presentSheet, onDismiss: {
             bookmarkStatus = scp.isSaved()
         }) {
@@ -224,16 +225,18 @@ struct ArticleView: View {
 
                 Spacer()
                 Button {
-                    con.complete(status: !(scp.completed ?? false), article: scp)
-                    scp.completed = !(scp.completed ?? false)
+                    checkmarkStatus.toggle()
                 } label: {
-                    if scp.completed == true {
+                    if checkmarkStatus {
                         Image(systemName: "checkmark")
                     } else {
                         Image(systemName: "checkmark")
                             .foregroundColor(.secondary)
                             .opacity(0.5)
                     }
+                }
+                .onChange(of: checkmarkStatus) {
+                    scp.complete(updateTo: $0)
                 }
             }
         }

@@ -614,47 +614,7 @@ extension PersistenceController {
             debugPrint(error.localizedDescription)
         }
     }
-    
-    /// Mark article as complete or incomplete.
-    /// - Parameters:
-    ///   - status: True if article is complete.
-    func complete(status: Bool, article: Article, context: NSManagedObjectContext? = nil) {
-        let context = context ?? container.viewContext
 
-        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
-        request.predicate = NSPredicate(format: "identifier == %@", article.id)
-
-        do {
-            if let article = try context.fetch(request).first {
-                article.completed = status
-            }
-            try context.save()
-        } catch let error {
-            debugPrint(error.localizedDescription)
-        }
-    }
-    
-    /// Get completion status of an article.
-    func completionStatus(article: Article, context: NSManagedObjectContext? = nil) -> Bool {
-        let context = context ?? container.viewContext
-
-        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
-        request.predicate = NSPredicate(format: "identifier == %@", article.id)
-
-        do {
-            if let article = try context.fetch(request).first {
-                if article.completed == true {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            try context.save()
-        } catch let error {
-            debugPrint(error.localizedDescription)
-        }
-        return false
-    }
     
     /// Delete all article items in core data.
     func deleteAllArticles(context: NSManagedObjectContext? = nil) {
