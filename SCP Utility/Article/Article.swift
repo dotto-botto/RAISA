@@ -67,7 +67,7 @@ struct Article: Identifiable, Codable {
         self.url = entity.url ?? placeholderURL // backwards compatability
         self.thumbnail = entity.thumbnail
         self.currenttext = entity.currenttext
-        self.completed = entity.completed
+        self.completed = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(entity.url?.formatted() ?? "") || entity.completed
         self.objclass = ObjectClass(rawValue: entity.objclass) ?? ObjectClass.unknown
         self.esoteric = EsotericClass(rawValue: entity.esoteric) ?? EsotericClass.unknown
         self.clearance = entity.clearance
@@ -207,7 +207,7 @@ struct Article: Identifiable, Codable {
     }
     
     func isComplete() -> Bool {
-        return (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(self.url.formatted())
+        return (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(self.url.formatted()) || con.completionStatus(article: self)
     }
 }
 
