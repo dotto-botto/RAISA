@@ -12,7 +12,6 @@ import Kingfisher
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
-    @AppStorage("showImages") var showImages = true
     @AppStorage("defaultOpen") var defaultOpen = 1
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoScroll") var autoScroll = true
@@ -25,16 +24,9 @@ struct SettingsView: View {
     let defaults = UserDefaults.standard
     var body: some View {
         Form {
-            Section("SUPPORT_OPTIONS") {
+            Section("RAISA_HEADER") {
                 HStack {
                     Link("SUPPORT_RAISA_PROMPT", destination: URL(string: "https://ko-fi.com/dottobotto")!)
-                    Spacer()
-                    Image(systemName: "chevron.right").foregroundColor(.secondary)
-                }
-                .foregroundColor(.primary)
-
-                HStack {
-                    Link("SUPPORT_CROM_PROMPT", destination: URL(string: "https://www.patreon.com/crombird")!)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundColor(.secondary)
                 }
@@ -46,8 +38,19 @@ struct SettingsView: View {
             }
             
             Section("GENERAL_OPTIONS") {
+                HStack {
+                    Link("SUPPORT_CROM_PROMPT", destination: URL(string: "https://www.patreon.com/crombird")!)
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundColor(.secondary)
+                }
+                .foregroundColor(.primary)
+                
                 NavigationLink("MANAGE_STORAGE") {
                     StorageView()
+                }
+                
+                NavigationLink("CHANGE_INT_BRANCH") {
+                    ChangeLanguageView()
                 }
             }
             
@@ -57,7 +60,6 @@ struct SettingsView: View {
                     Text("READER_SETTING").tag(1)
                     Text("BOTH").tag(2)
                 }
-                Toggle("SHOW_IMAGES", isOn: $showImages)
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
                 Toggle("DETECT_COMPONENTS_SETTING", isOn: $showComponentPrompt)
                 Button("REMOVE_BAR_ITEMS_SETTING") {
@@ -73,21 +75,25 @@ struct SettingsView: View {
                 }.confirmationDialog("ASSURANCE", isPresented: $historyConf) {
                     Button("ASSURANCE", role: .destructive) {
                         con.deleteAllHistory()
+                        defaults.set([], forKey: "recentSearches")
                     }
                 }
             }
         }
         .navigationTitle("SETTINGS_TITLE")
         .toolbar {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                }
             }
         }
         .onAppear {
             // Remove deleted userdefaults values
             defaults.removeObject(forKey: "articleViewSetting")
+            defaults.removeObject(forKey: "showImages")
         }
     }
 }

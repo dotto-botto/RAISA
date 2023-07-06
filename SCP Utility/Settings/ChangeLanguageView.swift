@@ -11,7 +11,6 @@ import SwiftUI
 /// This does not update the system or the app language.
 struct ChangeLanguageView: View {
     @AppStorage("chosenRaisaLanguage") var chosenRaisaLanguage = RAISALanguage.english.rawValue
-    @Environment(\.dismiss) private var dismiss
     var body: some View {
         NavigationStack {
             Group {
@@ -40,9 +39,6 @@ struct ChangeLanguageView: View {
             }
             .listStyle(.plain)
             .navigationTitle("LANGUAGEVIEW_TITLE")
-            .toolbar {
-                Button { dismiss() } label: { Image(systemName: "xmark") }
-            }
         }
     }
 }

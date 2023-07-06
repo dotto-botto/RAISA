@@ -28,7 +28,6 @@ struct SCP_UtilityApp: App {
                         UserDefaults.standard.register(defaults: [
                             "trackHistory" : true,
                             "articleViewSetting" : 0,
-                            "showImages" : true,
                             "defaultOpen" : 0,
                             "storeIcloud" : true,
                             "autoScroll" : true,

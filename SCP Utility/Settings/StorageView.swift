@@ -75,7 +75,7 @@ struct StorageView: View {
 
 struct CompletedArticlesView: View {
     @State private var completedConf: Bool = false
-    @State private var completed: [String] = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).reversed()
+    @State private var completed: [String] = []
     @State private var query: String = ""
     var body: some View {
         NavigationLink("MANAGE_READ_ARTICLES") {
@@ -117,13 +117,20 @@ struct CompletedArticlesView: View {
                 }
             }
             .navigationTitle("COMPLETED_ARTICLES")
+            .task { updateCompleted() }
             .onChange(of: query) { _ in
-                completed = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).reversed()
+                updateCompleted()
                 if query != "" {
                     completed = completed.filter { $0.contains(query.lowercased()) }
                 }
             }
         }
+    }
+    
+    func updateCompleted() {
+        self.completed =
+        (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []) +
+        (PersistenceController.shared.getAllArticles() ?? []).map { Article(fromEntity: $0)?.url.formatted() ?? "" }
     }
 }
 

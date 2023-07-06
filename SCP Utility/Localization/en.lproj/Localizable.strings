@@ -106,11 +106,12 @@
 
 "SUPPORT_OPTIONS" = "Support";
 "SUPPORT_RAISA_PROMPT" = "Support the RAISA Creator";
-"SUPPORT_CROM_PROMPT" = "Support the CROM Creator";
+"SUPPORT_CROM_PROMPT" = "Support the Crom Creator";
 
 "GENERAL_OPTIONS" = "General";
 "OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
 "MANAGE_STORAGE" = "Manage Storage";
+"CHANGE_INT_BRANCH" = "Change International Branch";
 
 "DATA_OPTIONS" = "Save Data";
 "MANAGE_READ_ARTICLES" = "Manage Read Articles";
@@ -218,6 +219,11 @@
 "RANK" = "Rank";
 "PAGES_CREATED" = "Pages Created";
 "TOTAL_VOTES" = "Total Votes";
+
+// Components
+"ACS_ITEMNUM" = "ITEM #";
+"ACS_LEVEL%lld" = "LEVEL %lld";
+"ACS_TOPSECRET" = "TOP SECRET";
 
 // MARK: - Languages
 "ENGLISH" = "English";

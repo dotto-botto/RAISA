@@ -28,7 +28,7 @@ struct HistoryRow: View {
                     .foregroundColor(.secondary)
             }
             Spacer()
-            if item.thumbnail != nil && defaults.bool(forKey: "showImages") {
+            if item.thumbnail != nil {
                 KFImage(item.thumbnail!)
                     .resizable()
                     .scaledToFill()

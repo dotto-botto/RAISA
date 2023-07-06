@@ -52,12 +52,6 @@ struct ExploreView: View {
                 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {
-                        language = true
-                    } label: {
-                        Image(systemName: "globe")
-                    }
-                    
-                    Button {
                         settings = true
                     } label: {
                         Image(systemName: "gear")
@@ -66,7 +60,6 @@ struct ExploreView: View {
             }
             .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
             .fullScreenCover(isPresented: $editor) { NavigationStack { EditorView() } }
-            .fullScreenCover(isPresented: $language) { NavigationStack { ChangeLanguageView() } }
         }
     }
 }
