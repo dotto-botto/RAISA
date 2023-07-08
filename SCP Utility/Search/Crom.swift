@@ -371,6 +371,39 @@ func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALangu
     cromAPISearchFromURL(query: newURL) { article in completion(article) }
 }
 
+func cromGetAlternateTitle(url: URL, completion: @escaping (String) -> Void) {
+    let graphQLQuery = """
+query Search($query: URL! = "\(url)") {
+    page(url: $query) {
+    alternateTitles {
+      title
+    }
+  }
+}
+"""
+    
+    let parameters: [String: String] = [
+        "query": (graphQLQuery)
+    ]
+
+    var responseJSON: JSON = JSON()
+    
+    cromRequest(params: parameters) { data, error in
+        if let error {
+            print(error)
+        } else if let myData = data {
+            do {
+                responseJSON = try JSON(data: myData)
+            } catch {
+                print(error)
+            }
+
+            let source = responseJSON["data"]["page"]["alternateTitles"].arrayValue.first?["title"].string
+            completion(source ?? "")
+        }
+    }
+}
+
 // MARK: - Raisa Funcitons
 func raisaGetTags(url: URL, completion: @escaping ([String]) -> Void) {
     guard let url = try! URL(string: url.formatted().replacing(Regex(#"https?"#), with: "https")) else { completion([]); return }

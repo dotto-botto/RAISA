@@ -26,6 +26,7 @@ struct ArticleView: View {
     @State private var explicitContent: [String] = []
     @State private var isBuiltIn: Bool = false
     @State private var isFragmented: Bool = true
+    @State private var subtitle: String = ""
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
@@ -145,6 +146,18 @@ struct ArticleView: View {
             NavigationStack { ArticleView(scp: nextArticle ?? scp, dismissText: scp.title) }
         }
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                VStack {
+                    Text(scp.title).font(.headline)
+                    if subtitle != "" {
+                        Text(containsExplicitContent ? "-" : subtitle).font(.subheadline)
+                    }
+                }
+                .task {
+                    cromGetAlternateTitle(url: scp.url) { subtitle = $0 }
+                }
+            }
+            
             ToolbarItem(placement: .cancellationAction) {
                 Button {
                     dismiss()
@@ -155,18 +168,22 @@ struct ArticleView: View {
                     }
                 }
                 .contextMenu {
+                    var rootViewController: UIViewController? = nil
                     Button {
-                        // https://stackoverflow.com/a/69968825/11248074
-                        let rootViewController = UIApplication.shared.connectedScenes
-                                .filter {$0.activationState == .foregroundActive }
-                                .map {$0 as? UIWindowScene }
-                                .compactMap { $0 }
-                                .first?.windows
-                                .filter({ $0.isKeyWindow }).first?.rootViewController
-
                         rootViewController?.dismiss(animated: true)
                     } label: {
                         Label("AV_DISMISS_ALL", systemImage: "house")
+                    }
+                    .task {
+                        // https://stackoverflow.com/a/69968825/11248074
+                        rootViewController = {
+                            UIApplication.shared.connectedScenes
+                                    .filter {$0.activationState == .foregroundActive }
+                                    .map {$0 as? UIWindowScene }
+                                    .compactMap { $0 }
+                                    .first?.windows
+                                    .filter({ $0.isKeyWindow }).first?.rootViewController
+                        }()
                     }
                 }
             }

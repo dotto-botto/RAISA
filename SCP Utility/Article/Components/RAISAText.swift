@@ -70,6 +70,7 @@ struct RAISAText: View {
                         }
                     }
                 }
+                .padding(.horizontal, 20)
                 .task {
                     if !filtered {
                         FilterToMarkdown(doc: text ?? article.pagesource) { str in
