@@ -123,7 +123,7 @@ struct ACSView: View {
         VStack {
             HStack {
                 VStack {
-                    Text("ITEM #")
+                    Text("ACS_ITEMNUM")
                     Text(String(itemnumber)).font(.largeTitle).bold()
                 }
                 
@@ -136,8 +136,8 @@ struct ACSView: View {
                 }
                 
                 VStack {
-                    Text("LEVEL \(clearance)").font(.largeTitle).bold()
-                    Text("TOP SECRET")
+                    Text("ACS_LEVEL\(clearance)").font(.largeTitle).bold()
+                    Text("ACS_TOPSECRET")
                 }
             }
             
