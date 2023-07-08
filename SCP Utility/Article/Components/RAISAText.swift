@@ -268,9 +268,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
         // Footnotes
-        for _ in text.indicesOf(string: "[[footnote") {
-            text = text.replacingOccurrences(of: "[[footnote]]", with: " (")
-            text = text.replacingOccurrences(of: "[[/footnote]]", with: ")")
+        let fnmatches = matches(for: #"\[\[footnote]][\s\S]*?\[\[\/footnote]]"#, in: text)
+        for (match, index) in zip(fnmatches, fnmatches.indices) {
+            text = text.replacingOccurrences(of: match, with: " [fn.\(index + 1)]")
         }
         
         for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {

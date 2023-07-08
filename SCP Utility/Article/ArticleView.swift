@@ -21,6 +21,7 @@ struct ArticleView: View {
     @State private var forbidden: Bool = true
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
+    @State private var showFootnoteView: Bool = false
     @State private var forbiddenComponents: [String] = []
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
@@ -142,6 +143,10 @@ struct ArticleView: View {
         .sheet(isPresented: $showComments) {
             CommentsView(article: scp)
         }
+        .sheet(isPresented: $showFootnoteView) {
+            FootnoteView(article: scp)
+                .presentationDetents([.medium])
+        }
         .fullScreenCover(isPresented: $showNext) {
             NavigationStack { ArticleView(scp: nextArticle ?? scp, dismissText: scp.title) }
         }
@@ -254,6 +259,22 @@ struct ArticleView: View {
                 }
                 .onChange(of: checkmarkStatus) {
                     scp.complete(updateTo: $0)
+                }
+                
+                Group {
+                    Spacer()
+                    Menu {
+                        Button {
+                            showFootnoteView.toggle()
+                        } label: {
+                            HStack {
+                                Text("FOOTNOTE_TITLE")
+                                Image(systemName: "textformat.superscript")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
                 }
             }
         }
