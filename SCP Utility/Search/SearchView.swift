@@ -53,6 +53,7 @@ struct SearchView: View {
                         Button(search) {
                             query = search
                         }
+                        .lineLimit(2)
                     }
                     .padding(.horizontal, 10)
                     

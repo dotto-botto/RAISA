@@ -119,7 +119,7 @@ func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem
         let itemAndNext: String = index + 3 < list.count - 1 ?
         item + "\n" + list[index + 1] + "\n" + list[index + 2] + "\n" + list[index + 3] : item
         
-        let lastItem: String = index == 0 ? item : list[index - 1]
+//        let lastItem: String = index == 0 ? item : list[index - 1]
         
         // Check if the next items are also forbidden, because check of the one item would fail in cases where it isn't unique.
         guard !Set(itemAndNext.components(separatedBy: .newlines)).isSubset(of: Set(forbiddenLines)) else { continue }
@@ -136,7 +136,7 @@ func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem
             source = source.replacingOccurrences(of: slice, with: "")
             forbiddenLines += slice.components(separatedBy: .newlines)
             
-        } else if item.lowercased().contains("[[collapsible") {
+        } else if item.lowercased().contains("[[collapsible") && collapsibles.indices.contains(collapsibleIndex) {
             items.append(.collapsible(collapsibles[collapsibleIndex]))
             forbiddenLines += collapsibles[collapsibleIndex].components(separatedBy: .newlines)
             collapsibleIndex += 1
@@ -230,33 +230,27 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         var text = doc
         
         // Basic Divs
-        text = try! text.replacing(Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#), with: "")
-        text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
-        for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
-        text.removeText(from: "[[include info:start", to: "include info:end]]")
-        text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
-        text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
-        text = parseBlockQuoteDivs(text)
-        for _ in text.indicesOf(string: "[[div") {
-            text.removeText(from: "[[div", to: "]]")
-            text.removeText(from: "[[/div", to: "]]")
-        }
-        for _ in text.indicesOf(string: "[[span") {
-            text.removeText(from: "[[span", to: "]]")
-            text.removeText(from: "[[/span", to: "]]")
-        }
-        for _ in text.indicesOf(string: "[[size") {
-            text.removeText(from: "[[size", to: "]]")
-            text.removeText(from: "[[/size", to: "]]")
+        let regexDeletes: [Regex] = try! [
+            Regex(#"(\[\[div.*?\]\]|\[\[\/div\]\])"#),
+            Regex(#"(\[\[span.*?\]\]|\[\[\/span\]\])"#),
+            Regex(#"\[\[module rate\]\]"#).ignoresCase(),
+            Regex(#"\[\[# .*?\]\]"#),
+            Regex(#"\[#toc.*?\]"#),
+            Regex(#"<< \[\[\[.*?\]\]\] >>"#),
+            Regex(#"\[\[module[\s\S]*?\[\[\/module\]\]"#),
+            Regex(#"\[\[a href=.*?\]\]"#),
+            Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#),
+            Regex(#"\[!--[\s\S]*?--\]"#),
+            Regex(#"\[\[\*?user.*?\]\]"#),
+        ]
+        
+        for regex in regexDeletes {
+            text = text.replacing(regex, with: "")
         }
         
-        // Table of Contents markings
-        for _ in text.indicesOf(string: "[[#") {
-            text.removeText(from: "[[#", to: "]]")
-        }
-        for _ in text.indicesOf(string: ",,[#toc") {
-            text.removeText(from: ",,[#toc", to: "],,")
-        }
+        text.removeText(from: "[[include info:start", to: "include info:end]]")
+        text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
+        text = parseBlockQuoteDivs(text)
         
         text.removeText(from: "[[include component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
@@ -264,8 +258,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
         text = text.replacingOccurrences(of: "--]", with: "")
-        text.removeText(from: "<< [[[", to: "]]] >>")
-        for _ in text.indicesOf(string: "[[module") { text.removeText(from: "[[module", to: "[[/module]]") }
         
         // Footnotes
         let fnmatches = matches(for: #"\[\[footnote]][\s\S]*?\[\[\/footnote]]"#, in: text)
@@ -276,13 +268,17 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
         }
-        for match in matches(for: #"\/\/.*\/\/"#, in: text) {
-            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
+        
+        for match in matches(for: #",,.*?,,"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: ",,", with: ""))
         }
         
-        text = text.replacingOccurrences(of: "@@ @@", with: "     ")
-        for match in matches(for: "@@.*@@", in: text) {
-            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@@", with: ""))
+        for match in matches(for: #"(@| )+@"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@", with: " "))
+        }
+        
+        for match in matches(for: #"\/\/.*\/\/"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
         }
         
         // Superscript "^^2^^"
@@ -325,18 +321,20 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "[[/=]]",
             "[[==]]",
             "[[/==]]",
+            "[[/a]]",
+            "[[footnoteblock]]",
         ]
         for string in stringDeletes {
             text = text.replacingOccurrences(of: string, with: "")
         }
         
-        text = text.replacingOccurrences(of: "@@@@", with: "\n")
-        text = try! text.replacing(Regex("^---+$"), with: "---") // horizontal rule
-        text = try! text.replacing(Regex("^===$"), with: "^---$")
+        text = try! text.replacing(Regex(#"\n---+$"#), with: "\n---") // horizontal rule
+        text = try! text.replacing(Regex(#"\n===$"#), with: "\n---$")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
         text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
         text = try! text.replacing(Regex(#"\n="#), with: "\n")
-        text = text.replacingOccurrences(of: "[[footnoteblock]]", with: "")
+        text = try! text.replacing(Regex(#"\n> ="#), with: "\n> ")
+        text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
         
         let supportedIncludes: [String] = [
             "image-features-source",
@@ -387,8 +385,8 @@ func FilterToPure(doc: String) -> String {
     for _ in text.indicesOf(string: "[[#") {
         text.removeText(from: "[[#", to: "]]")
     }
-    for _ in text.indicesOf(string: ",,[#toc") {
-        text.removeText(from: ",,[#toc", to: "],,")
+    for _ in text.indicesOf(string: "[#toc") {
+        text.removeText(from: "[#toc", to: "]")
     }
     
     text.removeText(from: "[[include component:info-ayers", to: "]]")
@@ -448,8 +446,10 @@ func FilterToPure(doc: String) -> String {
         "***",
         "**",
         "--",
+        ",,",
         "[[/collapsible]]",
         "[[footnoteblock]]",
+        "[[/a]]"
     ]
     
     for string in stringDeletes {
@@ -467,6 +467,7 @@ func FilterToPure(doc: String) -> String {
         Regex(#"^\* "#), // bullets
         Regex(#"\[\[.*?image.*?]]"#),
         Regex(#"\[\[include[^\]]*\]\](?![^\[]*\])"#), // all componenets
+        Regex(#"\[\[a href=.*?\]\]"#)
     ]
     
     for regex in regexDeletes {

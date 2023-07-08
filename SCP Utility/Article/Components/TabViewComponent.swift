@@ -34,7 +34,6 @@ struct TabViewComponent: View {
                                         Rectangle().frame(height: 1)
                                     }
                                 }
-                                .foregroundColor(.accentColor)
                             }
                         }
                     }
@@ -57,6 +56,7 @@ struct TabViewComponent: View {
                 Image(systemName: "chevron.left.2").foregroundColor(.secondary)
             }
         }
+        .tint(article.findTheme()?.themeAccent)
         .onAppear {
             let content = parseTabView(text)
             contentKeys = content.map { $0.0 }

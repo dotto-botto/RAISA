@@ -47,7 +47,9 @@ struct ArticleTable: View {
                 
                 for cellMatch in matches(for: #"\[\[cell[\s\S]*?\[\[\/cell]]"#, in: rowMatch) {
                     try! madeRow.append(
-                        cellMatch.replacing(Regex(#"\[\[cell[\s\S]*?]]|\[\[\/cell]]"#), with: "")
+                        cellMatch
+                            .replacing(Regex(#"\[\[cell[\s\S]*?]]|\[\[\/cell]]"#), with: "")
+                            .replacing(Regex(#"^(~|=)"#), with: "")
                     )
                 }
                 
@@ -58,9 +60,10 @@ struct ArticleTable: View {
                 var madeRow: [String] = []
                 
                 for cellMatch in matches(for: #"(?<=\|\|).*?(?=\|\|)"#, in: rowMatch) {
-                    madeRow.append(
+                    try! madeRow.append(
                         cellMatch
                             .replacingOccurrences(of: "||", with: "")
+                            .replacing(Regex(#"^(~|=)"#), with: "")
                             .trimmingCharacters(in: .whitespacesAndNewlines)
                     )
                 }

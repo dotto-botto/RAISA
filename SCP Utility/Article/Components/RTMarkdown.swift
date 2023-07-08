@@ -15,14 +15,20 @@ struct RTMarkdown: View {
     
     var body: some View {
         Markdown(colorToButton(text: text))
+            .markdownTextStyle(\.text) {
+                if let num = findSize() {
+                    FontSize(num * 15)
+                }
+            }
             .markdownTextStyle(\.code) {
                 ForegroundColor(findTint() ?? .accentColor)
             }
+            .textSelection(.enabled)
             .id(text)
     }
     
     private func findTint() -> Color? {
-        guard let color = self.text.slice(from: "##", to: "|") else { return nil }
+        guard let color = self.text.slice(from: "## ##", to: "|") ?? self.text.slice(from: "##", to: "|") else { return nil }
         if color.contains(/[0-9]/) {
             return Color(hex: color)
         } else {
@@ -32,12 +38,31 @@ struct RTMarkdown: View {
     
     private func colorToButton(text markdown: String) -> String {
         var newText = markdown
-        for match in matches(for: #"##[^|]*\|(.*?)##"#, in: markdown) {
+        for match in matches(for: #"##[^|#]*\|.*?##"#, in: markdown) {
             let text = match.slice(from: "|", to: "##") ?? match
-            newText = newText.replacingOccurrences(of: match, with: "`\(text)`")
+            newText = newText
+                .replacingOccurrences(of: match, with: "`\(text)`")
+                .replacingOccurrences(of: "**", with: "")
         }
         
-        return newText
+        return try! newText
+            .replacing(Regex(#"(\[\[size .*?\]\]|\[\[\/size\]\])"#), with: "")
+    }
+    
+    private func findSize() -> CGFloat? {
+        guard self.text.starts(with: /\[\[size.*?\]\]/) else { return nil }
+        
+        guard let size = matches(for: #"(?<=\[\[size ).*?(?=(%\]\]|\]\]|em\]\]))"#, in: self.text).first else { return nil }
+        if !size.contains(".") {
+            if let double = Double(size) {
+                return CGFloat(double / 100)
+            }
+        } else {
+            guard let double = Double(size) else { return nil }
+            return CGFloat(double)
+        }
+        
+        return nil
     }
 }
 
@@ -73,6 +98,45 @@ struct RTMarkdown_Previews: PreviewProvider {
     static var previews: some View {
         RTMarkdown(article: placeHolderArticle, text: """
 Various anomalous phenomena may occur when consistent nomenclature is applied to **##green|the realm of the unnamable##**, its native entities, or its landmarks. These phenomena are still poorly understood, partially due to the prohibition of nomenclative experimentation under Order O5-4000-F26.
-""")
+""").previewDisplayName("Color")
+        
+        let text =  """
+[[size 0.5em]]TO THE COWARD ELIAS SHAW[[/size]]
+
+BY THE AUTHORITY OF HER SALTIEST MAJESTY
+
+[[size 270%]]✧･ﾟ: *✧･ﾟ:*ELIAS SHAW*:･ﾟ✧*:･ﾟ✧[[/size]]
+
+[[size 125%]]Pirate Queen, Raider of the High Seas, Mad Butterfly of the Rolling Waves,[[/size]]
+
+[[size 120%]]WE DO COMMAND YOU TO APPEAR BEFORE THE PIRATE COUNCIL TO NEGOTIATE THE RELEASE OR BUTT-STABBING AND THEN EXECUTION OF ONE:[[/size]]
+
+[[size 350%]]TROY LAMENT[[/size]]
+
+[[size 150%]]HIS CRIMES ARE NUMEROUS:[[/size]]
+
+[[size 120%]]**Lollygagging**[[/size]]
+
+[[size 120%]]**Saying Hurtful Things**[[/size]]
+
+[[size 120%]]**Criticizing Queen Shaw's Very Good Hat**[[/size]]
+
+[[size 120%]]**Fornication with a DUCK**[[/size]]
+
+[[size 120%]]**I WAS THE DUCK**[[/size]]
+@@@@
+@@@@
+[[size 150%]]**THIS WON'T BE FORGIVEN**[[/size]]
+
+@@@@
+@@@@
+
+[[size 200%]](✿˵◕‿◕˵) ##red|APPEAR OR BE BUTT STABBED## (˶◕‿◕˶✿)[[/size]]
+"""
+        VStack {
+            ForEach(text.components(separatedBy: .newlines), id: \.self) { line in
+                RTMarkdown(article: placeHolderArticle, text: line)
+            }
+        }.previewDisplayName("Size")
     }
 }

@@ -85,6 +85,7 @@ struct InlineButton: View {
         }
 
         doc = doc.replacingOccurrences(of: "\n", with: "")
+        doc = doc.replacingOccurrences(of: "*http", with: "http")
         return doc
     }
 }
