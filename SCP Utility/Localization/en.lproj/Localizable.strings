@@ -260,6 +260,20 @@
 "ACS" = "ACS";
 "COLLAPSIBLE" = "Collapsible";
 
+// MARK: - User
+"USER_SINCE" = "Member since";
+"USER_WEBSITE" = "View Website";
+"USER_FROM" = "From";
+"USER_REALNAME" = "Real Name";
+
+// Karma
+"NO_KARMA" = "No Karma";
+"LOW_KARMA" = "Low";
+"MEDIUM_KARMA" = "Medium";
+"HIGH_KARMA" = "High";
+"VERY_KARMA" = "Very High";
+"GURU_KARMA" = "Guru";
+
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
 "RECENT_SEARCHES" = "Recent Searches";

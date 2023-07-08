@@ -47,6 +47,9 @@
 		F6921A0929C6250D00EF19D0 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F6921A0829C6250D00EF19D0 /* MarkdownUI */; };
 		F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A092A829CF727300E661A0 /* ArticleBar.swift */; };
 		F6B0C1DE29C7662700C5BD98 /* AllArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */; };
+		F6C059B62A50AFC200706D10 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B52A50AFC200706D10 /* UserView.swift */; };
+		F6C059B82A50AFCA00706D10 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B72A50AFCA00706D10 /* User.swift */; };
+		F6C059BA2A50B14E00706D10 /* UserParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B92A50B14E00706D10 /* UserParser.swift */; };
 		F6D331262A2149F200F8D004 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331252A2149F200F8D004 /* Theme.swift */; };
 		F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331282A27EB8700F8D004 /* RTItem.swift */; };
 		F6D3312D2A2ABCA500F8D004 /* ObjectWarningBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */; };
@@ -124,6 +127,9 @@
 		F6921A0529BAA70700EF19D0 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		F6A092A829CF727300E661A0 /* ArticleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleBar.swift; sourceTree = "<group>"; };
 		F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllArticleView.swift; sourceTree = "<group>"; };
+		F6C059B52A50AFC200706D10 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
+		F6C059B72A50AFCA00706D10 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F6C059B92A50B14E00706D10 /* UserParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserParser.swift; sourceTree = "<group>"; };
 		F6D331252A2149F200F8D004 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		F6D331282A27EB8700F8D004 /* RTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTItem.swift; sourceTree = "<group>"; };
 		F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWarningBoxView.swift; sourceTree = "<group>"; };
@@ -305,6 +311,16 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		F6C059B42A50AFBB00706D10 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				F6C059B52A50AFC200706D10 /* UserView.swift */,
+				F6C059B72A50AFCA00706D10 /* User.swift */,
+				F6C059B92A50B14E00706D10 /* UserParser.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		F6D331242A2149D800F8D004 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,6 +340,7 @@
 		F6DFECDD2994643A002C3F1A /* Article */ = {
 			isa = PBXGroup;
 			children = (
+				F6C059B42A50AFBB00706D10 /* User */,
 				F6D331242A2149D800F8D004 /* Theme */,
 				F6DCB81E2A16E71B0048C180 /* Accessories */,
 				F66DF23F2A0DACCB004437AC /* Official Articles */,
@@ -502,6 +519,7 @@
 				F615611B29D87332003561CD /* RandomCard.swift in Sources */,
 				F6DCB8262A1AA2630048C180 /* SeriesView.swift in Sources */,
 				F604054529624A21003577D7 /* ContentView.swift in Sources */,
+				F6C059B62A50AFC200706D10 /* UserView.swift in Sources */,
 				F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */,
 				F6EFF42329DB81D200605E40 /* ArticleInfoView.swift in Sources */,
 				F6236F6929A2F43F007A5A61 /* Model.xcdatamodeld in Sources */,
@@ -535,12 +553,14 @@
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
 				F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */,
 				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,
+				F6C059BA2A50B14E00706D10 /* UserParser.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
 				F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */,
 				F6D3312D2A2ABCA500F8D004 /* ObjectWarningBoxView.swift in Sources */,
 				F6E9D9252A4342CB0096912F /* HTML.swift in Sources */,
 				F6921A0629BAA70700EF19D0 /* History.swift in Sources */,
+				F6C059B82A50AFCA00706D10 /* User.swift in Sources */,
 				F66DF2452A0DB0B9004437AC /* OneProposalsView.swift in Sources */,
 				F6921A0429BAA60000EF19D0 /* HistoryRow.swift in Sources */,
 				F6E1FF2329E467400030DF41 /* ArticleTable.swift in Sources */,

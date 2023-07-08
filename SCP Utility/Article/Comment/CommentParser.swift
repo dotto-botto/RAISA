@@ -10,7 +10,7 @@ import SwiftSoup
 
 /// Parses the first page of comments of an article from the article's URL
 func parseComments(articleURL: URL, completion: @escaping ([Comment]) -> Void) {
-    let stringURL = URL(string: "https" + articleURL.formatted().dropFirst(4))!
+    guard let stringURL = URL(string: articleURL.formatted().replacingOccurrences(of: "http://", with: "https://")) else { return }
     let task = URLSession.shared.dataTask(with: stringURL) { data, response, error in
         guard let data = data else { return }
         do {

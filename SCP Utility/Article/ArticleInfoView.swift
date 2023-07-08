@@ -12,6 +12,10 @@ struct ArticleInfoView: View {
     @State var article: Article
     @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
     @State private var loading: Bool = true
+    
+    @State private var trigger: Bool = false
+    @State private var showUserSheet: Bool = false
+    @State private var user: User = User()
     var body: some View {
         let Guide = {
             Rectangle()
@@ -34,7 +38,12 @@ struct ArticleInfoView: View {
                         }
                     }
                 }
-                Text(info.createdBy)
+                Button(info.createdBy) {
+                    parseUserPage(username: info.createdBy) {
+                        user = $0
+                        trigger.toggle()
+                    }
+                }
                     .fontWeight(.heavy)
                     .padding(.top)
                 HStack {
@@ -64,6 +73,12 @@ struct ArticleInfoView: View {
             }
         }
         .frame(width: 300)
+        .onChange(of: trigger) { _ in
+            showUserSheet.toggle()
+        }
+        .sheet(isPresented: $showUserSheet) {
+            UserView(user: user)
+        }
         .onAppear {
             cromInfo(url: article.url) { scp in
                 info = scp

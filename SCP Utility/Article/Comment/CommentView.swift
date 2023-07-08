@@ -14,6 +14,10 @@ struct CommentView: View {
     @State var comment: Comment
     @State var inset: Int? = nil
     @State private var folded: Bool = false
+    
+    @State private var trigger: Bool = false
+    @State private var showSheet: Bool = false
+    @State private var user: User = User()
     var body: some View {
         
         let Guide = {
@@ -36,9 +40,18 @@ struct CommentView: View {
                         .scaledToFill()
                         .frame(width: 30, height: 30)
                         .clipped()
-                    Text(comment.username)
-                        .font(.system(size: 16))
-                        .bold()
+                    
+                    Button {
+                        parseUserPage(username: comment.username) {
+                            user = $0
+                            trigger.toggle()
+                        }
+                    } label: {
+                        Text(comment.username)
+                            .font(.system(size: 16))
+                            .bold()
+                    }
+                    
                     if comment.date != nil {
                         Guide()
                         Text(comment.date!
@@ -68,6 +81,12 @@ struct CommentView: View {
                     Text(comment.content)
                 }
             }
+        }
+        .onChange(of: trigger) { _ in
+            showSheet.toggle()
+        }
+        .sheet(isPresented: $showSheet) {
+            UserView(user: user)
         }
     }
 }
