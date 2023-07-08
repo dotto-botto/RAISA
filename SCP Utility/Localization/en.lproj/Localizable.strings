@@ -220,6 +220,9 @@
 "PAGES_CREATED" = "Pages Created";
 "TOTAL_VOTES" = "Total Votes";
 
+"FOOTNOTE_TITLE" = "Footnotes";
+"FV_NO_FOOTNOTES" = "No Footnotes Detected";
+
 // Components
 "ACS_ITEMNUM" = "ITEM #";
 "ACS_LEVEL%lld" = "LEVEL %lld";
