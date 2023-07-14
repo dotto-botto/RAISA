@@ -90,6 +90,7 @@
 "CONTINUE" = "Continue";
 "BACK" = "Back";
 "USER_OFFLINE" = "You are not connected to the internet.";
+"DISMISS" = "Dismiss";
 
 // MARK: - Explore
 "EXPLORE_TITLE" = "Explore";

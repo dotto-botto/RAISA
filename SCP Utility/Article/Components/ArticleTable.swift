@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MarkdownUI
 
 /// Table to be displayed inside RAISAText.
 /// "doc" should be the corresponsing [[table]] div or a table made using the "||" syntax.
@@ -27,6 +28,15 @@ struct ArticleTable: View {
                                 .scrollDisabled(true)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .fixedSize(horizontal: false, vertical: true)
+                                .contextMenu {
+                                    Button {} label: {
+                                        Label("DISMISS", systemImage: "xmark")
+                                    }
+                                } preview: {
+                                    List {
+                                        Markdown(FilterToPure(doc: cell))
+                                    }
+                                }
                         }
                     }
                     Divider()
