@@ -11,31 +11,15 @@ import SwiftUI
 /// Used for search results as well as in SeriesView.
 struct OnlineArticleRow: View {
     var title: String
+    var alternateTitle: String? = nil
     var url: URL
-    @State var bookmarkStatus: Bool
-    @State private var checkmarkStatus: Bool
     
+    @State var bookmarkStatus: Bool = false
+    @State private var checkmarkStatus: Bool = false
     @State var toArticle: Bool = false
     @State var observedBool: Bool = false // solely used to trigger onchange()
     @State var currentArticle: Article = placeHolderArticle
     @State var showSheet: Bool = false
-    
-    init(title: String, url: URL) {
-        self.title = title
-        self.url = url
-        
-        _bookmarkStatus = State(initialValue: PersistenceController.shared.isArticleSaved(url: url))
-        _checkmarkStatus = State(initialValue: (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted()))
-    }
-    
-    init(article: Article) {
-        self.title = article.title
-        self.url = article.url
-        
-        _bookmarkStatus = State(initialValue: article.isSaved())
-        _checkmarkStatus = State(initialValue: (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted()))
-    }
-    
     var body: some View {
         let con = PersistenceController.shared
         HStack {
@@ -46,14 +30,26 @@ struct OnlineArticleRow: View {
                     observedBool.toggle()
                 }
             } label: {
-                Text(title)
+                if let alt = alternateTitle {
+                    HStack {
+                        Text(.init("\(title) - **\(alt)**"))
+                    }
                     .font(.monospaced(.title3)())
                     .lineLimit(2)
+                } else {
+                    Text(title)
+                        .font(.monospaced(.title3)())
+                        .lineLimit(2)
+                }
+
                 Spacer()
             }
             
+            
+            
             if checkmarkStatus {
                 Image(systemName: "checkmark")
+                    .foregroundColor(.accentColor)
             }
             
             Button {
@@ -84,10 +80,9 @@ struct OnlineArticleRow: View {
         .sheet(isPresented: $showSheet) {
             ListAdd(isPresented: $showSheet, article: currentArticle)
         }
-        .onAppear {
-            if con.isArticleSaved(url: url) {
-                bookmarkStatus = true
-            }
+        .task {
+            checkmarkStatus = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted())
+            bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
         }
         .padding(.horizontal, 40)
     }
@@ -95,6 +90,6 @@ struct OnlineArticleRow: View {
 
 struct OnlineArticleBar_Previews: PreviewProvider {
     static var previews: some View {
-        OnlineArticleRow(article: placeHolderArticle)
+        OnlineArticleRow(title: placeHolderArticle.title, alternateTitle: "The Sculpture", url: placeHolderArticle.url)
     }
 }

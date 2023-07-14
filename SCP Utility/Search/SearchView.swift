@@ -11,6 +11,7 @@ import SwiftUI
 struct SearchView: View {
     @State var query: String = ""
     @State var articles: [Article] = []
+    @State var altTitles: [String?] = []
     @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
     @State var recentSearches: [String] = []
     @State private var showPrompt: Bool = false
@@ -64,8 +65,8 @@ struct SearchView: View {
             }
             
             VStack {
-                ForEach(articles) { article in
-                    OnlineArticleRow(article: article)
+                ForEach(Array(zip(articles, altTitles)), id: \.1) { article, alt in
+                    OnlineArticleRow(title: article.title, alternateTitle: alt, url: article.url)
                         .padding(.vertical, 1)
                 }
                 Spacer()
@@ -93,8 +94,9 @@ struct SearchView: View {
         }
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
-            cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp in
+            cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp, alt in
                 articles = scp
+                altTitles = alt
                 
                 showPrompt = scp.isEmpty
             
