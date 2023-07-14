@@ -8,6 +8,7 @@
 
 // MARK: - SCP
 // Object Class
+"OBJECT_CLASS" = "Object Class";
 "SAFE" = "Safe";
 "EUCLID" = "Euclid";
 "KETER" = "Keter";
@@ -17,6 +18,7 @@
 "ESOTERIC" = "Esoteric";
 
 // Esoteric Class
+"ESOTERIC_CLASS" = "Esoteric Class";
 "APOLLYON" = "Apollyon";
 "ARCHON" = "Archon";
 "CERNUNNOS" = "Cernunnos";
@@ -28,6 +30,7 @@
 "UNCONTAINED" = "Uncontained";
 
 // Disruption
+"DISRUPTION_CLASS" = "Disruption Class";
 "DARK" = "Dark";
 "VLAM" = "Vlam";
 "KENEQ" = "Keneq";
@@ -35,6 +38,7 @@
 "AMIDA" = "Amida";
 
 // Risk
+"RISK_CLASS" = "Risk Class";
 "NOTICE" = "Notice";
 "CAUTION" = "Caution";
 "WARNING" = "Warning";
@@ -59,6 +63,9 @@
 "TICONDEROGA_TOOLTIP" = "This anomaly does not need to be contained.";
 "THAUMIEL_TOOLTIP" = "This anomaly assists in the foundation's ultimate task.";
 "UNCONTAINED_TOOLTIP" = "This anomaly is not contained in any way.";
+
+"RISK_TOOLTIP" = "The severity of this anomaly's affects on a person.";
+"DISRUPTION_TOOLTIP" = "This anomaly's ability to disrupt the status quo.";
 
 // MARK: - General
 "SEARCH_PROMPT" = "Search";
@@ -112,6 +119,9 @@
 "OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
 "MANAGE_STORAGE" = "Manage Storage";
 "CHANGE_INT_BRANCH" = "Change International Branch";
+"SHOW_AV_WALLPAPER" = "Show Wallpapers";
+"CHANGE_AV_THEME" = "Change Reader Theme";
+"TV_TITLE" = "Theme";
 
 "DATA_OPTIONS" = "Save Data";
 "MANAGE_READ_ARTICLES" = "Manage Read Articles";
@@ -222,6 +232,9 @@
 
 "FOOTNOTE_TITLE" = "Footnotes";
 "FV_NO_FOOTNOTES" = "No Footnotes Detected";
+
+// Theme
+"TOGGLE_BG" = "Toggle Background";
 
 // Components
 "ACS_ITEMNUM" = "ITEM #";

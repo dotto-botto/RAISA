@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoScroll") var autoScroll = true
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
+    @AppStorage("showAVWallpaper") var showAVWallpaper = true
     
     @State private var historyConf = false
     @Environment(\.dismiss) private var dismiss
@@ -52,6 +53,8 @@ struct SettingsView: View {
                 NavigationLink("CHANGE_INT_BRANCH") {
                     ChangeLanguageView()
                 }
+                
+                Toggle("SHOW_AV_WALLPAPER", isOn: $showAVWallpaper)
             }
             
             Section("READER_OPTIONS") {

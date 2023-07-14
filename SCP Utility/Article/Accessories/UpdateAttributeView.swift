@@ -13,7 +13,7 @@ struct UpdateAttributeView: View {
     var body: some View {
         VStack {
             Group {
-                Text("Object Class")
+                Text("OBJECT_CLASS")
                 Text(article.objclass?.getTooltip() ?? "The standard indicator of the difficulty of containing an anomaly.")
                     .font(.caption2)
                     .foregroundColor(.gray)
@@ -39,7 +39,7 @@ struct UpdateAttributeView: View {
             }
             
             Group {
-                Text("Esoteric Class")
+                Text("ESOTERIC_CLASS")
                 Text(article.esoteric?.getTooltip() ?? "Used when normal object classes cannot classify this anomaly.")
                     .font(.caption2)
                     .foregroundColor(.gray)
@@ -70,8 +70,8 @@ struct UpdateAttributeView: View {
             }
             
             Group {
-                Text("Risk Class")
-                Text("The severity of this anomaly's affects on a person.")
+                Text("RISK_CLASS")
+                Text("RISK_TOOLTIP")
                     .font(.caption2)
                     .foregroundColor(.gray)
                 HStack {
@@ -96,8 +96,8 @@ struct UpdateAttributeView: View {
             }
             
             Group {
-                Text("Disruption Class")
-                Text("This anomaly's ability to disrupt the status quo.")
+                Text("DISRUPTION_CLASS")
+                Text("DISRUPTION_TOOLTIP")
                     .font(.caption2)
                     .foregroundColor(.gray)
                 HStack {

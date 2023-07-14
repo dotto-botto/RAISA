@@ -163,13 +163,7 @@ struct Article: Identifiable, Codable {
     }
     
     func findTheme() -> RAISATheme? {
-        let themes: [RAISATheme] = [
-            BlackHighlighter(),
-            BasaltTheme(),
-            SpaceTheme()
-        ]
-        
-        for theme in themes {
+        for theme in allThemes {
             if self.pagesource.contains(theme.keyword) {
                 return theme
             }

@@ -82,6 +82,7 @@ struct ListAdd: View {
                         query = ""
                     }
                 }
+                .disabled(article.url.formatted() == placeHolderArticle.url.formatted() && article.title == placeHolderArticle.title)
             }
         }
     }

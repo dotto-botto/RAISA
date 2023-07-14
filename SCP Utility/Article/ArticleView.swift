@@ -14,6 +14,7 @@ struct ArticleView: View {
     @State var scp: Article
     @State var dismissText: String? = ""
     @State var presentSheet: Bool = false
+    @State var theme: RAISATheme? = nil
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
@@ -28,11 +29,14 @@ struct ArticleView: View {
     @State private var isBuiltIn: Bool = false
     @State private var isFragmented: Bool = true
     @State private var subtitle: String = ""
+    @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
+        let theme: RAISATheme? = theme ?? scp.findTheme()
+        
         if scp.url.formatted().contains("://scp-wiki.wikidot.com/scp-001") && scp.title == "SCP-001" {
             ScrollView {
                 SCP001View()
@@ -272,13 +276,35 @@ struct ArticleView: View {
                                 Image(systemName: "textformat.superscript")
                             }
                         }
+                        
+                        Button {
+                            showBackground.toggle()
+                        } label: {
+                            HStack {
+                                Text("TOGGLE_BG")
+                                Image(systemName: "photo")
+                                    .opacity(showBackground ? 1 : 0.3)
+                            }
+                        }
                     } label: {
                         Image(systemName: "list.bullet")
                     }
                 }
             }
         }
-        .tint(scp.findTheme()?.themeAccent)
+        .background {
+            if showBackground {
+//            theme?.wallpaper
+                switch theme?.keyword {
+                case "theme:space": SpaceTheme().wallpaper
+                case "theme:isolated-terminal": IsolatedTerminalTheme().wallpaper
+                case "theme:creepypasta": CreepypastaTheme().wallpaper
+                case "theme:flopstyle-dark": FlopstyleDarkTheme().wallpaper
+                default: AnyView(EmptyView())
+                }
+            }
+        }
+        .tint(theme?.themeAccent)
     }
 }
 
@@ -337,7 +363,7 @@ extension String {
 struct ArticleView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ArticleView(scp: placeHolderArticle)
+            ArticleView(scp: placeHolderArticle, theme: SpaceTheme())
         }.previewDisplayName("Normal")
         
         NavigationStack {
