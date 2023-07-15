@@ -12,6 +12,8 @@ import SwiftSoup
 struct TopCard: View {
     @State private var titles: [String] = []
     @State private var showArticle: Bool = false
+    
+    let defaults = UserDefaults.standard
     var body: some View {
         var article = placeHolderArticle
         VStack {
@@ -26,7 +28,7 @@ struct TopCard: View {
             
             ForEach(titles, id: \.self) { title in
                 Button {
-                    let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                    let userIntBranch = RAISALanguage(rawValue: defaults.integer(forKey: "chosenRaisaLanguage")) ?? .english
                     
                     cromGetSourceFromTitle(title: title, language: userIntBranch) { art in
                         article = art
@@ -44,8 +46,15 @@ struct TopCard: View {
             NavigationStack { ArticleView(scp: article) }
         }
         .onAppear {
-            parseTopRatedPage() { strs in
-                titles = strs
+            let timeOfLastParse = Date(timeIntervalSince1970: defaults.double(forKey: "timeOfLastParse")).timeIntervalSinceNow
+            if timeOfLastParse < -604800 {
+                parseTopRatedPage() {
+                    titles = $0
+                    defaults.set(titles, forKey: "topTitles")
+                    defaults.set(Date().timeIntervalSince1970, forKey: "timeOfLastParse")
+                }
+            } else {
+                titles = defaults.stringArray(forKey: "topTitles") ?? []
             }
         }
     }
