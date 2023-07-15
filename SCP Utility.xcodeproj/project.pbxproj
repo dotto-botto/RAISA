@@ -48,6 +48,7 @@
 		F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A092A829CF727300E661A0 /* ArticleBar.swift */; };
 		F6A7FCE32A5A0C96001E2BED /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7FCE22A5A0C96001E2BED /* FootnoteView.swift */; };
 		F6A7FCE52A5F6A17001E2BED /* ThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7FCE42A5F6A17001E2BED /* ThemeView.swift */; };
+		F6A7FCE72A635045001E2BED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6A7FCE62A635045001E2BED /* LaunchScreen.storyboard */; };
 		F6B0C1DE29C7662700C5BD98 /* AllArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */; };
 		F6C059B62A50AFC200706D10 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B52A50AFC200706D10 /* UserView.swift */; };
 		F6C059B82A50AFCA00706D10 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B72A50AFCA00706D10 /* User.swift */; };
@@ -130,6 +131,7 @@
 		F6A092A829CF727300E661A0 /* ArticleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleBar.swift; sourceTree = "<group>"; };
 		F6A7FCE22A5A0C96001E2BED /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
 		F6A7FCE42A5F6A17001E2BED /* ThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeView.swift; sourceTree = "<group>"; };
+		F6A7FCE62A635045001E2BED /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "SCP Utility/LaunchScreen.storyboard"; sourceTree = SOURCE_ROOT; };
 		F6B0C1DD29C7662700C5BD98 /* AllArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllArticleView.swift; sourceTree = "<group>"; };
 		F6C059B52A50AFC200706D10 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		F6C059B72A50AFCA00706D10 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -201,8 +203,11 @@
 			isa = PBXGroup;
 			children = (
 				F66AD54C2A33E58D003DF992 /* SCP Utility.entitlements */,
+				F6A7FCE62A635045001E2BED /* LaunchScreen.storyboard */,
 				F6040514296248F8003577D7 /* SCP_UtilityApp.swift */,
 				F604054029624A21003577D7 /* ContentView.swift */,
+				F6DEC9CD29B7B01D00E72063 /* SCP-Utility-Info.plist */,
+				F6040518296248F8003577D7 /* Assets.xcassets */,
 				F6E9D9192A3672930096912F /* Core Data */,
 				F6E9D91C2A36831C0096912F /* Editor */,
 				F65A11092A1AD33C00B096F7 /* Language */,
@@ -213,8 +218,6 @@
 				F6DFECF62999ED1B002C3F1A /* List */,
 				F6DFECDD2994643A002C3F1A /* Article */,
 				F69219F529BA69E200EF19D0 /* Localization */,
-				F6040518296248F8003577D7 /* Assets.xcassets */,
-				F6DEC9CD29B7B01D00E72063 /* SCP-Utility-Info.plist */,
 				F604051A296248F8003577D7 /* Preview Content */,
 			);
 			path = "SCP Utility";
@@ -506,6 +509,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F604051C296248F8003577D7 /* Preview Assets.xcassets in Resources */,
+				F6A7FCE72A635045001E2BED /* LaunchScreen.storyboard in Resources */,
 				F69219F829BA6A4400EF19D0 /* Localizable.strings in Resources */,
 				F6040519296248F8003577D7 /* Assets.xcassets in Resources */,
 			);
@@ -730,6 +734,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = RAISA;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -764,6 +769,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = RAISA;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
