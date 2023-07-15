@@ -56,8 +56,6 @@ query Search($query: URL! = "\(url.formatted().replacing(Regex("https?"), with: 
 
     var responseJSON: JSON = JSON()
     
-    var info = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
-    
     cromRequest(params: parameters) { data, error in
         if let error {
             print(error)
@@ -71,18 +69,21 @@ query Search($query: URL! = "\(url.formatted().replacing(Regex("https?"), with: 
             let page = responseJSON["data"]["page"]["wikidotInfo"]
             let user = page["createdBy"]
 
-            info = ArticleInfo(
+            let dateElement = page["createdAt"].string ?? ""
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            let date = dateFormatter.date(from: dateElement)
+            
+            completion(ArticleInfo(
                 rating: page["rating"].intValue,
                 tags: page["tags"].arrayValue.map { $0.stringValue },
-                createdAt: page["createdAt"].stringValue,
+                createdAt: date,
                 createdBy: user["name"].stringValue,
                 userRank: user["statistics"]["rank"].intValue,
                 userTotalRating: user["statistics"]["totalRating"].intValue,
                 userMeanRating: user["statistics"]["meanRating"].intValue,
                 userPageCount: user["statistics"]["pageCount"].intValue
-            )
-            
-            completion(info)
+            ))
         }
     }
 }

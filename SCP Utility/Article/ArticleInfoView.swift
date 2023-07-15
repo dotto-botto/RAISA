@@ -10,7 +10,8 @@ import SwiftUI
 /// Struct that presents an ArticleInfo struct to the user, along with licensing information about the article.
 struct ArticleInfoView: View {
     @State var article: Article
-    @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: "", createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
+    @State var subtitle: String? = nil
+    @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: Date(), createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
     @State private var loading: Bool = true
     
     @State private var trigger: Bool = false
@@ -26,11 +27,47 @@ struct ArticleInfoView: View {
             if loading {
                 ProgressView()
             } else {
-                HStack {
-                    Text("RATING")
-                    Guide()
-                    Text(String(info.rating)).foregroundColor(.green)
+                Group {
+                    Text(article.title)
+                        .font(.title)
+                        .bold()
+                        .padding(.bottom, 3)
+                    
+                    if subtitle != nil {
+                        Text(subtitle!)
+                            .font(.system(size: 12))
+                            .padding(.horizontal, 10)
+                            .padding(.bottom, 3)
+                    }
+                    
+                    HStack {
+                        Text("RATING")
+                        Guide()
+                        Text(String(info.rating)).foregroundColor(.green)
+                    }
+                    
+                    if let date = info.createdAt {
+                        HStack {
+                            Text("CREATED_ON")
+                            Guide()
+                            Text(date.formatted(date: .long, time: .omitted))
+                                .font(.system(size: 14))
+                                .foregroundColor(.green)
+                        }
+                    }
+                    
+                    HStack {
+                        Text("WORD_COUNT")
+                        Guide()
+                        let wordCount = article.pagesource
+                            .components(separatedBy: .whitespaces)
+                            .filter { !$0.isEmpty }
+                            .count
+                        
+                        Text("\(wordCount)").foregroundColor(.green)
+                    }
                 }
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(info.tags, id: \.self) { tag in
@@ -38,6 +75,7 @@ struct ArticleInfoView: View {
                         }
                     }
                 }
+                
                 Button(info.createdBy) {
                     parseUserPage(username: info.createdBy) {
                         user = $0
@@ -45,7 +83,8 @@ struct ArticleInfoView: View {
                     }
                 }
                     .fontWeight(.heavy)
-                    .padding(.top)
+                    .padding(.top, 40)
+                
                 HStack {
                     Text("RANK")
                     Guide()
@@ -69,7 +108,8 @@ struct ArticleInfoView: View {
                     Link("AIV_VIEW_SOURCE", destination: article.url)
                     Text("AIV_LICENSE")
                 }
-                .font(.subheadline)
+                .font(.system(size: 12))
+                .padding(.horizontal, 10)
             }
         }
         .frame(width: 300)
@@ -90,6 +130,6 @@ struct ArticleInfoView: View {
 
 struct ArticleInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleInfoView(article: placeHolderArticle)
+        ArticleInfoView(article: placeHolderArticle, subtitle: "The best subtitle in the world! This subtitle also happens to be very long :(")
     }
 }

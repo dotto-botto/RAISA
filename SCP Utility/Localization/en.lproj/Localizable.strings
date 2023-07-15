@@ -227,6 +227,8 @@
 "AIV_VIEW_SOURCE" = "View Source";
 "AIV_LICENSE" = "Licensed under CC-BY-SA";
 "RATING" = "Rating";
+"CREATED_ON" = "Created On";
+"WORD_COUNT" = "Word Count";
 "RANK" = "Rank";
 "PAGES_CREATED" = "Pages Created";
 "TOTAL_VOTES" = "Total Votes";

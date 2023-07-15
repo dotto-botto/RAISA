@@ -11,7 +11,7 @@ import Foundation
 struct ArticleInfo: Codable {
     let rating: Int
     let tags: [String]
-    let createdAt: String
+    let createdAt: Date?
     let createdBy: String
     let userRank: Int
     let userTotalRating: Int
@@ -21,7 +21,7 @@ struct ArticleInfo: Codable {
     init(
         rating: Int,
         tags: [String],
-        createdAt: String,
+        createdAt: Date?,
         createdBy: String,
         userRank: Int,
         userTotalRating: Int,
