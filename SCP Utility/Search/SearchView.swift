@@ -10,13 +10,13 @@ import SwiftUI
 /// Search menu that searches the crom api for articles based on the selected language.
 struct SearchView: View {
     @State var query: String = ""
-    @State var articles: [Article] = []
-    @State var altTitles: [String?] = []
-    @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
+    @State var articles: [(Article, String, String?)] = [] // Article, id, alt
     @State var recentSearches: [String] = []
     @State private var showPrompt: Bool = false
-    @EnvironmentObject var networkMonitor: NetworkMonitor
     @State private var connected: Bool = true
+
+    @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     var body: some View {
         let defaults = UserDefaults.standard
         NavigationStack {
@@ -65,7 +65,7 @@ struct SearchView: View {
             }
             
             VStack {
-                ForEach(Array(zip(articles, altTitles)), id: \.1) { article, alt in
+                ForEach(articles, id: \.1) { article, _, alt in
                     OnlineArticleRow(title: article.title, alternateTitle: alt, url: article.url)
                         .padding(.vertical, 1)
                 }
@@ -95,8 +95,13 @@ struct SearchView: View {
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
             cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp, alt in
-                articles = scp
-                altTitles = alt
+                for (article, name) in zip(scp, alt) {
+                    articles.append((
+                        article,
+                        article.id,
+                        name
+                    ))
+                }
                 
                 showPrompt = scp.isEmpty
             
