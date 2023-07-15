@@ -80,14 +80,7 @@ struct ArticleRow: View {
                 }
             }
         }
-        .disabled(disabled)
         .contextMenu {
-            Button {
-                showListAddView = true
-            } label: {
-                Label("LISTADDVIEW_TITLE", systemImage: "bookmark")
-            }
-            
             Button {
                 addIDToBar(id: passedSCP.id)
             } label: {
@@ -100,14 +93,41 @@ struct ArticleRow: View {
                 Label("OPEN_IN_READER", systemImage: "rectangle.portrait.and.arrow.forward")
             }
             
+            Divider()
+            
+            Button {
+                disabled = true
+                cromGetSourceFromURL(url: passedSCP.url) {
+                    passedSCP.updateSource($0)
+                    con.updatePageSource(id: passedSCP.id, newPageSource: $0)
+                    disabled = false
+                }
+            } label: {
+                Label("UPDATE_ARTICLE", systemImage: "square.and.arrow.down")
+            }
+            
+            Button {
+                showListAddView = true
+            } label: {
+                Label("LISTADDVIEW_TITLE", systemImage: "bookmark")
+            }
+            
             Button {
                 showUpdateView = true
             } label: {
                 Label("UPDATE_ATTRIBUTE", image: passedSCP.objclass?.toImage() ?? "euclid-icon")
             }
+            
+            Button(role: .destructive) {
+                con.deleteArticleEntity(id: passedSCP.id)
+                disabled = true
+            } label: {
+                Label("DELETE", systemImage: "trash")
+            }
         } preview: {
             NavigationStack { RAISAText(article: passedSCP) }
         }
+        .disabled(disabled)
         .swipeActions(allowsFullSwipe: false) {
             Button(role: .destructive) {
                 con.deleteArticleEntity(id: passedSCP.id)

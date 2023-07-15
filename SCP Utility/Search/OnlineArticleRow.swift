@@ -18,10 +18,10 @@ struct OnlineArticleRow: View {
     @State private var checkmarkStatus: Bool = false
     @State var toArticle: Bool = false
     @State var observedBool: Bool = false // solely used to trigger onchange()
+    @State var addObservedBool: Bool = false
     @State var currentArticle: Article = placeHolderArticle
     @State var showSheet: Bool = false
     var body: some View {
-        let con = PersistenceController.shared
         HStack {
             Button {
                 cromAPISearchFromURL(query: url) { article in
@@ -44,24 +44,17 @@ struct OnlineArticleRow: View {
 
                 Spacer()
             }
-            
-            
-            
+                        
             if checkmarkStatus {
                 Image(systemName: "checkmark")
                     .foregroundColor(.accentColor)
             }
             
             Button {
-                if !bookmarkStatus {
-                    cromAPISearchFromURL(query: url) { article in
-                        guard let article = article else { return }
-                        con.createArticleEntity(article: article)
-                    }
-                    
-                    bookmarkStatus.toggle()
-                } else {
-                    showSheet.toggle()
+                cromAPISearchFromURL(query: url) { article in
+                    guard let article = article else { return }
+                    currentArticle = article
+                    addObservedBool.toggle()
                 }
             } label: {
                 Image(systemName: bookmarkStatus ? "bookmark.fill" : "bookmark")
@@ -71,13 +64,18 @@ struct OnlineArticleRow: View {
         .onChange(of: observedBool) { _ in
             toArticle = true
         }
+        .onChange(of: addObservedBool) { _ in
+            showSheet = true
+        }
         .fullScreenCover(isPresented: $toArticle, onDismiss: {
             checkmarkStatus = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted())
             bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
         }) {
             NavigationStack { ArticleView(scp: currentArticle) }
         }
-        .sheet(isPresented: $showSheet) {
+        .sheet(isPresented: $showSheet, onDismiss: {
+            bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
+        }) {
             ListAdd(isPresented: $showSheet, article: currentArticle)
         }
         .task {
