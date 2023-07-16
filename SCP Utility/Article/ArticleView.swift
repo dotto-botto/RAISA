@@ -26,7 +26,6 @@ struct ArticleView: View {
     @State private var forbiddenComponents: [String] = []
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
-    @State private var isBuiltIn: Bool = false
     @State private var isFragmented: Bool = true
     @State private var subtitle: String = ""
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
@@ -37,15 +36,8 @@ struct ArticleView: View {
     var body: some View {
         let theme: RAISATheme? = theme ?? scp.findTheme()
         
-        if scp.url.formatted().contains("://scp-wiki.wikidot.com/scp-001") && scp.title == "SCP-001" {
-            ScrollView {
-                SCP001View()
-                    .onAppear { isBuiltIn = true }
-                    .padding(.horizontal, 5)
-            }
-        }
         VStack(alignment: .leading) {
-            if forbidden && showComponentPrompt && !isBuiltIn {
+            if forbidden && showComponentPrompt {
                 VStack {
                     Text("AV_UNSUPPORTED")
                         .foregroundColor(.gray)
@@ -66,7 +58,7 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden && containsExplicitContent && !isBuiltIn {
+            if !forbidden && containsExplicitContent {
                 VStack {
                     Text("AV_SENSITIVE")
                         .foregroundColor(.gray)
@@ -88,7 +80,7 @@ struct ArticleView: View {
                 }
             }
             
-            if !forbidden && !containsExplicitContent && !isBuiltIn && !isFragmented {
+            if !forbidden && !containsExplicitContent && !isFragmented {
                 RAISAText(article: scp)
             }
         }
