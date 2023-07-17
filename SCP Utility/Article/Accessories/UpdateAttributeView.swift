@@ -11,9 +11,23 @@ import SwiftUI
 struct UpdateAttributeView: View {
     @State var article: Article
     var body: some View {
+        let Guide = {
+            Rectangle()
+                .frame(width: 30, height: 0.5)
+                .foregroundColor(.secondary)
+        }
+        
         VStack {
             Group {
-                Text("OBJECT_CLASS")
+                HStack {
+                    Text("OBJECT_CLASS")
+                    if let obj = article.objclass {
+                        Guide()
+                        Text(obj.toLocalString())
+                            .foregroundColor(obj.toColor())
+                    }
+                }
+                
                 Text(article.objclass?.getTooltip() ?? "The standard indicator of the difficulty of containing an anomaly.")
                     .font(.caption2)
                     .foregroundColor(.gray)
@@ -39,7 +53,13 @@ struct UpdateAttributeView: View {
             }
             
             Group {
-                Text("ESOTERIC_CLASS")
+                HStack {
+                    Text("ESOTERIC_CLASS")
+                    if let eso = article.esoteric, eso != .unknown {
+                        Guide()
+                        Text(eso.toLocalString())
+                    }
+                }
                 Text(article.esoteric?.getTooltip() ?? "Used when normal object classes cannot classify this anomaly.")
                     .font(.caption2)
                     .foregroundColor(.gray)

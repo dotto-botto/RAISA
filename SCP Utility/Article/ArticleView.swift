@@ -40,13 +40,13 @@ struct ArticleView: View {
             if forbidden && showComponentPrompt {
                 VStack {
                     Text("AV_UNSUPPORTED")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
-                    Text("AV_UNSUPPORTED_GUIDE").foregroundColor(.gray)
+                    Text("AV_UNSUPPORTED_GUIDE").foregroundColor(.secondary)
                     ForEach(forbiddenComponents, id: \.self) { comp in
-                        Text(comp).foregroundColor(.gray)
+                        Text(comp).foregroundColor(.secondary)
                     }
                     
                     Button("AV_DISPLAY_AS_IS") {
@@ -54,19 +54,19 @@ struct ArticleView: View {
                     }
                     .padding(.vertical, 10)
                     
-                    Text("AV_USER_TIRED_OF_WARNING").foregroundColor(.gray)
+                    Text("AV_USER_TIRED_OF_WARNING").foregroundColor(.secondary)
                 }
             }
             
             if !forbidden && containsExplicitContent {
                 VStack {
                     Text("AV_SENSITIVE")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
                     ForEach(explicitContent, id: \.self) { comp in
-                        Text(comp).foregroundColor(.gray)
+                        Text(comp).foregroundColor(.secondary)
                     }
                     
                     Button("CONTINUE") {
@@ -134,7 +134,7 @@ struct ArticleView: View {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
         .sheet(isPresented: $showInfo) {
-            ArticleInfoView(article: scp)
+            ArticleInfoView(article: scp, subtitle: subtitle)
         }
         .sheet(isPresented: $showComments) {
             CommentsView(article: scp)
@@ -163,11 +163,9 @@ struct ArticleView: View {
                 Button {
                     dismiss()
                 } label: {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text(dismissText ?? "")
-                    }
+                    Image(systemName: "chevron.left")
                 }
+                .frame(width: 44.0, height: 44.0)
                 .contextMenu {
                     var rootViewController: UIViewController? = nil
                     Button {
@@ -194,12 +192,10 @@ struct ArticleView: View {
                     showNext = true
                 } label: {
                     if nextArticle != nil {
-                        HStack {
-                            Text(nextArticle!.title)
-                            Image(systemName: "chevron.right")
-                        }
+                        Image(systemName: "chevron.right")
                     }
                 }
+                .frame(width: 44.0, height: 44.0)
             }
 
             // Bottom
@@ -268,6 +264,7 @@ struct ArticleView: View {
                                 Image(systemName: "textformat.superscript")
                             }
                         }
+                        .disabled(!scp.pagesource.contains("[[footnote]]"))
                         
                         Button {
                             showBackground.toggle()
@@ -278,6 +275,7 @@ struct ArticleView: View {
                                     .opacity(showBackground ? 1 : 0.3)
                             }
                         }
+                        .disabled(theme == nil)
                     } label: {
                         Image(systemName: "list.bullet")
                     }
@@ -361,7 +359,7 @@ struct ArticleView_Previews: PreviewProvider {
         NavigationStack {
             ArticleView(scp: Article(
                 title: "Tufto's Proposal",
-                pagesource: "[[html",
+                pagesource: "[[math",
                 url: placeholderURL,
                 thumbnail: URL(string: "https://scp-wiki.wdfiles.com/local--files/scp-7606/SCPded.jpg")
             ))

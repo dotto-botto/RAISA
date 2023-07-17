@@ -95,6 +95,7 @@ struct SearchView: View {
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
         .onSubmit(of: .search) {
             cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp, alt in
+                articles = []
                 for (article, name) in zip(scp, alt) {
                     articles.append((
                         article,

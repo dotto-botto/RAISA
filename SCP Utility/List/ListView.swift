@@ -116,7 +116,7 @@ struct OneListView: View {
             } else {
                 List {
                     ForEach(articles) { article in
-                        let button = Button {
+                        let button = Button(role: .destructive) {
                             list.removeContent(id: article.id)
                         } label: {
                             Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")

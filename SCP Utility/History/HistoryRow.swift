@@ -28,13 +28,11 @@ struct HistoryRow: View {
                     .foregroundColor(.secondary)
             }
             Spacer()
-            if item.thumbnail != nil {
-                KFImage(item.thumbnail!)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 50, height: 50)
-                    .clipped()
-            }
+            KFImage(item.thumbnail)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 50, height: 50)
+                .clipped()
         }
         .onTapGesture {
             if !callingAPI {

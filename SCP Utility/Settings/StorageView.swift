@@ -80,7 +80,7 @@ struct CompletedArticlesView: View {
     var body: some View {
         NavigationLink("MANAGE_READ_ARTICLES") {
             VStack {
-                if completed.isEmpty {
+                if completed.isEmpty && query.isEmpty {
                     VStack {
                         Image(systemName: "checkmark")
                             .font(.system(size: 40))
@@ -89,6 +89,13 @@ struct CompletedArticlesView: View {
                     }
                     .foregroundColor(.secondary)
                 } else {
+                    if completed.isEmpty && !query.isEmpty {
+                        Text("NO_RESULTS_FOR_\(query)")
+                            .bold()
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 10)
+                    }
+                    
                     List(completed, id: \.self) { url in
                         Text(url)
                             .swipeActions {
@@ -102,7 +109,7 @@ struct CompletedArticlesView: View {
                     }
                     .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
                     .toolbar {
-                        ToolbarItem(placement: .bottomBar) {
+                        ToolbarItem(placement: .navigationBarTrailing) {
                             Button("DELETE_ALL") {
                                 completedConf = true
                             }
