@@ -101,75 +101,94 @@ func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem
     var items: [RTItem] = []
     let list = source.components(separatedBy: .newlines)
     
-    var forbiddenLines: [String] = []
+    let collapsibles = matches(for: #"\[\[(c|C)ollapsible.*?\]\]([\s\S]*?)\[\[\/(c|C)ollapsible\]\]"#, in: source)
     
-    let collapsibles = findAllCollapsibles(source)
-    let imageStrings = findAllImages(source)
-    let quickTables = findAllQuickTables(source)
-    let htmls = findAllHTML(source)
-    let audios = findAllAudio(source)
+    let regex = #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#
+    let imageStrings = matches(for: regex, in: source)
+    let quickTables = matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
+    let htmls = matches(for: #"\[\[html[\s\S]*?\[\[\/html]]"#, in: source)
+    let audios = matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: source)
+    let divTables = matches(for: #"\[\[table.*?]][\s\S]*?\[\[\/table]]"#, in: source)
     
     var collapsibleIndex = 0
     var imageIndex = 0
     var quickTableIndex = 0
     var htmlIndex = 0
     var audioIndex = 0
+    var divTableIndex = 0
+    
+    var skipCount = 0
     
     for (item, index) in zip(list, list.indices) {
+        if skipCount > 0 {
+            skipCount -= 1
+            continue
+        }
+        
         let itemAndNext: String = index + 3 < list.count - 1 ?
         item + "\n" + list[index + 1] + "\n" + list[index + 2] + "\n" + list[index + 3] : item
         
-//        let lastItem: String = index == 0 ? item : list[index - 1]
-        
-        // Check if the next items are also forbidden, because check of the one item would fail in cases where it isn't unique.
-        guard !Set(itemAndNext.components(separatedBy: .newlines)).isSubset(of: Set(forbiddenLines)) else { continue }
+        // Find all occurances in collapsible tags
+        func resolveIndices(content: String) {
+            imageIndex += matches(for: #"(image-features-source|image-block|\[\[.*?image)"#, in: content).count
+            quickTableIndex += matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: content).count
+            audioIndex += matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: content).count
+        }
         
         if item.contains("anomaly-class") || item.contains("object-warning-box") {
             let slice = source.slice(with: item, and: "]]")
             items.append(.component(slice))
             source.removeText(from: item, to: "]]")
-            forbiddenLines += slice.components(separatedBy: .newlines)
+            skipCount += slice.components(separatedBy: .newlines).count - 1
             
         } else if item.contains("[[tabview") {
             let slice = source.slice(with: itemAndNext, and: "[[/tabview]]")
             items.append(.tabview(slice))
             source = source.replacingOccurrences(of: slice, with: "")
-            forbiddenLines += slice.components(separatedBy: .newlines)
+            skipCount += slice.components(separatedBy: .newlines).count - 1
+            resolveIndices(content: slice)
             
-        } else if item.lowercased().contains("[[collapsible") && collapsibles.indices.contains(collapsibleIndex) {
-            items.append(.collapsible(collapsibles[collapsibleIndex]))
-            forbiddenLines += collapsibles[collapsibleIndex].components(separatedBy: .newlines)
+        } else if item.lowercased().contains("[[collapsible") {
+            guard collapsibles.indices.contains(collapsibleIndex) else { continue }
+            let collapsible = collapsibles[collapsibleIndex]
+            items.append(.collapsible(collapsible))
+            skipCount += collapsible.components(separatedBy: .newlines).count - 1
             collapsibleIndex += 1
+            resolveIndices(content: collapsible)
             
         } else if item.contains("[[table") {
-            let slice = source.slice(with: itemAndNext, and: "[[/table]]")
-            items.append(.table(slice))
-            forbiddenLines += slice.components(separatedBy: .newlines)
+            guard divTables.indices.contains(divTableIndex) else { continue }
+            let table = divTables[divTableIndex]
+            items.append(.table(table))
+            skipCount += table.components(separatedBy: .newlines).count - 1
+            divTableIndex += 1
+            resolveIndices(content: table)
             
         } else if item.contains(":scp-wiki:component:image-features-source") || item.contains(":image-block") ||
             (item.contains("[[") && item.contains("image ")) {
             guard imageStrings.indices.contains(imageIndex) else { continue }
             items.append(.image(imageStrings[imageIndex]))
-            forbiddenLines += imageStrings[imageIndex].components(separatedBy: .newlines)
+            skipCount += imageStrings[imageIndex].components(separatedBy: .newlines).count - 1
             imageIndex += 1
             
         } else if item.contains("||") {
             guard quickTables.indices.contains(quickTableIndex) else { continue }
             let tableItem: RTItem = .table(quickTables[quickTableIndex])
-            guard !items.contains(tableItem) else { continue }
             items.append(tableItem)
+            skipCount += quickTables[quickTableIndex].components(separatedBy: .newlines).count - 1
             quickTableIndex += 1
             
-        } else if item.contains("[[html") && htmls.indices.contains(htmlIndex) {
+        } else if item.contains("[[html") {
+            guard htmls.indices.contains(htmlIndex) else { continue }
             let html = htmls[htmlIndex]
             items.append(.html(html))
-            forbiddenLines += html.components(separatedBy: .newlines)
+            skipCount += html.components(separatedBy: .newlines).count - 1
             htmlIndex += 1
             
         } else if item.contains("[[include :snippets:html5player") && audios.indices.contains(audioIndex) {
             let audio = audios[audioIndex]
             items.append(.audio(audio))
-            forbiddenLines += audio.components(separatedBy: .newlines)
+            skipCount += audio.components(separatedBy: .newlines).count - 1
             audioIndex += 1
             
         } else if item.contains("[[[") {
@@ -177,29 +196,12 @@ func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem
             items.append(.inlinebuton(item.contains("]]]") ? item : source.slice(with: item, and: "]]]")))
         } else if item.contains("[") && item.contains("http") && !(stop ?? false) {
             items.append(.inlinebuton(item))
-        } else if !forbiddenLines.contains(item) {
+        } else {
             items.append(.text(item))
         }
     }
     
     return items
-}
-
-
-/// Finds all tables that use the "||" syntax
-func findAllQuickTables(_ source: String) -> [String] {
-    return matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
-}
-
-/// Finds and returns all text inside of collapsible tags, including those tags.
-func findAllCollapsibles(_ doc: String) -> [String] {
-    return matches(for: #"\[\[(c|C)ollapsible.*?\]\]([\s\S]*?)\[\[\/(c|C)ollapsible\]\]"#, in: doc)
-}
-
-/// Finds and returns all text that displays an image.
-func findAllImages(_ doc: String) -> [String] {
-    let regex = #"(\[\[include[\s\S]*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#
-    return matches(for: regex, in: doc)
 }
 
 func parseBlockQuoteDivs(_ doc: String) -> String {
@@ -216,14 +218,6 @@ func parseBlockQuoteDivs(_ doc: String) -> String {
     return returnDoc
 }
 
-func findAllHTML(_ doc: String) -> [String] {
-    return matches(for: #"\[\[html[\s\S]*?\[\[\/html]]"#, in: doc)
-}
-
-func findAllAudio(_ doc: String) -> [String] {
-    return matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: doc)
-}
-
 // MARK: Normal Filter
 func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     DispatchQueue.main.async {
@@ -236,12 +230,13 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"\[\[module rate\]\]"#).ignoresCase(),
             Regex(#"\[\[# .*?\]\]"#),
             Regex(#"\[#toc.*?\]"#),
-            Regex(#"<< \[\[\[.*?\]\]\] >>"#),
+            Regex(#"(<<|«)\s*?\[\[.*?\]\]\s*?(»|>>)"#),
             Regex(#"\[\[module[\s\S]*?\[\[\/module\]\]"#),
             Regex(#"\[\[a href=.*?\]\]"#),
             Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#),
             Regex(#"\[!--[\s\S]*?--\]"#),
             Regex(#"\[\[\*?user.*?\]\]"#),
+            Regex(#"\[\[footnoteblock.*?\]\]"#),
         ]
         
         for regex in regexDeletes {
@@ -259,14 +254,21 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
         text = text.replacingOccurrences(of: "--]", with: "")
         
+        text = text.replacingOccurrences(of: "[*http", with: "[http")
+        
         // Footnotes
         let fnmatches = matches(for: #"\[\[footnote]][\s\S]*?\[\[\/footnote]]"#, in: text)
         for (match, index) in zip(fnmatches, fnmatches.indices) {
-            text = text.replacingOccurrences(of: match, with: " [fn.\(index + 1)]")
+            let mark = " " + String(localized: "FOOTNOTE_MARK\(index + 1)")
+            text = text.replacingOccurrences(of: match, with: mark)
         }
         
         for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
+        }
+        
+        for match in matches(for: #"__[^\s].+?[^\s]__"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "__", with: ""))
         }
         
         for match in matches(for: #",,.*?,,"#, in: text) {
@@ -289,12 +291,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         // Links that dont start with http (SCP-7579)
-        for match in matches(for: #"\[\*\/.*? .*?\]"#, in: text) {
-            if let url = matches(for: #"(?<=\*\/).*?(?= )"#, in: match).first {
+        for match in matches(for: #"\[\*?\/.*? .*?\]"#, in: text) {
+            if let url = matches(for: #"\*?\/.*?(?= )"#, in: match).first, let content = matches(for: "(?<= ).*?]", in: match).first {
                 // TODO: Fix for international branches
-                text = text.replacingOccurrences(of: match, with:
-                                                    match.replacingOccurrences(of: "*/\(url)", with: "https://scp-wiki.wikidot.com/\(url)")
-                )
+                text = text.replacingOccurrences(of: match, with: "[\(content)(https://scp-wiki.wikidot.com\(url))")
             }
         }
         
@@ -322,7 +322,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "[[==]]",
             "[[/==]]",
             "[[/a]]",
-            "[[footnoteblock]]",
         ]
         for string in stringDeletes {
             text = text.replacingOccurrences(of: string, with: "")
@@ -330,11 +329,13 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         text = try! text.replacing(Regex(#"\n---+$"#), with: "\n---") // horizontal rule
         text = try! text.replacing(Regex(#"\n===$"#), with: "\n---$")
+        text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
         text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
+        text = try! text.replacing(Regex(#"\n> \++ "#), with: "\n> ## ")
+        text = try! text.replacing(Regex(#"\n> \++\* "#), with: "\n> ## ") // header markings escaped from toc
         text = try! text.replacing(Regex(#"\n="#), with: "\n")
         text = try! text.replacing(Regex(#"\n> ="#), with: "\n> ")
-        text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
         
         let supportedIncludes: [String] = [
             "image-features-source",
@@ -447,6 +448,7 @@ func FilterToPure(doc: String) -> String {
         "**",
         "--",
         ",,",
+        "__",
         "[[/collapsible]]",
         "[[footnoteblock]]",
         "[[/a]]"

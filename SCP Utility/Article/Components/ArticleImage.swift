@@ -26,10 +26,10 @@ struct ArticleImage: View {
                 .resizable()
                 .scaledToFit()
             } placeholder: {
-                    Image("image-placeholder")
-                        .resizable()
-                        .scaledToFit()
-                }
+                Image("image-placeholder")
+                    .resizable()
+                    .scaledToFit()
+            }
             .contextMenu {
                 Menu {
                     if let url = parsed?.value {
@@ -72,8 +72,7 @@ fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String
         caption = matches(for: #"(?<=[^-]caption=).*?(?=(]]|\n|\|))"#, in: content).first
     } else if content.contains(":image-block") {
         // Old Format
-        guard var name = matches(for: #"name=.*?(\n|\|)"#, in: content).first else { return [nil:nil] }
-        name = name.slice(from: "name=", to: "\n") ?? name.slice(from: "name=", to: "|") ?? ""
+        guard var name = matches(for: #"(?<=name=).*?(?=(\n|\|))"#, in: content).first else { return [nil:nil] }
         name = name.replacingOccurrences(of: " ", with: "")
  
         if name.contains("http") {
@@ -91,7 +90,11 @@ fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String
         }
     }
     
-    return [caption : URL(string: newURL)]
+    return [caption : URL(string: newURL
+        .replacingOccurrences(of: "http://", with: "https://")
+        .replacingOccurrences(of: "local~~", with: "local--")
+        .trimmingCharacters(in: .whitespaces)
+    )]
 }
 
 //struct ArticleImage_Previews: PreviewProvider {

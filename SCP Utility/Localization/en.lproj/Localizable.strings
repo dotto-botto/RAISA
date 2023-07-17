@@ -213,6 +213,7 @@
 "CV_TITLE%@" = "Discuss: %@";
 "CV_FOLD" = "Fold";
 "CV_UNFOLD" = "Unfold";
+"FOOTNOTE_MARK%lld" = "[fn.%lld]";
 
 // Article Bar + Row
 "ADD_TO_BAR" = "Add to Bar";

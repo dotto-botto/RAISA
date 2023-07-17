@@ -21,7 +21,7 @@ struct RTMarkdown: View {
                 }
             }
             .markdownTextStyle(\.code) {
-                ForegroundColor(findTint() ?? .accentColor)
+                ForegroundColor(findTint() ?? .primary)
             }
             .textSelection(.enabled)
             .id(text)
@@ -29,7 +29,7 @@ struct RTMarkdown: View {
     
     private func findTint() -> Color? {
         guard let color = self.text.slice(from: "## ##", to: "|") ?? self.text.slice(from: "##", to: "|") else { return nil }
-        if color.contains(/[0-9]/) {
+        if color.contains(/^#?([[:xdigit:]]{6}|[[:xdigit:]]{3})$/) {
             return Color(hex: color)
         } else {
             return Color("RT\(color.lowercased())")
@@ -38,7 +38,7 @@ struct RTMarkdown: View {
     
     private func colorToButton(text markdown: String) -> String {
         var newText = markdown
-        for match in matches(for: #"##[^|#]*\|.*?##"#, in: markdown) {
+        for match in matches(for: #"###?[^|#]*\|.*?##"#, in: markdown) {
             let text = match.slice(from: "|", to: "##") ?? match
             newText = newText
                 .replacingOccurrences(of: match, with: "`\(text)`")

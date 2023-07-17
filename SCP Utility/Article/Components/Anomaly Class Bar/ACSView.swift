@@ -40,20 +40,20 @@ struct ACSView: View {
         
         let obj: String = {
             matches(for: #"(?<=container-class=).*?(?=\n|\|)"#, in: component).first ?? ""
-        }().replacingOccurrences(of: " ", with: "")
+        }().trimmingCharacters(in: .whitespaces)
         
         
         let secondaryClass: String = {
             matches(for: #"(?<=secondary-class=).*?(?=\n|\|)"#, in: component).first ?? ""
-        }().replacingOccurrences(of: " ", with: "")
+        }().trimmingCharacters(in: .whitespaces)
         
         let dis: String = {
             matches(for: #"(?<=disruption-class=).*?(?=\n|\|)"#, in: component).first ?? ""
-        }().replacingOccurrences(of: " ", with: "")
+        }().trimmingCharacters(in: .whitespaces)
         
         let ris: String = {
             matches(for: #"(?<=risk-class=).*?(?=\n|\|)"#, in: component).first ?? ""
-        }().replacingOccurrences(of: " ", with: "")
+        }().trimmingCharacters(in: .whitespaces)
         
         let secondaryIcon = matches(for: #"(?<=secondary-icon=).*?(?=\n|\|)"#, in: component).first?
             .replacingOccurrences(of: "http:", with: "https:")
@@ -76,17 +76,22 @@ struct ACSView: View {
         }()
         
         self.esoteric = {
-            switch secondaryClass.lowercased() {
-            case "apollyon": return .apollyon
-            case "archon": return .archon
-            case "cernunnos": return .cernunnos
-            case "decommissioned": return .decommissioned
-            case "hiemal": return .hiemal
-            case "tiamat": return .tiamat
-            case "ticonderoga": return .ticonderoga
-            case "thaumiel": return .thaumiel
+            switch obj.lowercased() {
             case "uncontained": return .uncontained
-            default: return .unknown
+            default: return {
+                switch secondaryClass.lowercased() {
+                case "apollyon": return .apollyon
+                case "archon": return .archon
+                case "cernunnos": return .cernunnos
+                case "decommissioned": return .decommissioned
+                case "hiemal": return .hiemal
+                case "tiamat": return .tiamat
+                case "ticonderoga": return .ticonderoga
+                case "thaumiel": return .thaumiel
+                case "uncontained": return .uncontained
+                default: return .unknown
+                }
+            }()
             }
         }()
         
@@ -142,22 +147,18 @@ struct ACSView: View {
             }
             
             Rectangle().frame(height: 20)
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                if esoteric == .unknown && secondaryIcon != nil {
-                    ACSCellView(
-                        secondaryname: customSecondary ?? "",
-                        secondaryIconURL: URL(string: secondaryIcon ?? "")
-                    )
-                } else if esoteric != nil && esoteric != .unknown {
-                    ACSCellView(.esoteric(esoteric!))
-                } else {
-                    ACSCellView(.object(object))
-                }
-                ACSCellView(.disruption(disruption))
-                ACSCellView(.risk(risk))
+            if esoteric == .unknown && secondaryIcon != nil {
+                ACSCellView(
+                    secondaryname: customSecondary ?? "",
+                    secondaryIconURL: URL(string: secondaryIcon ?? "")
+                )
+            } else if esoteric != nil && esoteric != .unknown {
+                ACSCellView(.esoteric(esoteric!))
             } else {
-                
+                ACSCellView(.object(object))
             }
+            ACSCellView(.disruption(disruption))
+            ACSCellView(.risk(risk))
         }
     }
 }
