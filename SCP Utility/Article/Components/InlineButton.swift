@@ -33,7 +33,7 @@ struct InlineButton: View {
             showSheet = true
         }
         .fullScreenCover(isPresented: $showSheet) {
-            NavigationStack { ArticleView(scp: nextArticle, dismissText: article.title) }
+            NavigationStack { ArticleView(scp: nextArticle, dismissText: article.title, markLatest: false) }
         }
     }
     

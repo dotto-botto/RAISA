@@ -15,6 +15,8 @@ struct ArticleView: View {
     @State var dismissText: String? = ""
     @State var presentSheet: Bool = false
     @State var theme: RAISATheme? = nil
+    @State var markLatest: Bool? = true
+    
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
@@ -94,7 +96,10 @@ struct ArticleView: View {
             }
             
             con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-            defaults.set(scp.url, forKey: "lastReadUrl")
+            
+            if markLatest ?? false {
+                defaults.set(scp.url, forKey: "lastReadUrl")
+            }
             
             if scp.pagesource.contains("[[module ListPages") {
                 isFragmented = true
