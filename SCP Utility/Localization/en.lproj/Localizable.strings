@@ -204,6 +204,7 @@
 "AV_DISPLAY_AS_IS" = "Display As Is";
 "AV_USER_TIRED_OF_WARNING" = "You can turn this warning off in settings.";
 "AV_SENSITIVE" = "This article contains sensitive content.";
+"AV_MINIMIZE" = "Minimize";
 "AV_DISMISS_ALL" = "Dismiss all Articles";
 "SAVE_POSITION_PROMPT" = "Save Position";
 "TAB_END_INDICATOR" = "End Tab";
