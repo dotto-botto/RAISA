@@ -16,8 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleAspectFit" fixedFrame="YES" image="raisa-icon-transparent" translatesAutoresizingMaskIntoConstraints="NO" id="5Tc-Eu-DwP">
-                                <rect key="frame" x="39" y="202" width="312" height="449"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="raisa-icon-transparent" translatesAutoresizingMaskIntoConstraints="NO" id="5Tc-Eu-DwP">
+                                <rect key="frame" x="39" y="201" width="311" height="450"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
