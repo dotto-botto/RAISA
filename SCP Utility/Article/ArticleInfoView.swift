@@ -59,7 +59,7 @@ struct ArticleInfoView: View {
                     HStack {
                         Text("WORD_COUNT")
                         Guide()
-                        let wordCount = article.pagesource
+                        let wordCount = FilterToPure(doc: article.pagesource)
                             .components(separatedBy: .whitespaces)
                             .filter { !$0.isEmpty }
                             .count
