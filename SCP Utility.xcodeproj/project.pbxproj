@@ -204,7 +204,7 @@
 				F604054029624A21003577D7 /* ContentView.swift */,
 				F6DEC9CD29B7B01D00E72063 /* SCP-Utility-Info.plist */,
 				F6040518296248F8003577D7 /* Assets.xcassets */,
-				F6E9D9192A3672930096912F /* Core Data */,
+				F6E9D9192A3672930096912F /* Data */,
 				F6E9D91C2A36831C0096912F /* Editor */,
 				F65A11092A1AD33C00B096F7 /* Language */,
 				F6A092A729C7EA5C00E661A0 /* Settings */,
@@ -366,14 +366,14 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
-		F6E9D9192A3672930096912F /* Core Data */ = {
+		F6E9D9192A3672930096912F /* Data */ = {
 			isa = PBXGroup;
 			children = (
 				F6DFECFD299AED80002C3F1A /* Model.xcdatamodeld */,
 				F6DFED00299AEFC6002C3F1A /* DataController.swift */,
 				F6E9D91A2A3672E40096912F /* DataRequest.swift */,
 			);
-			path = "Core Data";
+			path = Data;
 			sourceTree = "<group>";
 		};
 		F6E9D91C2A36831C0096912F /* Editor */ = {
