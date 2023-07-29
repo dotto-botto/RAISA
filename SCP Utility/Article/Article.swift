@@ -203,6 +203,49 @@ struct Article: Identifiable, Codable {
     func isComplete() -> Bool {
         return (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(self.url.formatted()) || con.completionStatus(article: self)
     }
+    
+    func downloadImages() {
+        let images = matches(for: #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#, in: self.pagesource)
+        
+        for image in images {
+            guard let url = parseArticleImage(image, articleURL: self.url).first?.value else { continue }
+            let task = URLSession.shared.dataTask(with: url) { data, _, _ in
+                guard let data = data else { return }
+
+                do {
+                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+                    
+                    let articleDir = documentsDirectory
+                        .appendingPathComponent("Articles")
+                        .appendingPathComponent(self.url.lastPathComponent)
+                    try FileManager.default.createDirectory(at: articleDir, withIntermediateDirectories: true)
+                    
+                    let fileURL = articleDir.appendingPathComponent(url.lastPathComponent)
+                    
+                    try data.write(to: fileURL)
+                } catch {
+                    print("Error saving image: \(error.localizedDescription)")
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    func getStoredImages() -> [URL]? {
+        guard let imagesDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("Articles")
+            .appendingPathComponent(self.url.lastPathComponent)
+        else { return nil }
+        
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: imagesDirectory, includingPropertiesForKeys: nil)
+            return contents
+        } catch {
+            print("Error loading images: \(error.localizedDescription)")
+            return nil
+        }
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.

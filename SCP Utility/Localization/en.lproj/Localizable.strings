@@ -210,6 +210,7 @@
 "TAB_END_INDICATOR" = "End Tab";
 "BLOCK_END_INDICATOR" = "End Block";
 "IMAGE_INFO" = "Image Info";
+"IMAGE_STORED_ON_DISK" = "Image stored on disk?";
 "TAP_FOR_HTML" = "Tap to View HTML";
 "CV_TITLE%@" = "Discuss: %@";
 "CV_FOLD" = "Fold";

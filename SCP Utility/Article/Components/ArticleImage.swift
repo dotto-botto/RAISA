@@ -13,47 +13,82 @@ struct ArticleImage: View {
     var article: Article
     var content: String
     
+    var storedImage: UIImage? = nil
+    var subtitle: String? = nil
+    
     init(article: Article, content: String) {
         self.article = article
         self.content = content
+        
+        if article.isSaved() {
+            let parsed = parseArticleImage(content, articleURL: article.url).first
+            self.storedImage = {
+                let file = article.getStoredImages()?
+                    .filter { $0.lastPathComponent == parsed?.value?.lastPathComponent }
+                    .first?
+                    .formatted()
+                    .replacingOccurrences(of: "file:/", with: "") ?? ""
+                
+                return  UIImage(contentsOfFile: file)
+            }()
+            self.subtitle = FilterToPure(doc: parsed?.key ?? "")
+        }
     }
     
     var body: some View {
-        let parsed = parseArticleImage(content, articleURL: article.url).first
-        VStack {
-            AsyncImage(url: parsed?.value) { image in
-                image
-                .resizable()
-                .scaledToFit()
-            } placeholder: {
-                Image("image-placeholder")
+        if storedImage != nil {
+            VStack {
+                Image(uiImage: storedImage!)
                     .resizable()
                     .scaledToFit()
-            }
-            .contextMenu {
-                Menu {
-                    if let url = parsed?.value {
-                        Link(destination: url) {
-                            Text(url.formatted())
+                    .contextMenu {
+                        Menu {
+                            Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
+                        } label: {
+                            Label("IMAGE_INFO", systemImage: "ladybug")
                         }
-                    } else {
-                        Text("error finding url")
                     }
-                    
-                    Text(parsed?.key ?? "no caption")
-                } label: {
-                    Label("IMAGE_INFO", systemImage: "ladybug")
-                }
-                .frame(maxWidth: .infinity)
+                Text(subtitle ?? "")
+                    .font(.headline)
             }
-            Text(FilterToPure(doc: parsed?.key ?? ""))
-                .font(.headline)
+            .padding(.vertical)
+        } else {
+            let parsed = parseArticleImage(content, articleURL: article.url).first
+            VStack {
+                AsyncImage(url: parsed?.value) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } placeholder: {
+                    Image("image-placeholder")
+                        .resizable()
+                        .scaledToFit()
+                }
+                .contextMenu {
+                    Menu {
+                        Label("IMAGE_STORED_ON_DISK", systemImage: "xmark")
+                        
+                        if let url = parsed?.value {
+                            Link(destination: url) {
+                                Text(url.formatted())
+                            }
+                        } else {
+                            Text("error finding url")
+                        }
+                    } label: {
+                        Label("IMAGE_INFO", systemImage: "ladybug")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                Text(FilterToPure(doc: parsed?.key ?? ""))
+                    .font(.headline)
+            }
+            .padding(.vertical)
         }
-        .padding(.vertical)
     }
 }
 
-fileprivate func parseArticleImage(_ source: String, articleURL: URL) -> [String?:URL?] {
+func parseArticleImage(_ source: String, articleURL: URL) -> [String?:URL?] {
     var newURL = ""
     var caption: String? = ""
     // New Format

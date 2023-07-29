@@ -41,6 +41,7 @@ struct SCPList: Identifiable {
         
         if !(con.isArticleSaved(id: article.id) ?? false) {
             con.createArticleEntity(article: article)
+            article.downloadImages()
         }
         con.addArticleToListFromId(listid: self.listid, article: article)
     }
