@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let bar = ArticleBar()
     var body: some View {
         TabView {
             VStack {
                 ExploreView()
-                ArticleBar()
+                bar
             }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
             VStack {
                 ListView()
-                ArticleBar()
+                bar
             }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
             VStack {
                 SearchView()
-                ArticleBar()
+                bar
             }.tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }
             VStack {
                 HistoryView()
-                ArticleBar()
+                bar
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
         }
     }
