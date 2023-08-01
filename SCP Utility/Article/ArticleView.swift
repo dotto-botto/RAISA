@@ -16,6 +16,7 @@ struct ArticleView: View {
     @State var presentSheet: Bool = false
     @State var theme: RAISATheme? = nil
     @State var markLatest: Bool? = true
+    @State var disableSubtitle: Bool = false
     
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
@@ -160,7 +161,9 @@ struct ArticleView: View {
                     }
                 }
                 .task {
-                    cromGetAlternateTitle(url: scp.url) { subtitle = $0 }
+                    if !disableSubtitle {
+                        cromGetAlternateTitle(url: scp.url) { subtitle = $0 }
+                    }
                 }
             }
             

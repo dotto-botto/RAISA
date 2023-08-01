@@ -10,71 +10,95 @@ import SwiftUI
 /// View that is displayed at the bottom of the main page.
 /// Can be opened to quickly traverse between the articles displayed on it.
 struct ArticleBar: View {
-    @AppStorage("articleBarIds") var articles = "" // ids separated by whitespace
+    @State var articles: [String] = []
+    @State private var selectedID = ""
     @State private var toArticle = false
-    let con = PersistenceController.shared
+    
+    init() {
+        loadArticles()
+    }
+    
     var body: some View {
-        var selectedID = ""
         HStack {
             Spacer()
-            if !articles.isEmpty {
-                ForEach(articles.components(separatedBy: .whitespaces), id: \.self) { id in
-                    if let articleItem = con.getArticleByID(id: id) {
-                        let article = Article(fromEntity: articleItem)!
-                        Button {
-                            selectedID = id
-                            toArticle = true
-                        } label: {
-                            VStack {
-                                Rectangle()
-                                    .foregroundColor(.accentColor)
-                                    .frame(height: 2)
-                                Text(article.title.replacingOccurrences(of: "SCP-", with: ""))
-                                    .lineLimit(1)
-                                    .foregroundColor(.accentColor)
-                            }
-                            .dynamicTypeSize(.xSmall ... .accessibility1)
+            ForEach(articles, id: \.self) { id in
+                if let articleItem = PersistenceController.shared.getArticleByID(id: id) {
+                    let article = Article(fromEntity: articleItem)!
+                    Button {
+                        selectedID = id
+                        toArticle = true
+                    } label: {
+                        VStack {
+                            Rectangle()
+                                .foregroundColor(.accentColor)
+                                .frame(height: 2)
+                            Text(article.title.replacingOccurrences(of: "SCP-", with: ""))
+                                .lineLimit(1)
+                                .foregroundColor(.accentColor)
                         }
-                        .contextMenu {
-                            Button {
-                                articles = articles.replacingOccurrences(of: " " + id, with: "")
-                                articles = articles.replacingOccurrences(of: id, with: "")
-                            } label: {
-                                Label("REMOVE_FROM_BAR", systemImage: "minus.circle")
-                            }
-                            Button(role: .destructive) {
-                                articles = articles.replacingOccurrences(of: " " + id, with: "")
-                                articles = articles.replacingOccurrences(of: id, with: "")
-                                con.deleteArticleEntity(id: id)
-                            } label: {
-                                Label("DELETE_FROM_BAR", systemImage: "trash")
-                            }
+                        .dynamicTypeSize(.xSmall ... .accessibility1)
+                    }
+                    .contextMenu {
+                        Button {
+                            removeArticle(id: id)
+                        } label: {
+                            Label("REMOVE_FROM_BAR", systemImage: "minus.circle")
+                        }
+                        
+                        Button(role: .destructive) {
+                            removeArticle(id: id)
+                            PersistenceController.shared.deleteArticleEntity(id: id)
+                        } label: {
+                            Label("DELETE_FROM_BAR", systemImage: "trash")
                         }
                     }
                 }
-                Spacer()
             }
+            Spacer()
         }
         .frame(height: articles.isEmpty ? 0 : 40)
         .fullScreenCover(isPresented: $toArticle) {
-            NavigationStack { ArticleTabView(selectedID: selectedID) }
+            NavigationStack { ArticleTabView() }
         }
+        .onAppear {
+            loadArticles()
+        }
+    }
+    
+    func loadArticles() {
+        let data = UserDefaults.standard.object(forKey: "articleBarIds")
+        
+        if let oldIDS = data as? String {
+            self.articles = oldIDS.components(separatedBy: .whitespaces)
+        } else if let newIDS = data as? [String] {
+            self.articles = newIDS
+        }
+    }
+    
+    func removeArticle(id: String) {
+        self.articles = self.articles.filter { $0 != id }
+        UserDefaults.standard.set(self.articles, forKey: "articleBarIds")
     }
 }
 
-@discardableResult
-func addIDToBar(id: String) -> Bool {
+func addIDToBar(id: String) {
     let defaults = UserDefaults.standard
-    guard let barIds = defaults.string(forKey: "articleBarIds") else { return false }
-    guard !barIds.contains(id) else { return false }
     
-    if barIds.isEmpty {
-        defaults.set(id, forKey: "articleBarIds")
-    } else {
-        defaults.set(barIds + " " + id, forKey: "articleBarIds")
-    }
+    var barIds: [String] = {
+        let data = defaults.object(forKey: "articleBarIds")
+        if let oldIDS = data as? String {
+            return oldIDS.components(separatedBy: .whitespaces)
+        } else if let newIDS = data as? [String] {
+            return newIDS
+        } else {
+            return []
+        }
+    }()
     
-    return true
+    guard !barIds.contains(id) else { return }
+    
+    barIds.append(id)
+    defaults.set(barIds, forKey: "articleBarIds")
 }
 
 struct ArticleBar_Previews: PreviewProvider {

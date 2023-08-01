@@ -66,7 +66,7 @@ struct SettingsView: View {
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
                 Toggle("DETECT_COMPONENTS_SETTING", isOn: $showComponentPrompt)
                 Button("REMOVE_BAR_ITEMS_SETTING") {
-                    defaults.set("", forKey: "articleBarIds")
+                    defaults.set([], forKey: "articleBarIds")
                 }
             }
             
