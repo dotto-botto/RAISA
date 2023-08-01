@@ -14,6 +14,7 @@ struct OnlineArticleRow: View {
     var alternateTitle: String? = nil
     var url: URL
     
+    @State var loading: Bool = false
     @State var bookmarkStatus: Bool = false
     @State private var checkmarkStatus: Bool = false
     @State var toArticle: Bool = false
@@ -24,8 +25,10 @@ struct OnlineArticleRow: View {
     var body: some View {
         HStack {
             Button {
+                loading = true
                 cromAPISearchFromURL(query: url) { article in
                     guard article != nil else { return }
+                    loading = false
                     currentArticle = article!
                     observedBool.toggle()
                 }
@@ -44,22 +47,26 @@ struct OnlineArticleRow: View {
 
                 Spacer()
             }
-                        
-            if checkmarkStatus {
-                Image(systemName: "checkmark")
-                    .foregroundColor(.accentColor)
-            }
-            
-            Button {
-                cromAPISearchFromURL(query: url) { article in
-                    guard let article = article else { return }
-                    currentArticle = article
-                    addObservedBool.toggle()
+                 
+            if loading {
+                ProgressView()
+            } else {
+                if checkmarkStatus {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.accentColor)
                 }
-            } label: {
-                Image(systemName: bookmarkStatus ? "bookmark.fill" : "bookmark")
+                
+                Button {
+                    cromAPISearchFromURL(query: url) { article in
+                        guard let article = article else { return }
+                        currentArticle = article
+                        addObservedBool.toggle()
+                    }
+                } label: {
+                    Image(systemName: bookmarkStatus ? "bookmark.fill" : "bookmark")
+                }
+                .onLongPressGesture { showSheet.toggle() }
             }
-            .onLongPressGesture { showSheet.toggle() }
         }
         .onChange(of: observedBool) { _ in
             toArticle = true
@@ -83,11 +90,15 @@ struct OnlineArticleRow: View {
             bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
         }
         .padding(.horizontal, 40)
+        .disabled(loading)
     }
 }
 
 struct OnlineArticleBar_Previews: PreviewProvider {
     static var previews: some View {
-        OnlineArticleRow(title: placeHolderArticle.title, alternateTitle: "The Sculpture", url: placeHolderArticle.url)
+        VStack {
+            OnlineArticleRow(title: placeHolderArticle.title, alternateTitle: "The Sculpture", url: placeHolderArticle.url)
+            OnlineArticleRow(title: "Loading Article", url: placeholderURL, loading: true).padding(.top)
+        }
     }
 }
