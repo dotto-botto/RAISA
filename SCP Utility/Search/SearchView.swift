@@ -116,7 +116,10 @@ struct SearchView: View {
                 }
             }
         }
-        .onChange(of: networkMonitor.isConnected) { connected = $0 }
+        .onChange(of: networkMonitor.isConnected) {
+            connected = $0
+            articles = []
+        }
         .onChange(of: query) { _ in showPrompt = false }
         .onAppear {
             connected = networkMonitor.isConnected
@@ -126,7 +129,8 @@ struct SearchView: View {
 }
 
 struct SearchView_Previews: PreviewProvider {
+    static let networkMonitor = NetworkMonitor()
     static var previews: some View {
-        SearchView()
+        SearchView().environmentObject(networkMonitor)
     }
 }
