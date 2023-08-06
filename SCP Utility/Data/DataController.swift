@@ -729,29 +729,27 @@ extension PersistenceController {
     func createHistory(from history: History, context: NSManagedObjectContext? = nil) {
         let context = context ?? container.viewContext
         
-        Task {
-            let items = PersistenceController.shared.getAllHistory() ?? []
-            if items
-                .compactMap({ History(fromEntity: $0) })
-                .filter({ $0.date.timeIntervalSinceNow > -86400 })
-                .filter({ 0 > $0.date.timeIntervalSinceNow })
-                .map({$0.articletitle})
-                .contains(history.articletitle) {
-                return
-            }
-            
-            let object = HistoryItem(context: context)
-            
-            object.identifier = history.id
-            object.articletitle = history.articletitle
-            object.date = Date()
-            object.thumbnail = history.thumbnail
-            
-            do {
-                try context.save()
-            } catch let error {
-                print(error.localizedDescription)
-            }
+        let items = PersistenceController.shared.getAllHistory() ?? []
+        if items
+            .compactMap({ History(fromEntity: $0) })
+            .filter({ $0.date.timeIntervalSinceNow > -86400 })
+            .filter({ 0 > $0.date.timeIntervalSinceNow })
+            .map({$0.articletitle})
+            .contains(history.articletitle) {
+            return
+        }
+        
+        let object = HistoryItem(context: context)
+        
+        object.identifier = history.id
+        object.articletitle = history.articletitle
+        object.date = Date()
+        object.thumbnail = history.thumbnail
+        
+        do {
+            try context.save()
+        } catch let error {
+            print(error.localizedDescription)
         }
     }
     
