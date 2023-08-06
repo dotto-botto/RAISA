@@ -19,7 +19,7 @@ struct ArticleTable: View {
         VStack {
             Rectangle().frame(height: 1)
             Grid {
-                ForEach(Array(zip(table, table.indices)), id: \.1) { row, _ in
+                ForEach(Array(zip(table, table.indices)), id: \.1) { row, index in
                     // Row
                     HStack {
                         ForEach(Array(zip(row, row.indices)), id: \.1) { cell, _ in
@@ -39,7 +39,10 @@ struct ArticleTable: View {
                                 }
                         }
                     }
-                    Divider()
+                    
+                    if index != table.indices.last {
+                        Divider()
+                    }
                 }
             }
             Rectangle().frame(height: 1)
