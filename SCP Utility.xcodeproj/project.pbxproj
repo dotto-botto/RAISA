@@ -73,7 +73,6 @@
 		F6E9D9252A4342CB0096912F /* HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9242A4342CB0096912F /* HTML.swift */; };
 		F6E9D9272A438AD40096912F /* ArticleAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9262A438AD40096912F /* ArticleAudio.swift */; };
 		F6E9D9292A486B3E0096912F /* RTMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9282A486B3E0096912F /* RTMarkdown.swift */; };
-		F6EA343929F0A58700593378 /* InlineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EA343829F0A58700593378 /* InlineButton.swift */; };
 		F6EFF42129DB7D0200605E40 /* ArticleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EFF42029DB7D0200605E40 /* ArticleInfo.swift */; };
 		F6EFF42329DB81D200605E40 /* ArticleInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EFF42229DB81D200605E40 /* ArticleInfoView.swift */; };
 		F6EFF42629DF879500605E40 /* Collapsible.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EFF42529DF879500605E40 /* Collapsible.swift */; };
@@ -157,7 +156,6 @@
 		F6E9D9242A4342CB0096912F /* HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTML.swift; sourceTree = "<group>"; };
 		F6E9D9262A438AD40096912F /* ArticleAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleAudio.swift; sourceTree = "<group>"; };
 		F6E9D9282A486B3E0096912F /* RTMarkdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMarkdown.swift; sourceTree = "<group>"; };
-		F6EA343829F0A58700593378 /* InlineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineButton.swift; sourceTree = "<group>"; };
 		F6EFF42029DB7D0200605E40 /* ArticleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleInfo.swift; sourceTree = "<group>"; };
 		F6EFF42229DB81D200605E40 /* ArticleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleInfoView.swift; sourceTree = "<group>"; };
 		F6EFF42529DF879500605E40 /* Collapsible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collapsible.swift; sourceTree = "<group>"; };
@@ -405,7 +403,6 @@
 				F6EFF42529DF879500605E40 /* Collapsible.swift */,
 				F608B71829E09D8600B583EF /* ArticleImage.swift */,
 				F6E1FF2229E467400030DF41 /* ArticleTable.swift */,
-				F6EA343829F0A58700593378 /* InlineButton.swift */,
 				F64BEEC429F9C80C00AEB15B /* TabViewComponent.swift */,
 				F6E9D9262A438AD40096912F /* ArticleAudio.swift */,
 				F6E9D9282A486B3E0096912F /* RTMarkdown.swift */,
@@ -522,7 +519,6 @@
 				F6EFF42629DF879500605E40 /* Collapsible.swift in Sources */,
 				F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */,
 				F66AD54E2A33F211003DF992 /* AboutView.swift in Sources */,
-				F6EA343929F0A58700593378 /* InlineButton.swift in Sources */,
 				F6E1FF2529E78C540030DF41 /* ResumeCard.swift in Sources */,
 				F6DFECDA2990A2FC002C3F1A /* ArticleRow.swift in Sources */,
 				F6E9D91E2A3683290096912F /* EditorView.swift in Sources */,

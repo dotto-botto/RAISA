@@ -89,7 +89,7 @@ struct RAISAText: View {
 }
 
 /// Parse text that has already been filtered.
-func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem] {
+func parseRT(_ text: String) -> [RTItem] {
     var source = text
     var items: [RTItem] = []
     let list = source.components(separatedBy: .newlines)
@@ -184,11 +184,6 @@ func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem
             skipCount += audio.components(separatedBy: .newlines).count - 1
             audioIndex += 1
             
-        } else if item.contains("[[[") {
-            // terniary operator to fix crash when the closing tag is on a newline
-            items.append(.inlinebuton(item.contains("]]]") ? item : source.slice(with: item, and: "]]]")))
-        } else if item.contains("[") && item.contains("http") && !(stop ?? false) {
-            items.append(.inlinebuton(item))
         } else {
             items.append(.text(item))
         }
@@ -285,7 +280,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         // Links that dont start with http (SCP-7579)
         for match in matches(for: #"\[\*?\/.*? .*?\]"#, in: text) {
-            if let url = matches(for: #"\*?\/.*?(?= )"#, in: match).first, let content = matches(for: "(?<= ).*?]", in: match).first {
+            if let url = matches(for: #"\*?\/.*?(?= )"#, in: match).first?.replacing(/^\*/, with: ""), let content = matches(for: "(?<= ).*?]", in: match).first {
                 // TODO: Fix for international branches
                 text = text.replacingOccurrences(of: match, with: "[\(content)(https://scp-wiki.wikidot.com\(url))")
             }

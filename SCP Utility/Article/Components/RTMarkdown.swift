@@ -12,11 +12,13 @@ import MarkdownUI
 struct RTMarkdown: View {
     @State var article: Article
     @State var text: String
+    @State private var nextArticle: Article = placeHolderArticle
+    @State private var showSheet: Bool = false
     
     @AppStorage("focusedCurrentText") var focusedCurrentText: String = ""
     var body: some View {
         VStack {
-            Markdown(colorToButton(text: text))
+            Markdown(parseLink(colorToButton(text: text)))
                 .markdownTextStyle(\.text) {
                     if let num = findSize() {
                         FontSize(num * 15)
@@ -25,6 +27,11 @@ struct RTMarkdown: View {
                 .markdownTextStyle(\.code) {
                     ForegroundColor(findTint() ?? .primary)
                 }
+                .environment(\.openURL, OpenURLAction { url in
+                    guard url.formatted().contains("scp") else { return .systemAction }
+                    callAPI(url: url)
+                    return .handled
+                })
             
             if focusedCurrentText == text && focusedCurrentText != "" {
                 HStack {
@@ -41,8 +48,12 @@ struct RTMarkdown: View {
             article.setScroll(newText)
             focusedCurrentText = newText ?? ""
         }
-        .task {
-            focusedCurrentText = article.currenttext ?? ""
+        .task { focusedCurrentText = article.currenttext ?? "" }
+        .onChange(of: nextArticle.id) { _ in
+            showSheet = true
+        }
+        .fullScreenCover(isPresented: $showSheet) {
+            NavigationStack { ArticleView(scp: nextArticle, dismissText: article.title, markLatest: false) }
         }
         .id(text)
     }
@@ -85,6 +96,58 @@ extension RTMarkdown {
         }
         
         return nil
+    }
+    
+    private func callAPI(url: URL) {
+        cromAPISearchFromURL(query: url) { article in
+            guard let article = article else { return }
+            nextArticle = article
+        }
+    }
+    
+    private func parseLink(_ content: String) -> String {
+        var doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
+            .replacingOccurrences(of: "[[[/", with: "[[[") // some articles put a slash in front of the link
+        
+        let baseURL: String = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage"))?.toURL().formatted() ?? "https://scp-wiki.wikidot.com/"
+        
+        for _ in doc.indicesOf(string: "[[[") {
+            let element = doc.slice(with: "[[[", and: "]]]")
+            if var link = element.slice(from: "[[[", to: "|"), let text = element.slice(from: "|", to: "]]]") {
+                link = link
+                    .trimmingCharacters(in: .whitespaces)
+                    .replacingOccurrences(of: " ", with: "-")
+                if link.contains("http") {
+                    doc = doc.replacingOccurrences(
+                        of: element,
+                        with: "[\(text)](\(link))"
+                    )
+                } else {
+                    doc = doc.replacingOccurrences(
+                        of: element,
+                        with: "[\(text)](\(baseURL)/\(link))"
+                    )
+                }
+            } else if let combined = element.slice(from: "[[[", to: "]]]") {
+                doc = doc.replacingOccurrences(
+                    of: element,
+                    with: "[\(combined)](\(baseURL)/\(combined.replacingOccurrences(of: " ", with: "-")))"
+                )
+            }
+        }
+
+        for match in matches(for: #"\[(\*|)http.*?]"#, in: doc) {
+            if let link = match.slice(from: "[", to: " "), let text = doc.slice(from: link + " ", to: "]") {
+                doc = doc.replacingOccurrences(
+                    of: "[\(link) \(text)]",
+                    with: "[\(text)](\(link))"
+                )
+            }
+        }
+
+        doc = doc.replacingOccurrences(of: "\n", with: "")
+        doc = doc.replacingOccurrences(of: "*http", with: "http")
+        return doc
     }
 }
 
