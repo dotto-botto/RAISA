@@ -26,11 +26,19 @@ struct OnlineArticleRow: View {
         HStack {
             Button {
                 loading = true
-                cromAPISearchFromURL(query: url) { article in
-                    guard article != nil else { return }
+                if bookmarkStatus {
+                    guard let item = PersistenceController.shared.getArticleByURL(url: url) else { return }
+                    guard let article = Article(fromEntity: item) else { return }
                     loading = false
-                    currentArticle = article!
+                    currentArticle = article
                     observedBool.toggle()
+                } else {
+                    cromAPISearchFromURL(query: url) { article in
+                        guard article != nil else { return }
+                        loading = false
+                        currentArticle = article!
+                        observedBool.toggle()
+                    }
                 }
             } label: {
                 if let alt = alternateTitle {
