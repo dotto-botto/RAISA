@@ -13,20 +13,42 @@ struct RTMarkdown: View {
     @State var article: Article
     @State var text: String
     
+    @AppStorage("focusedCurrentText") var focusedCurrentText: String = ""
     var body: some View {
-        Markdown(colorToButton(text: text))
-            .markdownTextStyle(\.text) {
-                if let num = findSize() {
-                    FontSize(num * 15)
+        VStack {
+            Markdown(colorToButton(text: text))
+                .markdownTextStyle(\.text) {
+                    if let num = findSize() {
+                        FontSize(num * 15)
+                    }
                 }
+                .markdownTextStyle(\.code) {
+                    ForegroundColor(findTint() ?? .primary)
+                }
+            
+            if focusedCurrentText == text && focusedCurrentText != "" {
+                HStack {
+                    Text("BOOKMARKED")
+                    Image(systemName: "bookmark.fill")
+                }
+                .foregroundColor(article.findTheme()?.themeAccent ?? .accentColor)
+                .padding(.vertical, 3)
             }
-            .markdownTextStyle(\.code) {
-                ForegroundColor(findTint() ?? .primary)
-            }
-            .textSelection(.enabled)
-            .id(text)
+        }
+        .textSelection(.enabled)
+        .onTapGesture(count: 2) {
+            let newText: String? = focusedCurrentText == text ? nil : text
+            article.setScroll(newText)
+            focusedCurrentText = newText ?? ""
+        }
+        .task {
+            focusedCurrentText = article.currenttext ?? ""
+        }
+        .id(text)
     }
-    
+}
+
+extension RTMarkdown {
     private func findTint() -> Color? {
         guard let color = self.text.slice(from: "## ##", to: "|") ?? self.text.slice(from: "##", to: "|") else { return nil }
         if color.contains(/^#?([[:xdigit:]]{6}|[[:xdigit:]]{3})$/) {

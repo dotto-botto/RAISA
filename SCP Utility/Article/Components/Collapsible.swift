@@ -16,10 +16,9 @@ struct Collapsible: View {
     var show: String
     var hide: String
     var content: String
-    var proxy: ScrollViewProxy? = nil
     @State var showed: Bool
 
-    init(article: Article, text: String, proxy: ScrollViewProxy? = nil) {
+    init(article: Article, text: String) {
         let content = text.slice(from: "]]", to: "[[/collapsible]]") ?? text.slice(from: "]]", to: "[[/Collapsible]]") ?? "no content"
 
         let show = text.slice(from: "show=\"", to: "\"") ?? "+ show block"
@@ -31,9 +30,8 @@ struct Collapsible: View {
         self.show = show
         self.hide = hide
         self.content = content
-        self.proxy = proxy
         
-        self._showed = State(initialValue: false)
+        self._showed = State(initialValue: content.contains(article.currenttext ?? "¡™£¢∞§¶•ªº–≠"))
     }
 
     var body: some View {
@@ -46,14 +44,6 @@ struct Collapsible: View {
             }
             if showed {
                 RAISAText(article: article, text: content)
-                    .onTextLoad {
-                        guard let id = article.currenttext else { return }
-                        
-                        if content.contains(id) && UserDefaults.standard.bool(forKey: "autoScroll") {
-                            showed = true
-                            proxy?.scrollTo(id)
-                        }
-                    }
                 
                 HStack {
                     Text("BLOCK_END_INDICATOR").foregroundColor(.secondary)

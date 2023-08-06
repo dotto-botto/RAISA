@@ -88,13 +88,6 @@ struct RAISAText: View {
     }
 }
 
-extension RAISAText {
-    func onTextLoad(perform: (() -> Void)? = nil) -> RAISAText {
-        actionToPerform = perform
-        return self
-    }
-}
-
 /// Parse text that has already been filtered.
 func parseRT(_ text: String, stopRecursiveFunction stop: Bool? = nil) -> [RTItem] {
     var source = text

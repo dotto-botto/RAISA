@@ -19,7 +19,7 @@ enum RTItem: Hashable {
     case html(_ raw: String) // raw html including or excluding the [[html]] tags
     case audio(_ raw: String)
     
-    func toCorrespondingView(article: Article, proxy: ScrollViewProxy? = nil) -> AnyView {
+    func toCorrespondingView(article: Article) -> AnyView {
         switch self {
         case .text(let str):
             return AnyView(RTMarkdown(article: article, text: str))
@@ -32,7 +32,7 @@ enum RTItem: Hashable {
         case .tabview(let str):
             return AnyView(TabViewComponent(article: article, text: str))
         case .collapsible(let str):
-            return AnyView(Collapsible(article: article, text: str, proxy: proxy))
+            return AnyView(Collapsible(article: article, text: str))
         case .image(let str):
             return AnyView(ArticleImage(article: article, content: str))
         case .table(let str):

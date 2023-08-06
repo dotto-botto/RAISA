@@ -216,6 +216,7 @@
 "CV_FOLD" = "Fold";
 "CV_UNFOLD" = "Unfold";
 "FOOTNOTE_MARK%lld" = "[fn.%lld]";
+"BOOKMARKED" = "Bookmarked";
 
 // Article Bar + Row
 "ADD_TO_BAR" = "Add to Bar";

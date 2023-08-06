@@ -314,6 +314,9 @@ struct ArticleView: View {
             }
         }
         .tint(theme?.themeAccent)
+        .onDisappear {
+            defaults.set("", forKey: "focusedCurrentText")
+        }
     }
 }
 
