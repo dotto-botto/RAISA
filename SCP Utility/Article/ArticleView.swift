@@ -207,14 +207,14 @@ struct ArticleView: View {
             }
 
             ToolbarItem {
-                Button {
-                    showNext = true
-                } label: {
-                    if nextArticle != nil {
+                if nextArticle != nil {
+                    Button {
+                        showNext = true
+                    } label: {
                         Image(systemName: "chevron.right")
                     }
+                    .frame(width: 44.0, height: 44.0)
                 }
-                .frame(width: 44.0, height: 44.0)
             }
 
             // Bottom
