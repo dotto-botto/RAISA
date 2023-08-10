@@ -375,7 +375,7 @@ func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALangu
     let baseTitle = url.formatted().replacingOccurrences(of: fromLang.toURL().formatted(), with: "")
     let newURL = URL(string: toLang.toURL().formatted() + baseTitle)!
     
-    cromAPISearchFromURL(query: newURL) { article in completion(article) }
+    raisaSearchFromURL(query: newURL) { completion($0) }
 }
 
 func cromGetAlternateTitle(url: URL, completion: @escaping (String) -> Void) {
@@ -432,4 +432,30 @@ func raisaGetTags(url: URL, completion: @escaping ([String]) -> Void) {
         }
     }
     task.resume()
+}
+
+/// Search core data for article, fallback using crom
+func raisaSearchFromURL(query: URL, completion: @escaping (Article?) -> Void) {
+    let con = PersistenceController.shared
+    
+    if con.isArticleSaved(url: query) {
+        guard let item = con.getArticleByURL(url: query) else { completion(nil); return }
+        guard let article = Article(fromEntity: item) else { completion(nil); return }
+        completion(article)
+    } else {
+        cromAPISearchFromURL(query: query) { completion($0) }
+    }
+}
+
+func raisaGetArticleFromTitle(title: String, language: RAISALanguage = .english, completion: @escaping (Article?) -> Void) {
+    let con = PersistenceController.shared
+    
+    if let articleitem = con.getArticleByTitle(title: title),
+       let article = Article(fromEntity: articleitem),
+       article.findLanguage() == language
+    {
+        completion(article)
+    } else {
+        cromGetSourceFromTitle(title: title, language: language) { completion($0) }
+    }
 }

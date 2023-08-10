@@ -37,7 +37,8 @@ struct HistoryRow: View {
         .onTapGesture {
             if !callingAPI {
                 callingAPI = true
-                cromGetSourceFromTitle(title: item.articletitle) { article in
+                raisaGetArticleFromTitle(title: item.articletitle) {
+                    guard let article = $0 else { return }
                     associatedArticle = article
                     gotCrom = true
                     callingAPI = false

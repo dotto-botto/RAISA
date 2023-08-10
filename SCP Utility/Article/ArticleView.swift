@@ -96,7 +96,9 @@ struct ArticleView: View {
                 dismiss()
             }
             
-            con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
+            if defaults.bool(forKey: "trackHistory") {
+                con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
+            }
             
             if markLatest ?? false {
                 defaults.set(scp.url, forKey: "lastReadUrl")

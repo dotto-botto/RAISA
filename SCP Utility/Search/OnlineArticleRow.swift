@@ -26,19 +26,11 @@ struct OnlineArticleRow: View {
         HStack {
             Button {
                 loading = true
-                if bookmarkStatus {
-                    guard let item = PersistenceController.shared.getArticleByURL(url: url) else { return }
-                    guard let article = Article(fromEntity: item) else { return }
+                raisaSearchFromURL(query: url) {
+                    guard let article = $0 else { return }
                     loading = false
                     currentArticle = article
                     observedBool.toggle()
-                } else {
-                    cromAPISearchFromURL(query: url) { article in
-                        guard article != nil else { return }
-                        loading = false
-                        currentArticle = article!
-                        observedBool.toggle()
-                    }
                 }
             } label: {
                 if let alt = alternateTitle {
@@ -65,7 +57,7 @@ struct OnlineArticleRow: View {
                 }
                 
                 Button {
-                    cromAPISearchFromURL(query: url) { article in
+                    raisaSearchFromURL(query: url) { article in
                         guard let article = article else { return }
                         currentArticle = article
                         addObservedBool.toggle()

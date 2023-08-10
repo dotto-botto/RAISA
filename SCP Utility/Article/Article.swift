@@ -255,7 +255,7 @@ func findNextArticle(currentTitle title: String, completion: @escaping (Article?
         key = String(format: "%03d", num + 1)
         
         let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
-        cromGetSourceFromTitle(title: key, language: userIntBranch) { article in
+        raisaGetArticleFromTitle(title: key, language: userIntBranch) { article in
             completion(article)
         }
     } else { completion(nil) }

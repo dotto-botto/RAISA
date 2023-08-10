@@ -99,7 +99,7 @@ extension RTMarkdown {
     }
     
     private func callAPI(url: URL) {
-        cromAPISearchFromURL(query: url) { article in
+        raisaSearchFromURL(query: url) { article in
             guard let article = article else { return }
             nextArticle = article
         }

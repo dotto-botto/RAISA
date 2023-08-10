@@ -30,7 +30,8 @@ struct TopCard: View {
                 Button {
                     let userIntBranch = RAISALanguage(rawValue: defaults.integer(forKey: "chosenRaisaLanguage")) ?? .english
                     
-                    cromGetSourceFromTitle(title: title, language: userIntBranch) { art in
+                    raisaGetArticleFromTitle(title: title, language: userIntBranch) {
+                        guard let art = $0 else { return }
                         article = art
                         showArticle = true
                     }

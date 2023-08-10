@@ -8,46 +8,48 @@
 import SwiftUI
 import Kingfisher
 
-/// ExploreView card that displays The last read article from core data.
+/// ExploreView card that displays The last read article.
 struct ResumeCard: View {
-    @State var article: Article = placeHolderArticle
+    var article: Article
     
     init?() {
         guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { return nil }
         
-        if let entity = PersistenceController.shared.getArticleByURL(url: url) {
-            guard let scp = Article(fromEntity: entity) else { return }
-            _article = State(initialValue: scp)
+        var article: Article? = nil
+        raisaSearchFromURL(query: url) {
+            guard let scp = $0 else { return }
+            article = scp
         }
+        
+        guard article != nil else { return nil }
+        self.article = article!
     }
     
     @State var showSheet: Bool = false
     var body: some View {
         VStack {
-            if article.title != placeHolderArticle.title {
-                HStack {
-                    Text("RESUME_CARD")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .padding(.leading)
-                    Spacer()
-                }
+            HStack {
+                Text("RESUME_CARD")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .padding(.leading)
                 Spacer()
-                HStack {
-                    Text(article.title)
-                        .font(.monospaced(.largeTitle)())
-                        .lineLimit(2)
-                    Image(systemName: "arrow.forward")
-                }
-                .onTapGesture {
-                    showSheet = true
-                }
+            }
+            Spacer()
+            HStack {
+                Text(article.title)
+                    .font(.monospaced(.largeTitle)())
+                    .lineLimit(2)
+                Image(systemName: "arrow.forward")
+            }
+            .onTapGesture {
+                showSheet = true
             }
         }
         .frame(maxWidth: .infinity, maxHeight: 250)
         .padding(10)
         .background {
-            KFImage(article.thumbnail == placeHolderArticle.thumbnail ? nil : article.thumbnail)
+            KFImage(article.thumbnail)
                 .resizable()
                 .scaledToFill()
                 .opacity(0.5)
@@ -55,15 +57,6 @@ struct ResumeCard: View {
         .clipped()
         .fullScreenCover(isPresented: $showSheet) {
             NavigationStack { ArticleView(scp: article) }
-        }
-        .onAppear {
-            if article.title == placeHolderArticle.title {
-                guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { return }
-                cromAPISearchFromURL(query: url) { scp in
-                    guard let scp = scp else { return }
-                    article = scp
-                }
-            }
         }
     }
 }
