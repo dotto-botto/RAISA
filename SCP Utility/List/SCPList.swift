@@ -15,6 +15,15 @@ struct SCPList: Identifiable {
     var listid: String
     var contents: [String]? // article id's
     var subtitle: String?
+    
+    /// init with every saved article.
+    init() {
+        self.id = UUID().uuidString
+        self.listid = String(localized: "ALL_SAVED_ARTICLES")
+        self.contents = con.getAllArticles()?
+            .compactMap { Article(fromEntity: $0) }
+            .map { $0.id } ?? []
+    }
 
     init(id: String = UUID().uuidString, listid: String) {
         self.id = id
