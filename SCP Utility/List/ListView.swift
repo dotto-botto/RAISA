@@ -126,17 +126,15 @@ struct OneListView: View {
                 .padding(.horizontal, 30)
                 
             } else {
-                List {
-                    ForEach(articles) { article in
-                        let button = Button(role: .destructive) {
-                            list.removeContent(id: article.id)
-                        } label: {
-                            Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+                List(articles) { article in
+                    ArticleRow(passedSCP: article)
+                        .swipeActions(edge: .leading) {
+                            Button(role: .destructive) {
+                                list.removeContent(id: article.id)
+                            } label: {
+                                Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+                            }
                         }
-                        
-                        ArticleRow(passedSCP: article)
-                            .swipeActions(edge: .leading) { button }
-                    }
                 }
             }
         }

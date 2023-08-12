@@ -171,7 +171,7 @@
 
 // MARK: - List View
 "LIST_TITLE" = "Lists";
-"NO_ARTICLES_IN_LIST" = "There are no articles in this list.";
+"NO_ARTICLES_IN_LIST" = "No Articles Found";
 "CHANGE_LIST_TITLE" = "Change Title";
 "CHANGE_LIST_SUBTITLE" = "Change Subtitle";
 "NEW_LIST_PROMPT" = "Tap the \"+\" to make a new list";

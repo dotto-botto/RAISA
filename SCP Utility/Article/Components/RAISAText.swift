@@ -17,55 +17,37 @@ struct RAISAText: View {
     @State private var filtered: Bool = false
     @State private var filteredText: String = ""
     @State private var itemList: [RTItem] = []
-    @State private var actionToPerform: (() -> Void)? = nil
     @State private var currentId: String?
-
-    init(article: Article) {
-        self._article = State(initialValue: article)
-    }
-    
-    init(article: Article, text: String) {
-        self._article = State(initialValue: article)
-        self._text = State(initialValue: text)
-    }
     
     var body: some View {
-        let defaults = UserDefaults.standard
         ScrollViewReader { value in
             ScrollView {
                 VStack(alignment: .leading, spacing: 5) {
                     if !filtered {
                         ProgressView()
                     } else {
-                        Group {
-                            if #available(iOS 17, *) {
-//                                ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-//                                    item.toCorrespondingView(article: article)
-//                                        .id(item)
+                        if #available(iOS 17, *) {
+//                            ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+//                                item.toCorrespondingView(article: article)
+//                                    .id(item)
+//                            }
+//                            .scrollPosition(id: $currentId)
+//                            .onDisappear {
+//                                article.setScroll(currentId)
+//                            }
+//                            .onAppear {
+//                                withAnimation {
+//                                    currentId = article.currenttext
 //                                }
-//                                .scrollPosition(id: $currentId)
-//                                .onDisappear {
-//                                    article.setScroll(currentId)
-//                                }
-//                                .onAppear {
-//                                    withAnimation {
-//                                        currentId = article.currenttext
-//                                    }
-//                                }
-                            } else {
-                                ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-                                    item.toCorrespondingView(article: article)
-                                }
-                                .onAppear {
-                                    if article.currenttext != nil && defaults.bool(forKey: "autoScroll") {
-                                        value.scrollTo(article.currenttext!)
-                                    }
-                                }
+//                            }
+                        } else {
+                            ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+                                item.toCorrespondingView(article: article)
                             }
-                        }
-                        .onAppear {
-                            if actionToPerform != nil {
-                                actionToPerform!()
+                            .onAppear {
+                                if article.currenttext != nil && UserDefaults.standard.bool(forKey: "autoScroll") {
+                                    value.scrollTo(article.currenttext!)
+                                }
                             }
                         }
                     }
@@ -439,7 +421,9 @@ func FilterToPure(doc: String) -> String {
         "__",
         "[[/collapsible]]",
         "[[footnoteblock]]",
-        "[[/a]]"
+        "[[/a]]",
+        "[[[",
+        "]]]",
     ]
     
     for string in stringDeletes {
