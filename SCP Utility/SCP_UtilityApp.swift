@@ -31,7 +31,6 @@ struct SCP_UtilityApp: App {
                             "defaultOpen" : 0,
                             "storeIcloud" : true,
                             "autoScroll" : true,
-                            "showComponentPrompt" : true,
                             "articleBarIds" : "",
                             "showAVWallpaper" : true,
                         ])

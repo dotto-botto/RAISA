@@ -15,7 +15,6 @@ struct SettingsView: View {
     @AppStorage("defaultOpen") var defaultOpen = 1
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("autoScroll") var autoScroll = true
-    @AppStorage("showComponentPrompt") var showComponentPrompt = true
     @AppStorage("showAVWallpaper") var showAVWallpaper = true
     
     @State private var historyConf = false
@@ -64,7 +63,6 @@ struct SettingsView: View {
                     Text("BOTH").tag(2)
                 }
                 Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
-                Toggle("DETECT_COMPONENTS_SETTING", isOn: $showComponentPrompt)
                 Button("REMOVE_BAR_ITEMS_SETTING") {
                     defaults.set([], forKey: "articleBarIds")
                 }
@@ -97,6 +95,7 @@ struct SettingsView: View {
             // Remove deleted userdefaults values
             defaults.removeObject(forKey: "articleViewSetting")
             defaults.removeObject(forKey: "showImages")
+            defaults.removeObject(forKey: "showComponentPrompt")
         }
     }
 }

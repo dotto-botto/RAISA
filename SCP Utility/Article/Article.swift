@@ -120,23 +120,6 @@ struct Article: Identifiable, Codable {
         return con.isArticleSaved(url: self.url)
     }
     
-    /// Checks page source for unsupported components and returns the components.
-    func findForbiddenComponents() -> [String]? {
-        let forbidden: [String:String] = [
-            "Audio Players": "[[include :snippets:html5player",
-            "Math" : "[[math",
-        ]
-        
-        var values: [String] = []
-        for key in forbidden.keys {
-            if self.pagesource.contains(forbidden[key]!) {
-                values.append(key)
-            }
-        }
-        if values == [] { return nil }
-        else { return values }
-    }
-    
     /// Checks page source for content warnings and returns the warnings.
     /// https://scp-wiki.wikidot.com/component:adult-content-warning
     func findContentWarnings() -> [String]? {

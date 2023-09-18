@@ -22,46 +22,22 @@ struct ArticleView: View {
     @State private var showComments: Bool = false
     @State private var bookmarkStatus: Bool = false
     @State private var checkmarkStatus: Bool = false
-    @State private var forbidden: Bool = true
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
     @State private var showFootnoteView: Bool = false
-    @State private var forbiddenComponents: [String] = []
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
     @State private var isFragmented: Bool = true
     @State private var subtitle: String = ""
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
-    @AppStorage("showComponentPrompt") var showComponentPrompt = true
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
         let theme: RAISATheme? = theme ?? scp.findTheme()
         
         VStack(alignment: .leading) {
-            if forbidden && showComponentPrompt {
-                VStack {
-                    Text("AV_UNSUPPORTED")
-                        .foregroundColor(.secondary)
-                        .font(.largeTitle)
-                        .padding(.bottom, 20)
-                    
-                    Text("AV_UNSUPPORTED_GUIDE").foregroundColor(.secondary)
-                    ForEach(forbiddenComponents, id: \.self) { comp in
-                        Text(comp).foregroundColor(.secondary)
-                    }
-                    
-                    Button("AV_DISPLAY_AS_IS") {
-                        forbidden = false
-                    }
-                    .padding(.vertical, 10)
-                    
-                    Text("AV_USER_TIRED_OF_WARNING").foregroundColor(.secondary)
-                }
-            }
-            
-            if !forbidden && containsExplicitContent {
+            if containsExplicitContent {
                 VStack {
                     Text("AV_SENSITIVE")
                         .foregroundColor(.secondary)
@@ -75,15 +51,12 @@ struct ArticleView: View {
                     Button("CONTINUE") {
                         containsExplicitContent = false
                     }
-                    .padding(.top, 10)
-                    
-                    Button("BACK") {
-                        dismiss()
-                    }
+                    .padding(.top, 20)
+                    .frame(height: 44.0)
                 }
             }
             
-            if !forbidden && !containsExplicitContent && !isFragmented {
+            if !containsExplicitContent && !isFragmented {
                 RAISAText(article: scp)
             }
         }
@@ -113,15 +86,6 @@ struct ArticleView: View {
                 }
             } else {
                 isFragmented = false
-            }
-            
-            if forbidden {
-                if let list = scp.findForbiddenComponents(), showComponentPrompt {
-                    forbiddenComponents = list
-                    forbidden = true
-                } else {
-                    forbidden = false
-                }
             }
             
             if containsExplicitContent {
@@ -286,6 +250,7 @@ struct ArticleView: View {
                             }
                         }
                         .disabled(!scp.pagesource.contains("[[footnote]]"))
+                        .disabled(containsExplicitContent)
                         
                         Button {
                             showBackground.toggle()
