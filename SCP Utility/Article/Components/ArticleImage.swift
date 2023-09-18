@@ -42,10 +42,12 @@ struct ArticleImage: View {
                     .resizable()
                     .scaledToFit()
                     .background {
-                        Rectangle()
-                            .cornerRadius(8)
-                            .foregroundColor(.white)
-                            .opacity(0.6)
+                        if article.findTheme() == nil {
+                            Rectangle()
+                                .cornerRadius(8)
+                                .foregroundColor(.white)
+                                .opacity(0.6)
+                        }
                     }
                     .contextMenu {
                         Menu {
@@ -71,10 +73,12 @@ struct ArticleImage: View {
                         .scaledToFit()
                 }
                 .background {
-                    Rectangle()
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
-                        .opacity(0.6)
+                    if article.findTheme() == nil {
+                        Rectangle()
+                            .cornerRadius(8)
+                            .foregroundColor(.white)
+                            .opacity(0.6)
+                    }
                 }
                 .contextMenu {
                     Menu {
