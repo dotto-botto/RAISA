@@ -10,7 +10,6 @@ import SwiftUI
 /// Struct that presents an ArticleInfo struct to the user, along with licensing information about the article.
 struct ArticleInfoView: View {
     @State var article: Article
-    @State var subtitle: String? = nil
     @State var info: ArticleInfo = ArticleInfo(rating: 0, tags: [], createdAt: Date(), createdBy: "", userRank: 0, userTotalRating: 0, userMeanRating: 0, userPageCount: 0)
     @State private var loading: Bool = true
     
@@ -33,8 +32,8 @@ struct ArticleInfoView: View {
                         .bold()
                         .padding(.bottom, 3)
                     
-                    if subtitle != nil {
-                        Text(subtitle!)
+                    if let subtitle = article.subtitle {
+                        Text(subtitle)
                             .font(.system(size: 12))
                             .padding(.horizontal, 10)
                             .padding(.bottom, 3)
@@ -130,6 +129,6 @@ struct ArticleInfoView: View {
 
 struct ArticleInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleInfoView(article: placeHolderArticle, subtitle: "The best subtitle in the world! This subtitle also happens to be very long :(")
+        ArticleInfoView(article: placeHolderArticle)
     }
 }

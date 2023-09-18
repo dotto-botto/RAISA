@@ -14,6 +14,7 @@ struct Article: Identifiable, Codable {
     let id: String
     
     let title: String
+    var subtitle: String? = nil
     var pagesource: String
     var url: URL
     var thumbnail: URL? = nil
@@ -32,6 +33,7 @@ struct Article: Identifiable, Codable {
     ///   - clearance: Is different for every scp, and is not used at all across the app.
     init(
         title: String,
+        subtitle: String? = nil,
         pagesource: String,
         url: URL,
         thumbnail: URL? = nil,
@@ -44,6 +46,7 @@ struct Article: Identifiable, Codable {
     ) {
         self.id = UUID().uuidString
         self.title = title
+        self.subtitle = subtitle
         self.pagesource = pagesource
         self.url = url
         self.thumbnail = thumbnail ?? nil
@@ -63,6 +66,7 @@ struct Article: Identifiable, Codable {
         
         self.id = id
         self.title = entityTitle
+        self.subtitle = entity.subtitle
         self.pagesource = entityPagesource
         self.url = entity.url ?? placeholderURL // backwards compatability
         self.thumbnail = entity.thumbnail
@@ -181,6 +185,11 @@ struct Article: Identifiable, Codable {
         }
         
         self.completed = bool
+    }
+    
+    mutating func setSubtitle(to subtitle: String) {
+        self.subtitle = subtitle
+        con.updateSubtitle(articleid: self.id, to: subtitle)
     }
     
     func isComplete() -> Bool {

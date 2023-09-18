@@ -16,7 +16,6 @@ struct ArticleView: View {
     @State var presentSheet: Bool = false
     @State var theme: RAISATheme? = nil
     @State var markLatest: Bool? = true
-    @State var disableSubtitle: Bool = false
     
     @State private var showInfo: Bool = false
     @State private var showComments: Bool = false
@@ -28,7 +27,6 @@ struct ArticleView: View {
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
     @State private var isFragmented: Bool = true
-    @State private var subtitle: String = ""
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     let defaults = UserDefaults.standard
@@ -106,7 +104,7 @@ struct ArticleView: View {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
         .sheet(isPresented: $showInfo) {
-            ArticleInfoView(article: scp, subtitle: subtitle)
+            ArticleInfoView(article: scp)
         }
         .sheet(isPresented: $showComments) {
             CommentsView(article: scp)
@@ -122,13 +120,13 @@ struct ArticleView: View {
             ToolbarItem(placement: .principal) {
                 VStack {
                     Text(scp.title).font(.headline)
-                    if subtitle != "" {
-                        Text(containsExplicitContent ? "-" : subtitle).font(.subheadline)
+                    if scp.subtitle != nil && scp.subtitle != "" {
+                        Text(containsExplicitContent ? "-" : scp.subtitle!).font(.subheadline)
                     }
                 }
                 .task {
-                    if !disableSubtitle {
-                        cromGetAlternateTitle(url: scp.url) { subtitle = $0 }
+                    if scp.subtitle == nil {
+                        cromGetAlternateTitle(url: scp.url) { scp.setSubtitle(to: $0) }
                     }
                 }
             }

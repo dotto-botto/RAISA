@@ -19,7 +19,7 @@ struct ArticleTabView: View {
         
         TabView {
             ForEach(articles) { article in
-                ArticleView(scp: article, disableSubtitle: true)
+                ArticleView(scp: article)
                     .contentShape(Rectangle()).gesture(DragGesture())
             }
         }

@@ -37,6 +37,17 @@ struct ArticleRow: View {
                         Text(passedSCP.title)
                             .foregroundColor(.primary)
                             .lineLimit(1)
+                        
+                        if let subtitle = passedSCP.subtitle, subtitle != "" {
+                            Rectangle()
+                                .frame(width: 5, height: 1)
+                                .foregroundColor(.accentColor)
+                            
+                            Text(subtitle)
+                                .foregroundColor(.primary)
+                                .lineLimit(1)
+                        }
+                        
                         if passedSCP.isComplete() {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.accentColor)
