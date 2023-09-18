@@ -64,6 +64,14 @@ struct TabViewComponent: View {
             contentValues = content.map { $0.1 }
             
             currentKey = contentKeys.first ?? ""
+            
+            // Switch tab if text is bookmarked in tab
+            for item in content {
+                if let currenttext = article.currenttext, item.1.contains(currenttext) {
+                    currentKey = item.0
+                    break
+                }
+            }
         }
     }
 }
