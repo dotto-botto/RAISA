@@ -12,7 +12,9 @@ struct ACSCellView: View {
     @State var componentClass: ArticleAttribute
     @State var customIcon: [String:URL?] = [:]
     
-    init(_ attr: ArticleAttribute) {
+    init?(_ attr: ArticleAttribute) {
+        // Check if attr is unknown since unknown will be an empty string
+        guard attr.toLocalString() != "" else { return nil }
         componentClass = attr
     }
     
