@@ -29,7 +29,7 @@ struct ACSView: View {
     ///    |risk-class=notice
     ///    ]]
     /// - Parameter component: The raw string
-    init?(component: String) {
+    init?(component: String, article: Article? = nil) {
         guard let num: Int = {
             Int(matches(for: #"(?<=item-number=).*?(?=\n|\|)"#, in: component).first?.replacingOccurrences(of: " ", with: "") ?? "")
         }() else { return nil }
@@ -122,6 +122,14 @@ struct ACSView: View {
         }()
         
         self.secondaryIcon = (secondaryClass == "none" || secondaryClass == "") ? nil : secondaryIcon
+        
+        if let article = article, article.objclass == .unknown {
+            let con = PersistenceController.shared
+            con.updateObjectClass(articleid: article.id, newattr: self.object)
+            con.updateEsotericClass(articleid: article.id, newattr: self.esoteric ?? .unknown)
+            con.updateRiskClass(articleid: article.id, newattr: self.risk)
+            con.updateDisruptionClass(articleid: article.id, newattr: self.disruption)
+        }
     }
     
     var body: some View {

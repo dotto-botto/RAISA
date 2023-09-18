@@ -26,7 +26,7 @@ enum RTItem: Hashable {
             if str.contains("object-warning-box") {
                 return AnyView(ObjectWarningBoxView(source: str))
             } else {
-                return AnyView(ACSView(component: str))
+                return AnyView(ACSView(component: str, article: article))
             }
         case .tabview(let str):
             return AnyView(TabViewComponent(article: article, text: str))
