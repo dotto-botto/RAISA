@@ -198,7 +198,10 @@
 "LOADING_SAFARI" = "This article will open in safari.";
 "RESUME_READING" = "Resume Reading?";
 "PLACE_SAVED" = "Place Saved!";
-"HOW_TO_SAVE" = "Tap on any text to save your place.";
+"HOW_TO_SAVE" = "Double tap on any text to save your place.";
+"DONT_SHOW_AGAIN" = "Don't Show Again";
+"BACK_TO_ARTICLE" = "Back to Article";
+"WANTED_TO_BOOKMARK" = "Did you want to save your place?";
 "UPVOTE" = "Upvote";
 "DOWNVOTE" = "Downvote";
 "MARK_READ" = "Mark Read";

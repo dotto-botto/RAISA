@@ -27,6 +27,7 @@ struct ArticleView: View {
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
     @State private var isFragmented: Bool = true
+    @State private var showBookmarkAlert: Bool = false
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     let defaults = UserDefaults.standard
@@ -116,6 +117,16 @@ struct ArticleView: View {
         .fullScreenCover(isPresented: $showNext) {
             NavigationStack { ArticleView(scp: nextArticle ?? scp, dismissText: scp.title) }
         }
+        .alert("WANTED_TO_BOOKMARK", isPresented: $showBookmarkAlert) { 
+            Button("BACK_TO_ARTICLE") {}
+            
+            Button("DONT_SHOW_AGAIN") {
+                defaults.set(false, forKey: "bookmarkAlert")
+                dismiss()
+            }
+        } message: {
+            Text("HOW_TO_SAVE")
+        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 VStack {
@@ -133,7 +144,11 @@ struct ArticleView: View {
             
             ToolbarItem(placement: .cancellationAction) {
                 Button {
-                    dismiss()
+                    if bookmarkStatus == true && con.getScroll(id: scp.id) == nil && defaults.bool(forKey: "bookmarkAlert") {
+                        showBookmarkAlert.toggle()
+                    } else {
+                        dismiss()
+                    }
                 } label: {
                     Image(systemName: "chevron.left")
                 }

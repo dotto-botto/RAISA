@@ -33,6 +33,7 @@ struct SCP_UtilityApp: App {
                             "autoScroll" : true,
                             "articleBarIds" : "",
                             "showAVWallpaper" : true,
+                            "bookmarkAlert" : true,
                         ])
                     }
                     isFirstLaunch = false
