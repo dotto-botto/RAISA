@@ -41,6 +41,12 @@ struct ArticleImage: View {
                 Image(uiImage: storedImage!)
                     .resizable()
                     .scaledToFit()
+                    .background {
+                        Rectangle()
+                            .cornerRadius(8)
+                            .foregroundColor(.white)
+                            .opacity(0.6)
+                    }
                     .contextMenu {
                         Menu {
                             Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
@@ -63,6 +69,12 @@ struct ArticleImage: View {
                     Image("image-placeholder")
                         .resizable()
                         .scaledToFit()
+                }
+                .background {
+                    Rectangle()
+                        .cornerRadius(8)
+                        .foregroundColor(.white)
+                        .opacity(0.6)
                 }
                 .contextMenu {
                     Menu {
