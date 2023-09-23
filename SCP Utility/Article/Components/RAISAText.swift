@@ -20,26 +20,52 @@ struct RAISAText: View {
     @State private var currentId: String?
     
     var body: some View {
-        ScrollViewReader { value in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 5) {
-                    if !filtered {
-                        ProgressView()
-                    } else {
-                        if #available(iOS 17, *) {
-//                            ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-//                                item.toCorrespondingView(article: article)
-//                                    .id(item)
+//        if #available(iOS 17, *) {
+//            ScrollView {
+//                LazyVStack(alignment: .leading, spacing: 5) {
+//                    if !filtered {
+//                        HStack {
+//                            Spacer()
+//                            ProgressView()
+//                            Spacer()
+//                        }
+//                    } else {
+//                        ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+//                            item.toCorrespondingView(article: article)
+//                        }
+//                        .onAppear {
+//                            withAnimation {
+//                                currentId = article.currenttext
 //                            }
-//                            .scrollPosition(id: $currentId)
-//                            .onDisappear {
-//                                article.setScroll(currentId)
+//                        }
+//                    }
+//                }
+//                .padding(.horizontal, 20)
+//                .task {
+//                    if !filtered {
+//                        FilterToMarkdown(doc: text ?? article.pagesource) { str in
+//                            filteredText = str
+//                            
+//                            if itemList.isEmpty {
+//                                itemList = parseRT(filteredText)
 //                            }
-//                            .onAppear {
-//                                withAnimation {
-//                                    currentId = article.currenttext
-//                                }
-//                            }
+//                            filtered = true
+//                        }
+//                    }
+//                }
+//                .scrollTargetLayout()
+//            }
+//            .scrollPosition(id: $currentId)
+//            .onDisappear {
+//                article.setScroll(currentId)
+//            }
+//        } else {
+            // Lower than 17
+            ScrollViewReader { value in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 5) {
+                        if !filtered {
+                            ProgressView()
                         } else {
                             ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
                                 item.toCorrespondingView(article: article)
