@@ -11,7 +11,6 @@ import SwiftUI
 /// Meant to be used inside of a List or a VStack.
 struct ArticleRow: View {
     @State var passedSCP: Article
-    @State var open: Int = UserDefaults.standard.integer(forKey: "defaultOpen")
     @State private var flavorText: String? = nil
     @State private var showArticle: Bool = false // article view
     @State private var showUpdateView: Bool = false
@@ -21,15 +20,7 @@ struct ArticleRow: View {
         let con = PersistenceController.shared
         
         Button {
-            if open == 1 {
-                showArticle = true
-            } else {
-                addIDToBar(id: passedSCP.id)
-                
-                if open == 2 {
-                    showArticle = true
-                }
-            }
+            showArticle = true
         } label: {
             HStack {
                 VStack(spacing: 3) {
@@ -165,8 +156,6 @@ struct ArticleRow: View {
             ListAdd(isPresented: $showListAddView, article: passedSCP)
         }
         .task {
-            open = UserDefaults.standard.integer(forKey: "defaultOpen")
-            
             if flavorText == nil {
                 flavorText = {
                     if passedSCP.currenttext != nil { return FilterToPure(doc: passedSCP.currenttext!) }
@@ -210,6 +199,7 @@ struct ArticleRow: View {
                 }
             }
         }
+        .id(passedSCP.id)
     }
 }
 

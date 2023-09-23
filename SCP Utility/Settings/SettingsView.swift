@@ -12,9 +12,7 @@ import Kingfisher
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
-    @AppStorage("defaultOpen") var defaultOpen = 1
     @AppStorage("storeIcloud") var storeIcloud = true
-    @AppStorage("autoScroll") var autoScroll = true
     @AppStorage("showAVWallpaper") var showAVWallpaper = true
     
     @State private var historyConf = false
@@ -57,12 +55,6 @@ struct SettingsView: View {
             }
             
             Section("READER_OPTIONS") {
-                Picker("DEFAULT_OPEN_SETTING", selection: $defaultOpen) {
-                    Text("BAR_SETTING").tag(0)
-                    Text("READER_SETTING").tag(1)
-                    Text("BOTH").tag(2)
-                }
-                Toggle("AUTO_SCROLL_SETTING", isOn: $autoScroll)
                 Button("REMOVE_BAR_ITEMS_SETTING") {
                     defaults.set([], forKey: "articleBarIds")
                 }
@@ -96,6 +88,8 @@ struct SettingsView: View {
             defaults.removeObject(forKey: "articleViewSetting")
             defaults.removeObject(forKey: "showImages")
             defaults.removeObject(forKey: "showComponentPrompt")
+            defaults.removeObject(forKey: "defaultOpen")
+            defaults.removeObject(forKey: "autoScroll")
         }
     }
 }
