@@ -191,7 +191,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"\[\[a href=.*?\]\]"#),
             Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#),
             Regex(#"\[!--[\s\S]*?--\]"#),
-            Regex(#"\[\[\*?user.*?\]\]"#),
             Regex(#"\[\[footnoteblock.*?\]\]"#),
         ]
         
@@ -243,6 +242,15 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         for match in matches(for: #"\^\^.*\^\^"#, in: text) {
             text = text.replacingOccurrences(
                 of: match, with: "^" + (match.slice(from: "^^", to: "^^") ?? match)
+            )
+        }
+        
+        // User tags
+        for match in matches(for: #"\[\[\*?user.*?\]\]"#, in: text) {
+            text = text.replacingOccurrences(of: match, with: match
+                .replacingOccurrences(of: "[[*user ", with: "")
+                .replacingOccurrences(of: "[[user ", with: "")
+                .replacingOccurrences(of: "]]", with: "")
             )
         }
         
@@ -320,7 +328,6 @@ func FilterToPure(doc: String) -> String {
         text.removeText(from: firstLicense, to: lastLicense)
     }
     text = try! text.replacing(Regex(#"\[!--[\s\S]*?--]"#), with: "")
-    for _ in text.indicesOf(string: "[[*user") { text.removeText(from: "[[*user", to: "]]") }
     text.removeText(from: "[[include info:start", to: "include info:end]]")
     text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
     text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
@@ -382,6 +389,15 @@ func FilterToPure(doc: String) -> String {
     for match in matches(for: #"\^\^.*\^\^"#, in: text) {
         text = text.replacingOccurrences(
             of: match, with: "^" + (match.slice(from: "^^", to: "^^") ?? match)
+        )
+    }
+    
+    // User tags
+    for match in matches(for: #"\[\[\*?user.*?\]\]"#, in: text) {
+        text = text.replacingOccurrences(of: match, with: match
+            .replacingOccurrences(of: "[[*user ", with: "")
+            .replacingOccurrences(of: "[[user ", with: "")
+            .replacingOccurrences(of: "]]", with: "")
         )
     }
     
