@@ -42,6 +42,9 @@ struct SCPList: Identifiable {
     }
 
     mutating func addContent(article: Article) {
+        // Check for duplicate id's
+        guard (self.contents ?? []).filter({ $0 == article.id }).isEmpty else { return }
+        
         if self.contents != nil {
             self.contents!.append(article.id)
         } else {

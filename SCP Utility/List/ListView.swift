@@ -12,7 +12,6 @@ import SwiftUI
 /// View that displays all stored lists in core data as ListRow views.
 struct ListView: View {
     @State private var alertPresent: Bool = false
-    @State private var presentSheet: Bool = false
     @State private var query: String = ""
     @State private var currentList: SCPList = SCPList(listid: "Placeholder")
     @State private var items = PersistenceController.shared.getAllLists()
@@ -53,14 +52,6 @@ struct ListView: View {
             .listStyle(.plain)
             .navigationTitle("LIST_TITLE")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        presentSheet = true
-                    } label: {
-                        Label("ALL_SAVED_ARTICLES", systemImage: "magnifyingglass")
-                    }
-                }
-                
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         alertPresent = true
@@ -84,7 +75,6 @@ struct ListView: View {
                 }
 
             }
-            .sheet(isPresented: $presentSheet) { OneListView(list: SCPList()) }
             .onAppear {
                 items = con.getAllLists()
             }
