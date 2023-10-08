@@ -207,24 +207,7 @@ struct OneListView: View {
                 } label: {
                     Text("FILTER")
                 }
-                                
-                if list.contents != SCPList().contents {
-                    Divider()
-
-                    Button {
-                        listTitlePresent = true
-                    } label: {
-                        Label("CHANGE_LIST_TITLE", systemImage: "pencil")
-                    }
-                    Button {
-                        listSubtitlePresent = true
-                    } label: {
-                        Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
-                    }
-                }
-            }
-            
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                
                 Menu {
                     Button {
                         sort = 0
@@ -244,9 +227,26 @@ struct OneListView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "line.3.horizontal.decrease")
+                    Label("SORT", systemImage: "line.3.horizontal.decrease")
                 }
-                
+                                
+                if list.contents != SCPList().contents {
+                    Divider()
+
+                    Button {
+                        listTitlePresent = true
+                    } label: {
+                        Label("CHANGE_LIST_TITLE", systemImage: "pencil")
+                    }
+                    Button {
+                        listSubtitlePresent = true
+                    } label: {
+                        Label("CHANGE_LIST_SUBTITLE", systemImage: "pencil.line")
+                    }
+                }
+            }
+            
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
                     ascending.toggle()
                 } label: {
