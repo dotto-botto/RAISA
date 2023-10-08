@@ -20,58 +20,18 @@ struct RAISAText: View {
     @State private var currentId: String?
     
     var body: some View {
-//        if #available(iOS 17, *) {
-//            ScrollView {
-//                LazyVStack(alignment: .leading, spacing: 5) {
-//                    if !filtered {
-//                        HStack {
-//                            Spacer()
-//                            ProgressView()
-//                            Spacer()
-//                        }
-//                    } else {
-//                        ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-//                            item.toCorrespondingView(article: article)
-//                        }
-//                        .onAppear {
-//                            withAnimation {
-//                                currentId = article.currenttext
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(.horizontal, 20)
-//                .task {
-//                    if !filtered {
-//                        FilterToMarkdown(doc: text ?? article.pagesource) { str in
-//                            filteredText = str
-//                            
-//                            if itemList.isEmpty {
-//                                itemList = parseRT(filteredText)
-//                            }
-//                            filtered = true
-//                        }
-//                    }
-//                }
-//                .scrollTargetLayout()
-//            }
-//            .scrollPosition(id: $currentId)
-//            .onDisappear {
-//                article.setScroll(currentId)
-//            }
-//        } else {
-            // Lower than 17
-            ScrollViewReader { value in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 5) {
-                        if !filtered {
-                            ProgressView()
-                        } else {
-                            ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
-                                item.toCorrespondingView(article: article)
-                            }
-                            .onAppear {
-                                if article.currenttext != nil && UserDefaults.standard.bool(forKey: "autoScroll") {
+        ScrollViewReader { value in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 5) {
+                    if !filtered {
+                        ProgressView()
+                    } else {
+                        ForEach(Array(zip(itemList, itemList.indices)), id: \.1) { item, _ in
+                            item.toCorrespondingView(article: article)
+                        }
+                        .onAppear {
+                            if article.currenttext != nil {
+                                withAnimation {
                                     value.scrollTo(article.currenttext!)
                                 }
                             }
