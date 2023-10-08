@@ -28,6 +28,7 @@ struct ArticleView: View {
     @State private var explicitContent: [String] = []
     @State private var isFragmented: Bool = true
     @State private var showBookmarkAlert: Bool = false
+    @State private var noTranslationAlert: Bool = false
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     let defaults = UserDefaults.standard
@@ -226,13 +227,21 @@ struct ArticleView: View {
                     ForEach(RAISALanguage.allCases) { lang in
                         Button(lang.toName()) {
                             cromTranslate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article in
-                                nextArticle = article
-                                showNext = true
+                                // Wasn't translated
+                                if article == nil {
+                                    noTranslationAlert.toggle()
+                                } else {
+                                    nextArticle = article
+                                    showNext = true
+                                }
                             }
                         }
                     }
                 } label: {
                     Image(systemName: "globe")
+                }
+                .alert("NO_TRANSLATION_FOUND", isPresented: $noTranslationAlert) {
+                    Button("OK") {}
                 }
 
                 Spacer()
