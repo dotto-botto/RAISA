@@ -192,6 +192,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"\[\[include.*license-box[\s\S]*?]][\s\S]*?\[\[include.*?license-box-end.*?]]"#),
             Regex(#"\[!--[\s\S]*?--\]"#),
             Regex(#"\[\[footnoteblock.*?\]\]"#),
+            Regex(#"(\[\[code.*?\]\]|\[\[\/code\]\])"#),
         ]
         
         for regex in regexDeletes {
@@ -443,7 +444,8 @@ func FilterToPure(doc: String) -> String {
         Regex(#"^\* "#), // bullets
         Regex(#"\[\[.*?image.*?]]"#),
         Regex(#"\[\[include[^\]]*\]\](?![^\[]*\])"#), // all componenets
-        Regex(#"\[\[a href=.*?\]\]"#)
+        Regex(#"\[\[a href=.*?\]\]"#),
+        Regex(#"(\[\[code.*?\]\]|\[\[\/code\]\])"#),
     ]
     
     for regex in regexDeletes {
