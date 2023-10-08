@@ -23,23 +23,32 @@ struct TopCard: View {
                     .fontWeight(.bold)
                     .padding(.leading)
                 Spacer()
+                Image(systemName: "arrow.clockwise")
+                    .padding([.top, .trailing], 5)
+                    .onTapGesture { getParse() }
             }
             .padding(.bottom, 1)
             
-            ForEach(titles, id: \.self) { title in
-                Button {
-                    let userIntBranch = RAISALanguage(rawValue: defaults.integer(forKey: "chosenRaisaLanguage")) ?? .english
-                    
-                    raisaGetArticleFromTitle(title: title, language: userIntBranch) {
-                        guard let art = $0 else { return }
-                        article = art
-                        showArticle = true
+            HStack {
+                ForEach([titles.filter { $0.contains("SCP-") }, titles.filter { !$0.contains("SCP-") }], id: \.self) { list in
+                    VStack {
+                        ForEach(list, id: \.self) { title in
+                            Button {
+                                let userIntBranch = RAISALanguage(rawValue: defaults.integer(forKey: "chosenRaisaLanguage")) ?? .english
+                                
+                                raisaGetArticleFromTitle(title: title, language: userIntBranch) {
+                                    guard let art = $0 else { return }
+                                    article = art
+                                    showArticle = true
+                                }
+                            } label: {
+                                Text(title).font(.monospaced(.body)())
+                            }
+                            Divider()
+                        }
+                        Spacer()
                     }
-                } label: {
-                    Text(title).font(.monospaced(.body)())
                 }
-                Divider()
-                
             }
         }
         .padding(10)
@@ -49,14 +58,18 @@ struct TopCard: View {
         .onAppear {
             let timeOfLastParse = Date(timeIntervalSince1970: defaults.double(forKey: "timeOfLastParse")).timeIntervalSinceNow
             if timeOfLastParse < -604800 {
-                parseTopRatedPage() {
-                    titles = $0
-                    defaults.set(titles, forKey: "topTitles")
-                    defaults.set(Date().timeIntervalSince1970, forKey: "timeOfLastParse")
-                }
+                getParse()
             } else {
                 titles = defaults.stringArray(forKey: "topTitles") ?? []
             }
+        }
+    }
+    
+    func getParse() {
+        parseTopRatedPage() {
+            titles = $0
+            defaults.set(titles, forKey: "topTitles")
+            defaults.set(Date().timeIntervalSince1970, forKey: "timeOfLastParse")
         }
     }
 }
@@ -72,6 +85,12 @@ func parseTopRatedPage(completion: @escaping ([String]) -> Void) {
 
             if let table = try articledoc.getElementsByClass("wiki-content-table").first() {
                 for ele in try table.select("a") {
+                    returnArray.append(try ele.text())
+                }
+            }
+            
+            if let taleTable = try articledoc.getElementsByClass("content-box tale").select("table").first() {
+                for ele in try taleTable.select("a") {
                     returnArray.append(try ele.text())
                 }
             }
