@@ -407,6 +407,10 @@ extension PersistenceController {
     func getAllListArticles(list: SCPList, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
         let context = context ?? container.viewContext
         guard list.contents != nil else {return nil}
+        guard list.id != "ALL_SAVED_ARTICLES" else {
+            return getAllArticles()
+        }
+        
         
         var articles = [ArticleItem]()
         let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
