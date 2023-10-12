@@ -129,45 +129,12 @@ struct OneListView: View {
             }
         }
         .navigationTitle(list.listid)
-        .task { updateArticles() }
+        .task { updateAndFilterArticles() }
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
-        .onAppear {
-            if let scplistentity = PersistenceController.shared.getListByID(id: list.id), let scplist = SCPList(fromEntity: scplistentity) {
-                list = scplist
-            }
-        }
-        .onChange(of: query) { _ in
-            updateArticles()
-            articles = articles.filter{ query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) }
-        }
-        .onChange(of: mode) { _ in
-            updateArticles()
-            self.articles = articles
-                .filter {
-                    switch mode {
-                    case 0: return true
-                    case 1: return $0.completed ?? false
-                    case 2: return !($0.completed ?? false)
-                    default: return true
-                    }
-                }
-        }
-        .onChange(of: sort) { _ in
-            updateArticles()
-            self.articles = articles
-                .sorted {
-                    if sort == 0 {
-                        return true
-                    } else if sort == 1 {
-                        return $0.title.lowercased() < $1.title.lowercased()
-                    } else {
-                        return true
-                    }
-                }
-        }
-        .onChange(of: ascending) { _ in
-            self.articles.reverse()
-        }
+        .onChange(of: query) { _ in updateAndFilterArticles() }
+        .onChange(of: mode) { _ in updateAndFilterArticles() }
+        .onChange(of: sort) { _ in updateAndFilterArticles() }
+        .onChange(of: ascending) { _ in updateAndFilterArticles() }
         .toolbar {
             ToolbarItemGroup(placement: .secondaryAction) {
                 Menu {
@@ -283,7 +250,7 @@ struct OneListView: View {
         Spacer()
     }
     
-    private func updateArticles() {
+    private func updateAndFilterArticles() {
         var articlelist: [Article] = []
         for article in PersistenceController.shared.getAllListArticles(list: self.list) ?? [] {
             if let article = Article(fromEntity: article) {
@@ -292,6 +259,35 @@ struct OneListView: View {
         }
         
         self.articles = articlelist
+        
+        // Resolve filters
+        self.articles = 
+        self.articles
+            .filter {
+                query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) || $0.subtitle?.lowercased().contains(query.lowercased()) ?? false
+            }
+            .filter {
+                switch mode {
+                case 0: return true
+                case 1: return $0.completed ?? false
+                case 2: return !($0.completed ?? false)
+                default: return true
+                }
+            }
+            .sorted {
+                if sort == 0 {
+                    return true
+                } else if sort == 1 {
+                    return $0.title.lowercased() < $1.title.lowercased()
+                } else {
+                    return true
+                }
+            }
+        
+        if !ascending {
+            self.articles.reverse()
+        }
+        
     }
 }
 
