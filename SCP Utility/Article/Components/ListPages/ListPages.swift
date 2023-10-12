@@ -7,12 +7,12 @@
 
 import Foundation
 
-func replaceFragmentsWithSource(article: Article, completion: @escaping (Article) -> Void) {
-    guard article.pagesource.contains("[[module ListPages") else { completion(article); return }
-    guard let module = article.pagesource.slice(from: "[[module ListPages", to: "]]") else { completion(article); return }
+func replaceFragmentsWithSource(article: Article, completion: @escaping (String) -> Void) {
+    guard article.pagesource.contains("[[module ListPages") else { completion(article.pagesource); return }
+    guard let module = article.pagesource.slice(from: "[[module ListPages", to: "]]") else { completion(article.pagesource); return }
     
     let parent = module.slice(from: "parent=\"", to: "\"") ?? "."
-    guard parent == "." else { print("parent parameter \"\(parent)\" unsupported"); completion(article); return }
+    guard parent == "." else { print("parent parameter \"\(parent)\" unsupported"); completion(article.pagesource); return }
     
     let limit = Int(module.slice(from: "limit=\"", to: "\"") ?? "") ?? -1
     
@@ -29,8 +29,8 @@ func replaceFragmentsWithSource(article: Article, completion: @escaping (Article
         
         // Filter based on limit
         guard dict.count >= limit && limit != -1 else {
-            print("Limit is higher than dict length, article: \(article.title)")
-            completion(article)
+            print("Limit is higher than amount of children, article: \(article.title)")
+            completion(article.pagesource)
             return
         }
         dict = limit == -1 ? dict : Array(dict[..<limit])
@@ -42,20 +42,16 @@ func replaceFragmentsWithSource(article: Article, completion: @escaping (Article
             cromGetSourceFromURL(url: url) { source in
                 newSource += source
                 
-                if pair == dict.last ?? ("", placeholderURL) {
-                    var returnArticle = article
-                    
+                if pair == dict.last ?? ("", placeholderURL) {                    
                     let module = article.pagesource.slice(with: "[[module ListPages" + module + "]]", and: "[[/module]]")
-                    
-                    returnArticle.updateSource(article.pagesource.replacingOccurrences(of: module, with: newSource))
-                    
+                                        
                     // If article has multiple fragments
 //                    if returnArticle.pagesource.contains("[[module ListPages") {
 //                        replaceFragmentsWithSource(article: returnArticle) { newArticle in
 //                            returnArticle = newArticle
 //                        }
 //                    } else {
-                        completion(returnArticle)
+                        completion(article.pagesource.replacingOccurrences(of: module, with: newSource))
 //                    }
                 }
             }
