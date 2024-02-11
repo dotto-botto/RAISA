@@ -15,6 +15,7 @@ struct RandomCard: View {
     @State private var beenLoaded: Bool = false
     @State private var userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     @State private var badLanguageAlert: Bool = false
+    @State private var disabled: Bool = false
     var body: some View {
         VStack {
             HStack {
@@ -31,6 +32,8 @@ struct RandomCard: View {
                             
                             guard userIntBranch != .russian && userIntBranch != .korean else {
                                 badLanguageAlert = true
+                                article = Article(title: "...", pagesource: "", url: placeholderURL)
+                                disabled = true
                                 return
                             }
                                     
@@ -46,15 +49,21 @@ struct RandomCard: View {
                     Text(article.title)
                         .font(.monospaced(.largeTitle)())
                         .lineLimit(2)
-                    Image(systemName: "arrow.forward")
+                    if !disabled {
+                        Image(systemName: "arrow.forward")
+                    }
                 } else {
                     ProgressView()
                 }
             }
             .onTapGesture {
-                cromGetSourceFromURL(url: article.url) { source in
-                    article.pagesource = source
-                    showArticle = true
+                if disabled {
+                    badLanguageAlert = true
+                } else {
+                    cromGetSourceFromURL(url: article.url) { source in
+                        article.pagesource = source
+                        showArticle = true
+                    }
                 }
             }
         }
@@ -80,15 +89,18 @@ struct RandomCard: View {
             NavigationStack { ArticleView(scp: article) }
         }
         .onAppear {
-            #if !targetEnvironment(simulator)
-            if !beenLoaded {
+            #if targetEnvironment(simulator)
+            article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
+            #else
+            if userIntBranch == .russian || userIntBranch == .korean {
+                article = Article(title: "...", pagesource: "", url: placeholderURL)
+                disabled = true
+            } else if !beenLoaded {
                 cromRandom(language: userIntBranch) { scp in
                     article = scp
                 }
                 beenLoaded = true
             }
-            #else
-            article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
             #endif
         }
     }

@@ -69,7 +69,7 @@ struct ArticleView: View {
                 dismiss()
             }
             
-            if defaults.bool(forKey: "trackHistory") {
+            if defaults.bool(forKey: "trackHistory") && scp.title != "Could not find title" {
                 con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
             }
             
