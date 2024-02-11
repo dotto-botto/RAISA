@@ -107,7 +107,7 @@
 "SERIES_TITLE%lld" = "Series %lld";
 "TOP_CARD" = "Popular Articles";
 "LANGUAGE_%@_NOT_SUPPORTED" = "%@ isn't supported, sorry for the inconvenience.";
-"HOW_TO_CHANGE_LANGUAGE" = "Press the globe icon to change your international branch.";
+"HOW_TO_CHANGE_LANGUAGE" = "Press the settings icon to change your international branch.";
 
 // MARK: - Settings
 "SETTINGS_TITLE" = "Settings";
