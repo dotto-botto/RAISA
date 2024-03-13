@@ -22,6 +22,19 @@ struct OnlineArticleRow: View {
     @State var addObservedBool: Bool = false
     @State var currentArticle: Article = placeHolderArticle
     @State var showSheet: Bool = false
+    
+    init(_ article: Article) {
+        self.title = article.title
+        self.alternateTitle = article.subtitle
+        self.url = article.url
+    }
+    
+    init(title: String, subtitle: String?, url: URL) {
+        self.title = title
+        self.alternateTitle = subtitle
+        self.url = url
+    }
+    
     var body: some View {
         HStack {
             Button {
@@ -96,9 +109,6 @@ struct OnlineArticleRow: View {
 
 struct OnlineArticleBar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            OnlineArticleRow(title: placeHolderArticle.title, alternateTitle: "The Sculpture", url: placeHolderArticle.url)
-            OnlineArticleRow(title: "Loading Article", url: placeholderURL, loading: true).padding(.top)
-        }
+        OnlineArticleRow(title: placeHolderArticle.title, subtitle: "The Sculpture", url: placeHolderArticle.url)
     }
 }

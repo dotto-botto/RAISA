@@ -22,6 +22,7 @@ struct SeriesView: View {
                     OnlineArticleRow(
                         // %03d - adds leading zeroes up to 3 digits
                         title: "SCP-" + String(format: "%03d", num),
+                        subtitle: nil,
                         url: URL(string: "http://scp-wiki.wikidot.com/scp-\(String(format: "%03d", num))")!
                     )
                     .padding(.vertical, 1)

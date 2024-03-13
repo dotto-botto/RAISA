@@ -193,7 +193,7 @@ query Search($query: URL! = "\(formattedURL)") {
 }
 
 /// Returns a list of articles without source with given query.
-func cromAPISearch(query: String, language: RAISALanguage = .english, completion: @escaping ([Article], [String?]) -> Void) {
+func cromAPISearch(query: String, language: RAISALanguage = .english, completion: @escaping ([Article]) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(query)") {
   searchPages(query: $query, filter: {anyBaseUrl: "\(language.toURL())"}) {
@@ -215,7 +215,6 @@ query Search($query: String! = "\(query)") {
     var responseJSON: JSON = JSON()
     
     var articles: [Article] = []
-    var alts: [String?] = []
     cromRequest(params: parameters) { data, error in
         if let error {
             print(error)
@@ -226,19 +225,15 @@ query Search($query: String! = "\(query)") {
                 print(error)
             }
 
-            for pages in responseJSON["data"]["searchPages"].arrayValue {
-                let title = pages["wikidotInfo"]["title"]
-                let url = pages["url"].url
-                
+            for page in responseJSON["data"]["searchPages"].arrayValue {
                 articles.append(Article(
-                    title: title.string ?? "Could not find title",
+                    title: page["wikidotInfo"]["title"].string ?? "Could not find title",
+                    subtitle: page["alternateTitles"].arrayValue.first?["title"].string,
                     pagesource: "",
-                    url: url ?? placeholderURL
+                    url: page["url"].url ?? placeholderURL
                 ))
-                
-                alts.append(pages["alternateTitles"].arrayValue.first?["title"].string)
             }
-            completion(articles, alts)
+            completion(articles)
         }
     }
 }
