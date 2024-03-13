@@ -31,7 +31,7 @@ struct SeriesView: View {
         .navigationTitle("SERIES_TITLE\(startingNum == 1 ? startingNum : startingNum / 1000 + 1)")
         .toolbar {
             Menu {
-                ForEach(1...8, id: \.self) { series in
+                ForEach(1...9, id: \.self) { series in
                     Button("SERIES_TITLE\(series)") {
                         startingNum = (series == 1) ? 1 : (series - 1) * 1000
                     }
