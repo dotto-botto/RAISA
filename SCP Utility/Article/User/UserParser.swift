@@ -35,7 +35,7 @@ func parseUserPage(username: String, completion: @escaping (User) -> Void) {
 
             // Website
             let href = try doc.getElementsByClass("profile-box").select("a").text().replacing(/\s.*/, with: "")
-            let website = URL(string: href)
+            let website = href.contains("http") ? URL(string: href) : nil
             
             // Creation
             let keyword = matches(for: #"odate.*?ago.{3}"#, in: doc.description).first ?? "÷"

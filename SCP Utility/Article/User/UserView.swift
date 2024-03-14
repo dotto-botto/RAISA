@@ -25,7 +25,7 @@ struct UserView: View {
         
         NavigationStack {
             VStack(alignment: .center) {
-                HStack {
+                VStack {
                     AsyncImage(url: user.thumbnail) {
                         $0
                             .resizable()
@@ -39,28 +39,19 @@ struct UserView: View {
                             .border(Color.accentColor, width: 5)
                             .frame(width: 200, height: 200)
                     }
+                    Text(user.username ?? "")
+                        .font(.system(size: 40))
+                        .lineLimit(2)
+                        .bold()
                 }
                 
                 HStack {
                     Block()
                     Spacer()
                     VStack {
-                        Text(user.username ?? "")
-                            .font(.system(size: 80))
-                            .lineLimit(2)
-                            .bold()
-                        
                         HStack {
                             KarmaView(karma: user.karma)
-                            switch user.karma {
-                            case 0: Text("NO_KARMA")
-                            case 1: Text("LOW_KARMA")
-                            case 2: Text("MEDIUM_KARMA")
-                            case 3: Text("HIGH_KARMA")
-                            case 4: Text("VERY_KARMA")
-                            case 5: Text("GURU_KARMA")
-                            default: Text("")
-                            }
+                            Text(LocalizedStringKey(stringLiteral: "\(user.karma ?? 0)_KARMA"))
                         }
                         
                         if user.website != nil {

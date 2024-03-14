@@ -299,12 +299,12 @@
 "USER_REALNAME" = "Real Name";
 
 // Karma
-"NO_KARMA" = "No Karma";
-"LOW_KARMA" = "Low";
-"MEDIUM_KARMA" = "Medium";
-"HIGH_KARMA" = "High";
-"VERY_KARMA" = "Very High";
-"GURU_KARMA" = "Guru";
+"0_KARMA" = "No Karma";
+"1_KARMA" = "Low Karma";
+"2_KARMA" = "Medium Karma";
+"3_KARMA" = "High Karma";
+"4_KARMA" = "Very High Karma";
+"5_KARMA" = "Guru";
 
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
