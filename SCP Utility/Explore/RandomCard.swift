@@ -30,7 +30,7 @@ struct RandomCard: View {
                         if article.title != "" { // if not already loading
                             userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
                             
-                            guard userIntBranch != .russian && userIntBranch != .korean else {
+                            guard RAISALanguage.allSupportedCases.contains(userIntBranch) else {
                                 badLanguageAlert = true
                                 article = Article(title: "...", pagesource: "", url: placeholderURL)
                                 disabled = true
@@ -92,7 +92,7 @@ struct RandomCard: View {
             #if targetEnvironment(simulator)
             article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
             #else
-            if userIntBranch == .russian || userIntBranch == .korean {
+            if !RAISALanguage.allSupportedCases.contains(userIntBranch) {
                 article = Article(title: "...", pagesource: "", url: placeholderURL)
                 disabled = true
             } else if !beenLoaded {

@@ -20,7 +20,7 @@ struct ChangeLanguageView: View {
             .font(.subheadline)
             .foregroundColor(.secondary)
             
-            List(RAISALanguage.allCases) { lang in
+            List(RAISALanguage.allSupportedCases) { lang in
                 Button {
                     chosenRaisaLanguage = lang.rawValue
                 } label: {

@@ -224,7 +224,7 @@ struct ArticleView: View {
 
                 Spacer()
                 Menu {
-                    ForEach(RAISALanguage.allCases) { lang in
+                    ForEach(RAISALanguage.allSupportedCases) { lang in
                         Button(lang.toName()) {
                             cromTranslate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article in
                                 // Wasn't translated

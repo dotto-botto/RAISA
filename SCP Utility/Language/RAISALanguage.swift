@@ -30,6 +30,8 @@ enum RAISALanguage: Int, CaseIterable, Identifiable, Codable {
     case vietnamese
     
     var id: Self { return self }
+    /// Contains only the languages supported by Crom.
+    static var allSupportedCases: [Self] { return Self.allCases.filter { $0 != .russian && $0 != .korean } }
     
     func toName() -> String {
         switch self {

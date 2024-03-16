@@ -52,7 +52,7 @@ struct ArticleRow: View {
                             .scaledToFit()
                             .frame(width: 15, height: 14)
                         
-                        Text(passedSCP.findLanguage()?.toAbbr() ?? RAISALanguage.english.toAbbr())
+                        Text(passedSCP.findLanguage()?.toAbbr() ?? "")
                                                 
                         Text(flavorText ?? "...")
                             .lineLimit(1)

@@ -28,6 +28,13 @@ struct ContentView: View {
                 bar
             }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
         }
+        .onAppear {
+            // Change language if it was previously set to russian or korean
+            if let lang: RAISALanguage = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")),
+               !RAISALanguage.allSupportedCases.contains(lang) {
+                UserDefaults.standard.setValue(0, forKey: "chosenRaisaLanguage")
+            }
+        }
     }
 }
 

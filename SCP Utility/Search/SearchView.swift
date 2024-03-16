@@ -74,7 +74,7 @@ struct SearchView: View {
             .navigationTitle("SEARCH_TITLE")
             .toolbar {
                 Menu {
-                    ForEach(RAISALanguage.allCases) { lang in
+                    ForEach(RAISALanguage.allSupportedCases) { lang in
                         Button {
                             token = lang.rawValue
                         } label: {
