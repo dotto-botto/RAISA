@@ -43,7 +43,6 @@
 		F6921A0429BAA60000EF19D0 /* HistoryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6921A0329BAA60000EF19D0 /* HistoryRow.swift */; };
 		F6921A0629BAA70700EF19D0 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6921A0529BAA70700EF19D0 /* History.swift */; };
 		F6921A0929C6250D00EF19D0 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F6921A0829C6250D00EF19D0 /* MarkdownUI */; };
-		F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A092A829CF727300E661A0 /* ArticleBar.swift */; };
 		F6A7FCE32A5A0C96001E2BED /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7FCE22A5A0C96001E2BED /* FootnoteView.swift */; };
 		F6A7FCE52A5F6A17001E2BED /* ThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7FCE42A5F6A17001E2BED /* ThemeView.swift */; };
 		F6A7FCE72A635045001E2BED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6A7FCE62A635045001E2BED /* LaunchScreen.storyboard */; };
@@ -122,7 +121,6 @@
 		F6921A0029BA9D3F00EF19D0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F6921A0329BAA60000EF19D0 /* HistoryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRow.swift; sourceTree = "<group>"; };
 		F6921A0529BAA70700EF19D0 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
-		F6A092A829CF727300E661A0 /* ArticleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleBar.swift; sourceTree = "<group>"; };
 		F6A7FCE22A5A0C96001E2BED /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
 		F6A7FCE42A5F6A17001E2BED /* ThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeView.swift; sourceTree = "<group>"; };
 		F6A7FCE62A635045001E2BED /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "SCP Utility/LaunchScreen.storyboard"; sourceTree = SOURCE_ROOT; };
@@ -332,7 +330,6 @@
 				F6DEC9C929B5227F00E72063 /* Article.swift */,
 				F6EFF42029DB7D0200605E40 /* ArticleInfo.swift */,
 				F6DFECD92990A2FC002C3F1A /* ArticleRow.swift */,
-				F6A092A829CF727300E661A0 /* ArticleBar.swift */,
 				F64BEEC229F45CEC00AEB15B /* ArticleTabView.swift */,
 				F6A7FCE22A5A0C96001E2BED /* FootnoteView.swift */,
 				F6EFF42229DB81D200605E40 /* ArticleInfoView.swift */,
@@ -525,7 +522,6 @@
 				F64BEECA29FD62B300AEB15B /* CommentsView.swift in Sources */,
 				F6A7FCE32A5A0C96001E2BED /* FootnoteView.swift in Sources */,
 				F6EFF42129DB7D0200605E40 /* ArticleInfo.swift in Sources */,
-				F6A092A929CF727300E661A0 /* ArticleBar.swift in Sources */,
 				F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */,
 				F6E9D9202A36886F0096912F /* SyntaxGuideView.swift in Sources */,
 				F6E9D91B2A3672E40096912F /* DataRequest.swift in Sources */,

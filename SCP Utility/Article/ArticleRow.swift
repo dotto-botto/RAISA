@@ -84,12 +84,6 @@ struct ArticleRow: View {
         }
         .contextMenu {
             Button {
-                addIDToBar(id: passedSCP.id)
-            } label: {
-                Label("ADD_TO_BAR", systemImage: "plus.circle")
-            }
-            
-            Button {
                 showArticle = true
             } label: {
                 Label("OPEN_IN_READER", systemImage: "rectangle.portrait.and.arrow.forward")

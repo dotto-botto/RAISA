@@ -54,11 +54,9 @@ struct SettingsView: View {
                 Toggle("SHOW_AV_WALLPAPER", isOn: $showAVWallpaper)
             }
             
-            Section("READER_OPTIONS") {
-                Button("REMOVE_BAR_ITEMS_SETTING") {
-                    defaults.set([], forKey: "articleBarIds")
-                }
-            }
+//            Section("READER_OPTIONS") {
+//
+//            }
             
             Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)
@@ -90,6 +88,7 @@ struct SettingsView: View {
             defaults.removeObject(forKey: "showComponentPrompt")
             defaults.removeObject(forKey: "defaultOpen")
             defaults.removeObject(forKey: "autoScroll")
+            defaults.removeObject(forKey: "articleBarIds")
         }
     }
 }

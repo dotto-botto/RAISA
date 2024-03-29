@@ -8,25 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    private let bar = ArticleBar()
     var body: some View {
         TabView {
-            VStack {
-                ExploreView()
-                bar
-            }.tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
-            VStack {
-                ListView()
-                bar
-            }.tabItem { Label("TABBAR_LIST", systemImage: "bookmark")  }
-            VStack {
-                SearchView()
-                bar
-            }.tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass")  }
-            VStack {
-                HistoryView()
-                bar
-            }.tabItem { Label("TABBAR_HISTORY", systemImage: "clock")  }
+            ExploreView().tabItem { Label("TABBAR_EXPLORE", systemImage: "globe") }
+            ListView().tabItem { Label("TABBAR_LIST", systemImage: "bookmark") }
+            SearchView().tabItem { Label("TABBAR_SEARCH", systemImage: "magnifyingglass") }
+            HistoryView().tabItem { Label("TABBAR_HISTORY", systemImage: "clock") }
         }
         .onAppear {
             // Change language if it was previously set to russian or korean

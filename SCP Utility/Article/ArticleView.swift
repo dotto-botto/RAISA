@@ -155,17 +155,6 @@ struct ArticleView: View {
                 }
                 .frame(width: 44.0, height: 44.0)
                 .contextMenu {
-                    if scp.isSaved() {
-                        Button {
-                            addIDToBar(id: scp.id)
-                            dismiss()
-                        } label: {
-                            Label("AV_MINIMIZE", systemImage: "minus.circle")
-                        }
-                        
-                        Divider()
-                    }
-                    
                     var rootViewController: UIViewController? = nil
                     Button {
                         rootViewController?.dismiss(animated: true)
