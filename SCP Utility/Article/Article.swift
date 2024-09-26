@@ -196,7 +196,9 @@ struct Article: Identifiable, Codable {
         return (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(self.url.formatted()) || con.completionStatus(article: self)
     }
     
-    func downloadImages() {
+    func downloadImages(ignoreUserPreference pref: Bool = false) {
+        if !UserDefaults.standard.bool(forKey: "downloadImages") && !pref { return }
+        
         let images = matches(for: #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#, in: self.pagesource)
         
         for image in images {

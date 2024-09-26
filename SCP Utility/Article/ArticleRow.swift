@@ -88,7 +88,7 @@ struct ArticleRow: View {
                 disabled = true
                 cromGetSourceFromURL(url: passedSCP.url) {
                     passedSCP.updateSource($0)
-                    passedSCP.downloadImages()
+                    passedSCP.downloadImages(ignoreUserPreference: true)
                     con.updatePageSource(id: passedSCP.id, newPageSource: $0)
                     disabled = false
                 }

@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
     @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("showAVWallpaper") var showAVWallpaper = true
+    @AppStorage("downloadImages") var downloadImages = true
     
     @State private var historyConf = false
     @Environment(\.dismiss) private var dismiss
@@ -52,11 +53,8 @@ struct SettingsView: View {
                 }
                 
                 Toggle("SHOW_AV_WALLPAPER", isOn: $showAVWallpaper)
+                Toggle("DOWNLOAD_IMAGES", isOn: $downloadImages)
             }
-            
-//            Section("READER_OPTIONS") {
-//
-//            }
             
             Section("HISTORY_OPTIONS") {
                 Toggle("TRACK_HISTORY", isOn: $trackHistory)

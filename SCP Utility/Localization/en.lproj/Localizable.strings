@@ -122,6 +122,7 @@
 "CHANGE_INT_BRANCH" = "Change International Branch";
 "SHOW_AV_WALLPAPER" = "Show Wallpapers";
 "CHANGE_AV_THEME" = "Change Reader Theme";
+"DOWNLOAD_IMAGES" = "Download Images";
 "TV_TITLE" = "Theme";
 
 "DATA_OPTIONS" = "Save Data";
