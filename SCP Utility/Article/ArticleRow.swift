@@ -62,23 +62,16 @@ struct ArticleRow: View {
                     }
                 }
                 Spacer()
-                ZStack {
-                    if let im = passedSCP.esoteric?.toImage(), im != "" {
-                        if passedSCP.objclass == .esoteric {
-                            Image(im)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 30, height: 30)
-                        }
-                    }
-                }
-                ZStack {
-                    if let im = passedSCP.objclass?.toImage(), im != "" {
-                        Image(im)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 30, height: 30)
-                    }
+                if let im = passedSCP.esoteric?.toImage(), im != "" {
+                    Image(im)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 30, height: 30)
+                } else if let im = passedSCP.objclass?.toImage(), im != "" {
+                    Image(im)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 30, height: 30)
                 }
             }
         }
@@ -203,7 +196,7 @@ struct ArticleRow_Previews: PreviewProvider {
             title: "Tufto's Proposal",
             pagesource: "this is a --> EXPLAINED <-- scp, it is also --> apollyon <-- !!!!",
             url: placeholderURL,
-            objclass: .keter,
+            objclass: .esoteric,
             esoteric: .thaumiel,
             disruption: .amida,
             risk: .danger
