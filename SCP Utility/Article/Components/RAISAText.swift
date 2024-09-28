@@ -219,7 +219,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: match, with: mark)
         }
         
-        for match in matches(for: #"--[^\s].+[^\s]--"#, in: text) {
+        for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
         }
         
