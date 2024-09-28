@@ -16,6 +16,7 @@ struct ArticleInfoView: View {
     @State private var trigger: Bool = false
     @State private var showUserSheet: Bool = false
     @State private var user: User = User()
+    @State private var userDeleted: Bool = false
     var body: some View {
         let Guide = {
             Rectangle()
@@ -75,35 +76,48 @@ struct ArticleInfoView: View {
                     }
                 }
                 
-                Button(info.createdBy) {
-                    parseUserPage(username: info.createdBy) {
-                        user = $0
-                        trigger.toggle()
+                Group {
+                    if userDeleted {
+                        Text("DELETED_USER_PLACEHOLDER")
+                    } else {
+                        Button(info.createdBy) {
+                            parseUserPage(username: info.createdBy) {
+                                user = $0
+                                trigger.toggle()
+                            }
+                        }
                     }
                 }
-                    .fontWeight(.heavy)
-                    .padding(.top, 40)
+                .fontWeight(.heavy)
+                .padding(.top, 40)
                 
-                HStack {
-                    Text("RANK")
-                    Guide()
-                    Text(String(info.userRank)).foregroundColor(.green)
+                if !userDeleted {
+                    HStack {
+                        Text("RANK")
+                        Guide()
+                        // Crom considers deleted users as one author, so the ranks are all skewed by 1 position.
+                        Text(String(info.userRank - 1)).foregroundColor(.green)
+                    }
+                    HStack {
+                        Text("PAGES_CREATED")
+                        Guide()
+                        Text(String(info.userPageCount)).foregroundColor(.green)
+                    }
+                    HStack {
+                        Text("TOTAL_VOTES")
+                        Guide()
+                        Text(String(info.userTotalRating)).foregroundColor(.green)
+                    }
+                    .padding(.bottom, 10)
                 }
-                HStack {
-                    Text("PAGES_CREATED")
-                    Guide()
-                    Text(String(info.userPageCount)).foregroundColor(.green)
-                }
-                HStack {
-                    Text("TOTAL_VOTES")
-                    Guide()
-                    Text(String(info.userTotalRating)).foregroundColor(.green)
-                }
-                .padding(.bottom, 10)
                 
                 // Licensing
                 Group {
-                    Text("\(article.title)AIV_CITATION\(info.createdBy)")
+                    if userDeleted {
+                        Text("\(article.title)AIV_CITATION_NO_AUTHOR")
+                    } else {
+                        Text("\(article.title)AIV_CITATION\(info.createdBy)")
+                    }
                     Link("AIV_VIEW_SOURCE", destination: article.url)
                     Text("AIV_LICENSE")
                 }
@@ -122,6 +136,10 @@ struct ArticleInfoView: View {
             cromInfo(url: article.url) { scp in
                 info = scp
                 loading = false
+                
+                if info.createdBy == "(user deleted)" {
+                    userDeleted = true
+                }
             }
         }
     }

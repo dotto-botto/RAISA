@@ -238,6 +238,7 @@
 
 // Article Info View
 "%@AIV_CITATION%@" = "\"%@\" by %@, from the SCP Wiki.";
+"%@AIV_CITATION_NO_AUTHOR" = "\"%@\", from the SCP Wiki.";
 "AIV_VIEW_SOURCE" = "View Source";
 "AIV_LICENSE" = "Licensed under CC-BY-SA";
 "RATING" = "Rating";
@@ -246,6 +247,7 @@
 "RANK" = "Rank";
 "PAGES_CREATED" = "Pages Created";
 "TOTAL_VOTES" = "Total Votes";
+"DELETED_USER_PLACEHOLDER" = "Author's account has been deleted.";
 
 "FOOTNOTE_TITLE" = "Footnotes";
 "FV_NO_FOOTNOTES" = "No Footnotes Detected";
