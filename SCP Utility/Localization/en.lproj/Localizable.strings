@@ -258,6 +258,17 @@
 "ACS_LEVEL%lld" = "LEVEL %lld";
 "ACS_TOPSECRET" = "TOP SECRET";
 
+// Content Warnings
+"GORE_WARNING" = "gore";
+"REFERENCES_WARNING" = "sexual references";
+"CONTENT_WARNING" = "sexual content";
+"SA_WARNING" = "sexual assault";
+"ABUSE_WARNING" = "child abuse";
+"SELFHARM_WARNING" = "self harm";
+"SUICIDE_WARNING" = "suicide";
+"TORTURE_WARNING" = "torture";
+"CUSTOM_WARNING" = "other content";
+
 // MARK: - Languages
 "ENGLISH" = "English";
 "RUSSIAN" = "Russian";

@@ -124,25 +124,25 @@ struct Article: Identifiable, Codable {
         return con.isArticleSaved(url: self.url)
     }
     
-    /// Checks page source for content warnings and returns the warnings.
+    /// Checks page source for content warnings and returns the localized strings.
     /// https://scp-wiki.wikidot.com/component:adult-content-warning
     func findContentWarnings() -> [String]? {
         let forbidden: [String:String] = [
-            "gore" : "|gore",
-            "sexual references" : "|sexual-references=",
-            "sexual content" : "|sexually-explicit=",
-            "sexual assault" : "|sexual-assault=",
-            "child abuse" : "|child-abuse=",
-            "self harm" : "|self-harm=",
-            "suicide" : "|suicide=",
-            "torture" : "|torture=",
-            "other content" : "|custom=",
+            "GORE_WARNING" : "|gore",
+            "REFERENCES_WARNING" : "|sexual-references=",
+            "CONTENT_WARNING" : "|sexually-explicit=",
+            "SA_WARNING" : "|sexual-assault=",
+            "ABUSE_WARNING" : "|child-abuse=",
+            "SELFHARM_WARNING" : "|self-harm=",
+            "SUICIDE_WARNING" : "|suicide=",
+            "TORTURE_WARNING" : "|torture=",
+            "CUSTOM_WARNING" : "|custom=",
         ]
         
         var values: [String] = []
         for key in forbidden.keys {
             if self.pagesource.contains(forbidden[key]!) {
-                values.append(key)
+                values.append(NSLocalizedString(key, comment: ""))
             }
         }
         if values == [] { return nil }
