@@ -91,6 +91,7 @@
 "BACK" = "Back";
 "USER_OFFLINE" = "You are not connected to the internet.";
 "DISMISS" = "Dismiss";
+"DONE" = "Done";
 
 // MARK: - Explore
 "EXPLORE_TITLE" = "Explore";
@@ -169,6 +170,10 @@
 "THIS_WEEK" = "This Week";
 "THIS_MONTH" = "This Month";
 "OLDER" = "Older";
+"SELECT_DATE" = "Select Date";
+"START_DATE" = "Start Date";
+"END_DATE" = "End Date";
+"RESET_FILTER" = "Reset Filters";
 
 // MARK: - List View
 "LIST_TITLE" = "Lists";
