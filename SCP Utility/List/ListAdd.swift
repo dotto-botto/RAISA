@@ -16,6 +16,7 @@ struct ListAdd: View {
     
     @State private var alertPresent: Bool = false
     @State private var query: String = ""
+    @State private var subtitleQuery: String = ""
     @State private var showConf: Bool = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -75,17 +76,21 @@ struct ListAdd: View {
                 }
             }
             .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
-                TextField("", text: $query)
+                // Copied from ListView
+                TextField("", text: $query, prompt: Text("TITLE"))
+                TextField("", text: $subtitleQuery, prompt: Text("SUBTITLE"))
                 
                 Button("ADD") {
-                    con.createListEntity(list: SCPList(listid: query))
+                    con.createListEntity(list: SCPList(listid: query.isEmpty ? String(localized: "DEAFULT_LIST_TITLE") : query, subtitle: subtitleQuery))
                     items = con.getAllLists() ?? []
                     alertPresent = false
                     query = ""
+                    subtitleQuery = ""
                 }
                 Button("CANCEL", role: .cancel) {
                     alertPresent = false
                     query = ""
+                    subtitleQuery = ""
                 }
             }
             .disabled(article.url.formatted() == placeHolderArticle.url.formatted() && article.title == placeHolderArticle.title)

@@ -98,6 +98,7 @@ extension PersistenceController { // Lists
         
         object.identifier = list.id
         object.listid = list.listid
+        object.subtitle = list.subtitle
         
         do {
             try context.save()

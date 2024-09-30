@@ -25,9 +25,10 @@ struct SCPList: Identifiable {
             .map { $0.id } ?? []
     }
 
-    init(id: String = UUID().uuidString, listid: String) {
+    init(id: String = UUID().uuidString, listid: String, subtitle: String? = nil) {
         self.id = id
         self.listid = listid
+        self.subtitle = subtitle
     }
 
     /// Create instance from core data entity.

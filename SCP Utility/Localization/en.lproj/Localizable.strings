@@ -199,6 +199,9 @@
 "ALPHABETICAL" = "Alphabetical";
 "DATE_ADDED" = "Date Added";
 "FILTER" = "Filter";
+"TITLE" = "Title";
+"SUBTITLE" = "Subtitle";
+"DEAFULT_LIST_TITLE" = "New List";
 
 // MARK: - Article View, Bar, and Info
 "LOADING_SAFARI" = "This article will open in safari.";

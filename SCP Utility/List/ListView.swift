@@ -13,6 +13,7 @@ import SwiftUI
 struct ListView: View {
     @State private var alertPresent: Bool = false
     @State private var query: String = ""
+    @State private var subtitleQuery: String = ""
     @State private var currentList: SCPList = SCPList(listid: "Placeholder")
     @State private var items = PersistenceController.shared.getAllLists()
     var body: some View {
@@ -59,17 +60,21 @@ struct ListView: View {
                         Image(systemName: "plus")
                     }
                     .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
-                        TextField("", text: $query)
+                        // Copied to ListAdd
+                        TextField("", text: $query, prompt: Text("TITLE"))
+                        TextField("", text: $subtitleQuery, prompt: Text("SUBTITLE"))
                         
                         Button("ADD") {
-                            con.createListEntity(list: SCPList(listid: query))
+                            con.createListEntity(list: SCPList(listid: query.isEmpty ? String(localized: "DEAFULT_LIST_TITLE") : query, subtitle: subtitleQuery))
                             items = con.getAllLists()
                             alertPresent = false
                             query = ""
+                            subtitleQuery = ""
                         }
                         Button("CANCEL", role: .cancel) {
                             alertPresent = false
                             query = ""
+                            subtitleQuery = ""
                         }
                     }
                 }
@@ -296,7 +301,8 @@ struct ListView_Previews: PreviewProvider {
         ListView()
         
         NavigationStack {
-            OneListView(list: SCPList(listid: "Hollow Purple"))
+            OneListView(list: SCPList(listid: "Example List"))
         }
+        .previewDisplayName("One List View")
     }
 }
