@@ -24,6 +24,7 @@ struct ArticleView: View {
     @State private var nextArticle: Article? = nil
     @State private var showNext: Bool = false
     @State private var showFootnoteView: Bool = false
+    @State private var footnoteIndex: Int? = nil
     @State private var containsExplicitContent: Bool = true
     @State private var explicitContent: [String] = []
     @State private var isFragmented: Bool = true
@@ -112,7 +113,7 @@ struct ArticleView: View {
             CommentsView(article: scp)
         }
         .sheet(isPresented: $showFootnoteView) {
-            FootnoteView(article: scp)
+            FootnoteView(article: scp, selectedNoteIndex: footnoteIndex)
                 .presentationDetents([.medium])
         }
         .fullScreenCover(isPresented: $showNext) {
@@ -294,6 +295,29 @@ struct ArticleView: View {
         .tint(theme?.themeAccent)
         .onDisappear {
             defaults.set("", forKey: "focusedCurrentText")
+        }
+        .onOpenURL { url in
+            // raisa://footnote/x
+            guard url.scheme == "raisa" else { return }
+            
+            let components = url.pathComponents
+            guard components.count == 2 else { return }
+            
+            guard let ind = components.last else { return }
+            
+            // This workaround is necessary for the sheet to appear
+            let i = Int(ind)
+            if footnoteIndex == i {
+                // Update it twice so onchange will trigger
+                footnoteIndex = i
+                footnoteIndex = 0
+            } else {
+                footnoteIndex = i
+            }
+        }
+        // footnote index won't be correctly passed to the sheet without this workaround
+        .onChange(of: footnoteIndex) { _ in
+            showFootnoteView = true
         }
     }
 }

@@ -215,7 +215,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         // Footnotes
         let fnmatches = matches(for: #"\[\[footnote]][\s\S]*?\[\[\/footnote]]"#, in: text)
         for (match, index) in zip(fnmatches, fnmatches.indices) {
-            let mark = " " + String(localized: "FOOTNOTE_MARK\(index + 1)")
+            let mark = " [" + String(localized: "FOOTNOTE_MARK\(index + 1)") + "](raisa://footnote/\(index))"
             text = text.replacingOccurrences(of: match, with: mark)
         }
         
@@ -236,6 +236,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         for match in matches(for: #"\/\/.*\/\/"#, in: text) {
+            if match.contains("http") || match.contains("raisa:") {
+                continue
+            }
+            
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
         }
         
