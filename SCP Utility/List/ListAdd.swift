@@ -60,8 +60,7 @@ struct ListAdd: View {
                     }
                     
                     Button("LAV_SAVE_TO_LIBRARY") {
-                        con.createArticleEntity(article: article)
-                        article.downloadImages()
+                        article.saveToDisk()
                         dismiss()
                     }
                     .disabled(con.isArticleSaved(url: article.url))

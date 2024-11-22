@@ -240,6 +240,11 @@ struct Article: Identifiable, Codable {
             return nil
         }
     }
+    
+    func saveToDisk() {
+        con.createArticleEntity(article: self)
+        self.downloadImages()
+    }
 }
 
 /// Finds the next article using "currentTitle" as a query.

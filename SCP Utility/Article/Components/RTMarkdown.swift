@@ -46,6 +46,7 @@ struct RTMarkdown: View {
         .onTapGesture(count: 2) {
             let newText: String? = focusedCurrentText == text ? nil : text
             article.setScroll(newText)
+            if !article.isSaved() { article.saveToDisk() }
             focusedCurrentText = newText ?? ""
         }
         .task { focusedCurrentText = article.currenttext ?? "" }

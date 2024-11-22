@@ -53,8 +53,7 @@ struct SCPList: Identifiable {
         }
         
         if !(con.isArticleSaved(id: article.id) ?? false) {
-            con.createArticleEntity(article: article)
-            article.downloadImages()
+            article.saveToDisk()
         }
         con.addArticleToListFromId(listid: self.listid, article: article)
     }
