@@ -61,7 +61,7 @@ struct ArticleView: View {
                 RAISAText(article: scp)
             }
         }
-        .navigationTitle(scp.title)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             bookmarkStatus = scp.isSaved()
             checkmarkStatus = scp.isComplete()
