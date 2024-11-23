@@ -128,15 +128,15 @@ struct Article: Identifiable, Codable {
     /// https://scp-wiki.wikidot.com/component:adult-content-warning
     func findContentWarnings() -> [String]? {
         let forbidden: [String:String] = [
-            "GORE_WARNING" : "|gore",
-            "REFERENCES_WARNING" : "|sexual-references=",
-            "CONTENT_WARNING" : "|sexually-explicit=",
-            "SA_WARNING" : "|sexual-assault=",
-            "ABUSE_WARNING" : "|child-abuse=",
-            "SELFHARM_WARNING" : "|self-harm=",
-            "SUICIDE_WARNING" : "|suicide=",
-            "TORTURE_WARNING" : "|torture=",
-            "CUSTOM_WARNING" : "|custom=",
+            "GORE_WARNING" : "|gore=1",
+            "REFERENCES_WARNING" : "|sexual-references=1",
+            "CONTENT_WARNING" : "|sexually-explicit=1",
+            "SA_WARNING" : "|sexual-assault=1",
+            "ABUSE_WARNING" : "|child-abuse=1",
+            "SELFHARM_WARNING" : "|self-harm=1",
+            "SUICIDE_WARNING" : "|suicide=1",
+            "TORTURE_WARNING" : "|torture=1",
+            "CUSTOM_WARNING" : "|custom=1",
         ]
         
         var values: [String] = []
