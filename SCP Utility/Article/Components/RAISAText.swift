@@ -193,6 +193,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"\[!--[\s\S]*?--\]"#),
             Regex(#"\[\[footnoteblock.*?\]\]"#),
             Regex(#"(\[\[code.*?\]\]|\[\[\/code\]\])"#),
+            Regex(#"^\s*={3,}\s*$"#).anchorsMatchLineEndings(),
         ]
         
         for regex in regexDeletes {
@@ -297,7 +298,6 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         text = try! text.replacing(Regex(#"\n---+$"#), with: "\n---") // horizontal rule
-        text = try! text.replacing(Regex(#"\n===$"#), with: "\n---$")
         text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
         text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
         text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
