@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -156,6 +156,10 @@
 		F6EFF42229DB81D200605E40 /* ArticleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleInfoView.swift; sourceTree = "<group>"; };
 		F6EFF42529DF879500605E40 /* Collapsible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collapsible.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F69473462CF2694900BC6ADB /* Table of Contents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Table of Contents"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F604050E296248F8003577D7 /* Frameworks */ = {
@@ -388,6 +392,7 @@
 		F6EFF42429DF878900605E40 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				F69473462CF2694900BC6ADB /* Table of Contents */,
 				F6E9D9212A38BDAF0096912F /* ListPages */,
 				F66DF2352A05DED0004437AC /* Anomaly Class Bar */,
 				F64BEEC629FC6B2700AEB15B /* RAISAText.swift */,
@@ -419,6 +424,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F69473462CF2694900BC6ADB /* Table of Contents */,
 			);
 			name = "SCP Utility";
 			packageProductDependencies = (

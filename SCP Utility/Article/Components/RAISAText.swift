@@ -51,6 +51,25 @@ struct RAISAText: View {
                         }
                     }
                 }
+                // TODO: Dont call openurl on every instance of RT
+                .onOpenURL { url in
+                    // raisa://toc/(index)
+                    guard url.scheme == "raisa" else { return }
+                    
+                    let components = url.absoluteString.components(separatedBy: "/")
+                    guard components.count == 4 else { return }
+                    guard components[2] == "toc" else { return }
+                    
+                    if let index = Int(components.last ?? "x") {
+                        let header = matches(for: #"^\++\s.+$"#, in: article.pagesource, option: .anchorsMatchLines)[index]
+                        withAnimation {
+                            // need to filter
+                            FilterToMarkdown(doc: header) { filtered in
+                                value.scrollTo(filtered)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -216,7 +235,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         // Footnotes
         let fnmatches = matches(for: #"\[\[footnote]][\s\S]*?\[\[\/footnote]]"#, in: text)
         for (match, index) in zip(fnmatches, fnmatches.indices) {
-            let mark = " [" + String(localized: "FOOTNOTE_MARK\(index + 1)") + "](raisa://footnote/\(index))"
+            let mark = " [[" + String(localized: "FOOTNOTE_MARK\(index + 1)") + "]](raisa://footnote/\(index))"
             text = text.replacingOccurrences(of: match, with: mark)
         }
         
@@ -299,9 +318,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         text = try! text.replacing(Regex(#"\n---+$"#), with: "\n---") // horizontal rule
         text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
-        text = try! text.replacing(Regex(#"\n\++ "#), with: "\n## ") // header markings
-        text = try! text.replacing(Regex(#"\++\*"#), with: "##") // header markings escaped from toc
-        text = try! text.replacing(Regex(#"\n> \++ "#), with: "\n> ## ")
+        text = try! text.replacing(Regex(#"^\++ "#).anchorsMatchLineEndings(), with: "## ") // header markings
+        text = try! text.replacing(Regex(#"^\++\*"#).anchorsMatchLineEndings(), with: "##") // header markings escaped from toc
+        text = try! text.replacing(Regex(#"^> \++ "#).anchorsMatchLineEndings(), with: "> ## ")
         text = try! text.replacing(Regex(#"\n> \++\* "#), with: "\n> ## ") // header markings escaped from toc
         text = try! text.replacing(Regex(#"\n="#), with: "\n")
         text = try! text.replacing(Regex(#"\n> ="#), with: "\n> ")

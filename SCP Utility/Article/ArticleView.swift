@@ -30,6 +30,8 @@ struct ArticleView: View {
     @State private var isFragmented: Bool = true
     @State private var showBookmarkAlert: Bool = false
     @State private var noTranslationAlert: Bool = false
+    @State private var showTOCView: Bool = false
+    @State private var TOCExists: Bool = false
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     let defaults = UserDefaults.standard
@@ -37,6 +39,7 @@ struct ArticleView: View {
     var body: some View {
         let theme: RAISATheme? = theme ?? scp.findTheme()
         
+        // MARK: View
         VStack(alignment: .leading) {
             if containsExplicitContent {
                 VStack {
@@ -62,6 +65,7 @@ struct ArticleView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        // MARK: On Appear
         .onAppear {
             bookmarkStatus = scp.isSaved()
             checkmarkStatus = scp.isComplete()
@@ -97,10 +101,15 @@ struct ArticleView: View {
                 }
             }
             
+            if scp.pagesource.contains(/\[\[.*?toc]]/) {
+                TOCExists = true
+            }
+            
             findNextArticle(currentTitle: scp.title) { article in
                 nextArticle = article
             }
         }
+        // MARK: Sheets
         .sheet(isPresented: $presentSheet, onDismiss: {
             bookmarkStatus = scp.isSaved()
         }) {
@@ -114,6 +123,10 @@ struct ArticleView: View {
         }
         .sheet(isPresented: $showFootnoteView) {
             FootnoteView(article: scp, selectedNoteIndex: footnoteIndex)
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showTOCView) {
+            TOCView(toc: TOC(fromArticle: scp))
                 .presentationDetents([.medium])
         }
         .fullScreenCover(isPresented: $showNext) {
@@ -130,6 +143,7 @@ struct ArticleView: View {
             Text("HOW_TO_SAVE")
         }
         .toolbar {
+            // MARK: Top Bar
             ToolbarItem(placement: .principal) {
                 VStack {
                     Text(scp.title).font(.headline)
@@ -175,7 +189,7 @@ struct ArticleView: View {
                     }
                 }
             }
-
+            
             ToolbarItem {
                 if nextArticle != nil {
                     Button {
@@ -187,7 +201,7 @@ struct ArticleView: View {
                 }
             }
 
-            // Bottom
+            // MARK: Bottom Bar
             ToolbarItemGroup(placement: .bottomBar) {
                 Button {
                     presentSheet.toggle()
@@ -274,6 +288,17 @@ struct ArticleView: View {
                             }
                         }
                         .disabled(theme == nil)
+                        
+                        Button {
+                            showTOCView.toggle()
+                        } label: {
+                            HStack {
+                                Text("TOCV_TITLE")
+                                Image(systemName: "list.bullet.rectangle")
+                                    .opacity(showBackground ? 1 : 0.3)
+                            }
+                        }
+                        .disabled(!TOCExists)
                     } label: {
                         Image(systemName: "list.bullet")
                     }
@@ -300,9 +325,9 @@ struct ArticleView: View {
             // raisa://footnote/x
             guard url.scheme == "raisa" else { return }
             
-            let components = url.pathComponents
-            guard components.count == 2 else { return }
-            
+            let components = url.absoluteString.components(separatedBy: "/")
+            guard components.count == 4 else { return }
+            guard components[2] == "footnote" else { return }
             guard let ind = components.last else { return }
             
             // This workaround is necessary for the sheet to appear

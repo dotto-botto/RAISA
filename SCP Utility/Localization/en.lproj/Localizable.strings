@@ -231,7 +231,7 @@
 "CV_TITLE%@" = "Discuss: %@";
 "CV_FOLD" = "Fold";
 "CV_UNFOLD" = "Unfold";
-"FOOTNOTE_MARK%lld" = "[fn.%lld]";
+"FOOTNOTE_MARK%lld" = "fn.%lld";
 "BOOKMARKED" = "Bookmarked";
 "NO_TRANSLATION_FOUND" = "No translation found.";
 
@@ -257,9 +257,6 @@
 "TOTAL_VOTES" = "Total Votes";
 "DELETED_USER_PLACEHOLDER" = "Author's account has been deleted.";
 
-"FOOTNOTE_TITLE" = "Footnotes";
-"FV_NO_FOOTNOTES" = "No Footnotes Detected";
-
 // Theme
 "TOGGLE_BG" = "Toggle Background";
 
@@ -267,6 +264,10 @@
 "ACS_ITEMNUM" = "ITEM #";
 "ACS_LEVEL%lld" = "LEVEL %lld";
 "ACS_TOPSECRET" = "TOP SECRET";
+"FOOTNOTE_TITLE" = "Footnotes";
+"FV_NO_FOOTNOTES" = "No Footnotes Detected";
+"TOCV_TITLE" = "Table of Contents";
+"TOCV_NO_HEADERS" = "No Headers Detected";
 
 // Content Warnings
 "GORE_WARNING" = "gore";
