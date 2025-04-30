@@ -150,6 +150,9 @@ func cromAPISearchFromURL(query: URL, completion: @escaping (Article?) -> Void) 
     let graphQLQuery = """
 query Search($query: URL! = "\(formattedURL)") {
     page(url: $query) {
+    alternateTitles {
+      title
+    }
     wikidotInfo {
       title
       source
@@ -180,9 +183,11 @@ query Search($query: URL! = "\(formattedURL)") {
             guard let title = page["wikidotInfo"]["title"].string else { completion(nil); return }
             guard let source = page["wikidotInfo"]["source"].string else { completion(nil); return }
             let pic = page["wikidotInfo"]["thumbnailUrl"].url
-            
+            let subtitle = page["alternateTitles"].arrayValue.first?["title"].string
+
             article = Article(
                 title: title,
+                subtitle: subtitle,
                 pagesource: source,
                 url: query,
                 thumbnail: pic ?? nil
