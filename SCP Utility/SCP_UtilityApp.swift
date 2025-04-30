@@ -27,12 +27,11 @@ struct SCP_UtilityApp: App {
                         
                         UserDefaults.standard.register(defaults: [
                             "trackHistory" : true,
-                            "articleViewSetting" : 0,
-                            "storeIcloud" : true,
-                            "autoScroll" : true,
-                            "articleBarIds" : "",
                             "showAVWallpaper" : true,
                             "bookmarkAlert" : true,
+                            "downloadImages" : true,
+                            "trackSearchHistory" : true,
+                            "chosenRaisaLanguage" : RAISALanguage.english.rawValue,
                         ])
                     }
                     isFirstLaunch = false

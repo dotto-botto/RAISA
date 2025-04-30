@@ -12,7 +12,6 @@ import Kingfisher
 struct SettingsView: View {
     @AppStorage("trackHistory") var trackHistory = true
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
-    @AppStorage("storeIcloud") var storeIcloud = true
     @AppStorage("showAVWallpaper") var showAVWallpaper = true
     @AppStorage("downloadImages") var downloadImages = true
     
@@ -87,6 +86,7 @@ struct SettingsView: View {
             defaults.removeObject(forKey: "defaultOpen")
             defaults.removeObject(forKey: "autoScroll")
             defaults.removeObject(forKey: "articleBarIds")
+            defaults.removeObject(forKey: "storeIcloud")
         }
     }
 }
