@@ -89,9 +89,6 @@ struct RandomCard: View {
             NavigationStack { ArticleView(scp: article) }
         }
         .onAppear {
-            #if targetEnvironment(simulator)
-            article = Article(title: "RandomCard disabled in previews", pagesource: "", url: placeholderURL)
-            #else
             if !RAISALanguage.allSupportedCases.contains(userIntBranch) {
                 article = Article(title: "...", pagesource: "", url: placeholderURL)
                 disabled = true
@@ -101,7 +98,6 @@ struct RandomCard: View {
                 }
                 beenLoaded = true
             }
-            #endif
         }
     }
 }

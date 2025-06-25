@@ -10,53 +10,80 @@ import Kingfisher
 
 /// ExploreView card that displays The last read article.
 struct ResumeCard: View {
-    var article: Article
+    @State var article: Article?
     
-    init?() {
-        guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { return nil }
+    init() {
+        guard let url = UserDefaults.standard.url(forKey: "lastReadUrl") else { self.article = nil; return }
         
         var article: Article? = nil
-        raisaSearchFromURL(query: url) {
-            guard let scp = $0 else { return }
-            article = scp
-        }
+        guard let item = PersistenceController.shared.getArticleByURL(url: url) else { self.article = nil; return }
+        article = Article(fromEntity: item)
         
-        guard article != nil else { return nil }
-        self.article = article!
+        self.article = article
     }
     
     @State var showSheet: Bool = false
     var body: some View {
-        VStack {
-            HStack {
-                Text("RESUME_CARD")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .padding(.leading)
+        if let url = UserDefaults.standard.url(forKey: "lastReadUrl") {
+            VStack {
+                HStack {
+                    Text("RESUME_CARD")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .padding(.leading)
+                    Spacer()
+                }
                 Spacer()
+                if let article {
+                    HStack {
+                        Text(article.title)
+                            .font(.monospaced(.largeTitle)())
+                            .lineLimit(2)
+                        Image(systemName: "arrow.forward")
+                    }
+                    .onTapGesture {
+                        // refresh article
+                        if let url = UserDefaults.standard.url(forKey: "lastReadUrl") {
+                            if let entity = PersistenceController.shared.getArticleByURL(url: url) {
+                                self.article = Article(fromEntity: entity)
+                            }
+                        }
+                        
+                        showSheet = true
+                    }
+                } else {
+                    ProgressView()
+                }
             }
-            Spacer()
-            HStack {
-                Text(article.title)
-                    .font(.monospaced(.largeTitle)())
-                    .lineLimit(2)
-                Image(systemName: "arrow.forward")
+            .frame(maxWidth: .infinity, maxHeight: 250)
+            .padding(10)
+            .background {
+                if let article {
+                    KFImage(article.thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                        .opacity(0.5)
+                }
             }
-            .onTapGesture {
-                showSheet = true
+            .clipped()
+            .fullScreenCover(isPresented: $showSheet) {
+                // article should never be nil, but just in case
+                if let article {
+                    NavigationStack { ArticleView(scp: article) }
+                } else {
+                    Spacer()
+                        .onAppear {
+                            showSheet = false
+                        }
+                }
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: 250)
-        .padding(10)
-        .background {
-            KFImage(article.thumbnail)
-                .resizable()
-                .scaledToFill()
-                .opacity(0.5)
-        }
-        .clipped()
-        .fullScreenCover(isPresented: $showSheet) {
-            NavigationStack { ArticleView(scp: article) }
+            .task {
+                if article == nil {
+                    cromAPISearchFromURL(query: url) {
+                        article = $0
+                    }
+                }
+            }
         }
     }
 }
