@@ -24,15 +24,14 @@ struct SCP_UtilityApp: App {
                     if isFirstLaunch {
                         // Don't cache images on disk
                         ImageCache.default.diskStorage.config.sizeLimit = 1
+                        let defaults = UserDefaults.standard
+                        defaults.set(true, forKey: "trackHistory")
+                        defaults.set(true, forKey: "showAVWallpaper")
+                        defaults.set(true, forKey: "bookmarkAlert")
+                        defaults.set(true, forKey: "downloadImages")
+                        defaults.set(true, forKey: "trackSearchHistory")
+                        defaults.set(RAISALanguage.english.rawValue, forKey: "chosenRaisaLanguage")
                         
-                        UserDefaults.standard.register(defaults: [
-                            "trackHistory" : true,
-                            "showAVWallpaper" : true,
-                            "bookmarkAlert" : true,
-                            "downloadImages" : true,
-                            "trackSearchHistory" : true,
-                            "chosenRaisaLanguage" : RAISALanguage.english.rawValue,
-                        ])
                     }
                     isFirstLaunch = false
                 }
