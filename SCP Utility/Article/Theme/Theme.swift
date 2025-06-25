@@ -14,6 +14,7 @@ protocol RAISATheme {
     var themeAccent: Color { get }
 }
 
+// extension allows some values to be optional
 extension RAISATheme {
     var logo: Image? { get { return nil } }
     var wallpaper: AnyView? { get { return nil } }
@@ -76,6 +77,7 @@ struct CreepypastaTheme: RAISATheme {
     let keyword: String = "theme:creepypasta"
     let themeAccent: Color = Color("Para")
     let wallpaper = AnyView(Color("ParaBlack"))
+    let preferredScheme: ColorScheme = .dark
 }
 
 // https://scp-wiki.wikidot.com/theme:flopstyle-dark
@@ -85,6 +87,7 @@ struct FlopstyleDarkTheme: RAISATheme {
     let themeAccent: Color = Color("Bright Tyrian Pink")
     let logo: Image = Image("Flopstyle Logo")
     let wallpaper = AnyView(Color("FlopstyleBlack"))
+    let preferredScheme: ColorScheme = .dark
 }
 
 // https://scp-wiki.wikidot.com/theme:isolated-terminal

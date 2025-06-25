@@ -318,7 +318,8 @@ struct ArticleView: View {
                 }
             }
         }
-        .tint(theme?.themeAccent)
+        .tint(theme?.themeAccent ?? Color("AccentColor"))
+        .preferredColorScheme(theme?.preferredScheme)
         .onDisappear {
             defaults.set("", forKey: "focusedCurrentText")
         }
