@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 /// Image view to be displayed inside ArticleView.
 struct ArticleImage: View {
@@ -36,11 +35,42 @@ struct ArticleImage: View {
     }
     
     var body: some View {
-        if storedImage != nil {
-            VStack {
-                Image(uiImage: storedImage!)
-                    .resizable()
-                    .scaledToFit()
+        Group {
+            if storedImage != nil {
+                VStack {
+                    Image(uiImage: storedImage!)
+                        .resizable()
+                        .scaledToFit()
+                        .background {
+                            if article.findTheme() == nil {
+                                Rectangle()
+                                    .cornerRadius(8)
+                                    .foregroundColor(.white)
+                                    .opacity(0.6)
+                            }
+                        }
+                        .contextMenu {
+                            Menu {
+                                Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
+                            } label: {
+                                Label("IMAGE_INFO", systemImage: "ladybug")
+                            }
+                        }
+                    Text(subtitle ?? "")
+                        .font(.headline)
+                }
+            } else {
+                let parsed = parseArticleImage(content, articleURL: article.url).first
+                VStack {
+                    AsyncImage(url: parsed?.value) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    } placeholder: {
+                        Image("image-placeholder")
+                            .resizable()
+                            .scaledToFit()
+                    }
                     .background {
                         if article.findTheme() == nil {
                             Rectangle()
@@ -51,56 +81,27 @@ struct ArticleImage: View {
                     }
                     .contextMenu {
                         Menu {
-                            Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
+                            Label("IMAGE_STORED_ON_DISK", systemImage: "xmark")
+                            
+                            if let url = parsed?.value {
+                                Link(destination: url) {
+                                    Text(url.formatted())
+                                }
+                            } else {
+                                Text("error finding url")
+                            }
                         } label: {
                             Label("IMAGE_INFO", systemImage: "ladybug")
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                Text(subtitle ?? "")
-                    .font(.headline)
+                    Text(FilterToPure(doc: parsed?.key ?? ""))
+                        .font(.headline)
+                }
             }
-            .padding(.vertical)
-        } else {
-            let parsed = parseArticleImage(content, articleURL: article.url).first
-            VStack {
-                AsyncImage(url: parsed?.value) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } placeholder: {
-                    Image("image-placeholder")
-                        .resizable()
-                        .scaledToFit()
-                }
-                .background {
-                    if article.findTheme() == nil {
-                        Rectangle()
-                            .cornerRadius(8)
-                            .foregroundColor(.white)
-                            .opacity(0.6)
-                    }
-                }
-                .contextMenu {
-                    Menu {
-                        Label("IMAGE_STORED_ON_DISK", systemImage: "xmark")
-                        
-                        if let url = parsed?.value {
-                            Link(destination: url) {
-                                Text(url.formatted())
-                            }
-                        } else {
-                            Text("error finding url")
-                        }
-                    } label: {
-                        Label("IMAGE_INFO", systemImage: "ladybug")
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                Text(FilterToPure(doc: parsed?.key ?? ""))
-                    .font(.headline)
-            }
-            .padding(.vertical)
         }
+        .padding(.vertical)
+        .frame(maxHeight: UIScreen.main.bounds.height * 0.6)
     }
 }
 

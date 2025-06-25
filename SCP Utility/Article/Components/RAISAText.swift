@@ -179,20 +179,6 @@ func parseRT(_ text: String) -> [RTItem] {
     return items
 }
 
-func parseBlockQuoteDivs(_ doc: String) -> String {
-    var returnDoc = doc
-    for match in matches(for: #"\[\[div class="blockquote".*?]][\s\S]*?\[\[\/div]]"#, in: doc) {
-        var newlist: [String] = []
-        let list = match.components(separatedBy: .newlines)
-        for item in list {
-            newlist.append("> " + item)
-        }
-        
-        returnDoc = returnDoc.replacingOccurrences(of: match, with: newlist.joined(separator: "\n"))
-    }
-    return returnDoc
-}
-
 // MARK: Normal Filter
 func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     DispatchQueue.main.async {
@@ -213,6 +199,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"\[\[footnoteblock.*?\]\]"#),
             Regex(#"(\[\[code.*?\]\]|\[\[\/code\]\])"#),
             Regex(#"^\s*={3,}\s*$"#).anchorsMatchLineEndings(),
+            Regex(#"^="#).anchorsMatchLineEndings(),
         ]
         
         for regex in regexDeletes {
@@ -221,7 +208,12 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         
         text.removeText(from: "[[include info:start", to: "include info:end]]")
         text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
-        text = parseBlockQuoteDivs(text)
+        
+        // Blockquotes
+        for match in matches(for: #"\[\[div class="blockquote".*?]][\s\S]*?\[\[\/div]]"#, in: text) {
+            let newlist = match.components(separatedBy: .newlines).map { "> " + $0 }
+            text = text.replacingOccurrences(of: match, with: newlist.joined(separator: "\n"))
+        }
         
         text.removeText(from: "[[include component:info-ayers", to: "]]")
         text.removeText(from: "[[include :scp-wiki:component:info-ayers", to: "]]")
@@ -239,6 +231,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: match, with: mark)
         }
         
+        // (^|[^|])(--[^-]+?--)(?!-) --> Unreliable regex but doesn't match markdown table syntax
         for match in matches(for: #"--[^\s].*[^\s]--"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "--", with: "~~"))
         }
@@ -255,11 +248,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "@", with: " "))
         }
         
-        for match in matches(for: #"\/\/.*\/\/"#, in: text) {
-            if match.contains("http") || match.contains("raisa:") {
-                continue
-            }
-            
+        for match in matches(for: #"(^|[^:])(\/\/)"#, in: text) {
             text = text.replacingOccurrences(of: match, with: match.replacingOccurrences(of: "//", with: "*"))
         }
         
@@ -271,10 +260,10 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         }
         
         // User tags
-        for match in matches(for: #"\[\[\*?user.*?\]\]"#, in: text) {
+        for match in matches(for: #"\[\[\*?user.*?\]\]"#, in: text, option: .caseInsensitive) {
             text = text.replacingOccurrences(of: match, with: match
-                .replacingOccurrences(of: "[[*user ", with: "")
-                .replacingOccurrences(of: "[[user ", with: "")
+                .replacingOccurrences(of: "[[*user ", with: "", options: .caseInsensitive)
+                .replacingOccurrences(of: "[[user ", with: "", options: .caseInsensitive)
                 .replacingOccurrences(of: "]]", with: "")
             )
         }
@@ -311,19 +300,19 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "[[==]]",
             "[[/==]]",
             "[[/a]]",
+            "[[toc]]"
         ]
         for string in stringDeletes {
             text = text.replacingOccurrences(of: string, with: "")
         }
         
-        text = try! text.replacing(Regex(#"\n---+$"#), with: "\n---") // horizontal rule
-        text = try! text.replacing(Regex(#"\n# "#), with: "\n- ")
+        text = try! text.replacing(Regex(#"^---+$"#).anchorsMatchLineEndings(), with: "---") // horizontal rule
+        text = try! text.replacing(Regex(#"^# "#).anchorsMatchLineEndings(), with: "- ")
         text = try! text.replacing(Regex(#"^\++ "#).anchorsMatchLineEndings(), with: "## ") // header markings
         text = try! text.replacing(Regex(#"^\++\*"#).anchorsMatchLineEndings(), with: "##") // header markings escaped from toc
         text = try! text.replacing(Regex(#"^> \++ "#).anchorsMatchLineEndings(), with: "> ## ")
-        text = try! text.replacing(Regex(#"\n> \++\* "#), with: "\n> ## ") // header markings escaped from toc
-        text = try! text.replacing(Regex(#"\n="#), with: "\n")
-        text = try! text.replacing(Regex(#"\n> ="#), with: "\n> ")
+        text = try! text.replacing(Regex(#"^> \++\* "#).anchorsMatchLineEndings(), with: "> ## ") // header markings escaped from toc
+        text = try! text.replacing(Regex(#"^> ="#).anchorsMatchLineEndings(), with: "> ")
         
         let supportedIncludes: [String] = [
             "image-features-source",
@@ -355,7 +344,13 @@ func FilterToPure(doc: String) -> String {
     text.removeText(from: "[[include info:start", to: "include info:end]]")
     text.removeText(from: "[[include :scp-wiki:info:start", to: "info:end]]")
     text.removeText(from: "[[module Rate", to: "]]"); text.removeText(from: "[[module rate", to: "]]")
-    text = parseBlockQuoteDivs(text)
+    
+    // Blockquotes
+    for match in matches(for: #"\[\[div class="blockquote".*?]][\s\S]*?\[\[\/div]]"#, in: text) {
+        let newlist = match.components(separatedBy: .newlines).map { "> " + $0 }
+        text = text.replacingOccurrences(of: match, with: newlist.joined(separator: "\n"))
+    }
+    
     for _ in text.indicesOf(string: "[[div") {
         text.removeText(from: "[[div", to: "]]")
         text.removeText(from: "[[/div", to: "]]")

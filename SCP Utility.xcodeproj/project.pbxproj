@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,10 +32,13 @@
 		F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64BEED62A03057A00AEB15B /* ListRow.swift */; };
 		F65A110B2A1AD34F00B096F7 /* RAISALanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */; };
 		F65A110E2A1D4FCC00B096F7 /* ChangeLanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65A110D2A1D4FCC00B096F7 /* ChangeLanguageView.swift */; };
+		F65FD36F2D627D2D00811C4D /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65FD36E2D627D2D00811C4D /* Request.swift */; };
 		F66AD54A2A33A77C003DF992 /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66AD5492A33A77C003DF992 /* StorageView.swift */; };
 		F66AD54E2A33F211003DF992 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66AD54D2A33F211003DF992 /* AboutView.swift */; };
 		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
 		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
+		F672FDD62DD3D26600B3AB02 /* TOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F672FDD32DD3D26600B3AB02 /* TOC.swift */; };
+		F672FDD72DD3D26600B3AB02 /* TOCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F672FDD42DD3D26600B3AB02 /* TOCView.swift */; };
 		F69219F129BA5C1200EF19D0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F69219F029BA5C1200EF19D0 /* Kingfisher */; };
 		F69219F829BA6A4400EF19D0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F69219FA29BA6A4400EF19D0 /* Localizable.strings */; };
 		F69219FF29BA6C7500EF19D0 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69219FE29BA6C7500EF19D0 /* ExploreView.swift */; };
@@ -111,11 +114,14 @@
 		F64BEED62A03057A00AEB15B /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
 		F65A110A2A1AD34F00B096F7 /* RAISALanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAISALanguage.swift; sourceTree = "<group>"; };
 		F65A110D2A1D4FCC00B096F7 /* ChangeLanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeLanguageView.swift; sourceTree = "<group>"; };
+		F65FD36E2D627D2D00811C4D /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		F66AD5492A33A77C003DF992 /* StorageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageView.swift; sourceTree = "<group>"; };
 		F66AD54C2A33E58D003DF992 /* SCP Utility.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SCP Utility.entitlements"; sourceTree = "<group>"; };
 		F66AD54D2A33F211003DF992 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
 		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
+		F672FDD32DD3D26600B3AB02 /* TOC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOC.swift; sourceTree = "<group>"; };
+		F672FDD42DD3D26600B3AB02 /* TOCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOCView.swift; sourceTree = "<group>"; };
 		F69219F929BA6A4400EF19D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F69219FE29BA6C7500EF19D0 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		F6921A0029BA9D3F00EF19D0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -156,10 +162,6 @@
 		F6EFF42229DB81D200605E40 /* ArticleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleInfoView.swift; sourceTree = "<group>"; };
 		F6EFF42529DF879500605E40 /* Collapsible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collapsible.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		F69473462CF2694900BC6ADB /* Table of Contents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Table of Contents"; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F604050E296248F8003577D7 /* Frameworks */ = {
@@ -251,6 +253,15 @@
 				F66DF2382A05DF1C004437AC /* ACSCellView.swift */,
 			);
 			path = "Anomaly Class Bar";
+			sourceTree = "<group>";
+		};
+		F672FDD52DD3D26600B3AB02 /* Table of Contents */ = {
+			isa = PBXGroup;
+			children = (
+				F672FDD32DD3D26600B3AB02 /* TOC.swift */,
+				F672FDD42DD3D26600B3AB02 /* TOCView.swift */,
+			);
+			path = "Table of Contents";
 			sourceTree = "<group>";
 		};
 		F69219F529BA69E200EF19D0 /* Localization */ = {
@@ -358,6 +369,7 @@
 				F604054A29624A3F003577D7 /* SearchView.swift */,
 				F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */,
 				F6DFED05299EF1B6002C3F1A /* Crom.swift */,
+				F65FD36E2D627D2D00811C4D /* Request.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -392,7 +404,7 @@
 		F6EFF42429DF878900605E40 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				F69473462CF2694900BC6ADB /* Table of Contents */,
+				F672FDD52DD3D26600B3AB02 /* Table of Contents */,
 				F6E9D9212A38BDAF0096912F /* ListPages */,
 				F66DF2352A05DED0004437AC /* Anomaly Class Bar */,
 				F64BEEC629FC6B2700AEB15B /* RAISAText.swift */,
@@ -424,9 +436,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				F69473462CF2694900BC6ADB /* Table of Contents */,
 			);
 			name = "SCP Utility";
 			packageProductDependencies = (
@@ -513,6 +522,7 @@
 				F64BEECD29FD630100AEB15B /* Comment.swift in Sources */,
 				F64BEED129FD67CC00AEB15B /* CommentParser.swift in Sources */,
 				F6E9D9272A438AD40096912F /* ArticleAudio.swift in Sources */,
+				F65FD36F2D627D2D00811C4D /* Request.swift in Sources */,
 				F6921A0129BA9D3F00EF19D0 /* SettingsView.swift in Sources */,
 				F62A5D7729D9F90300661DE0 /* DataController.swift in Sources */,
 				F64BEEC329F45CEC00AEB15B /* ArticleTabView.swift in Sources */,
@@ -529,6 +539,8 @@
 				F65A110E2A1D4FCC00B096F7 /* ChangeLanguageView.swift in Sources */,
 				F64BEECA29FD62B300AEB15B /* CommentsView.swift in Sources */,
 				F6A7FCE32A5A0C96001E2BED /* FootnoteView.swift in Sources */,
+				F672FDD62DD3D26600B3AB02 /* TOC.swift in Sources */,
+				F672FDD72DD3D26600B3AB02 /* TOCView.swift in Sources */,
 				F6EFF42129DB7D0200605E40 /* ArticleInfo.swift in Sources */,
 				F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */,
 				F6E9D9202A36886F0096912F /* SyntaxGuideView.swift in Sources */,

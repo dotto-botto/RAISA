@@ -34,49 +34,20 @@ struct ArticleTable: View {
                                     }
                                 } preview: {
                                     List {
-                                        Markdown(FilterToPure(doc: cell))
+                                        RAISAText(article: article, text: cell)
                                     }
                                 }
                         }
                     }
+                    .bold(index == 0)
                     
-                    if index != table.indices.last {
+                    if index != table.count - 1 {
                         Divider()
                     }
                 }
             }
             Rectangle().frame(height: 1)
         }
-//        ScrollView(.horizontal, showsIndicators: false) {
-//            Rectangle().frame(height: 1)
-//            Grid {
-//                ForEach(Array(zip(table, table.indices)), id: \.1) { row, _ in
-//                    // Row
-//                    HStack {
-//                        ForEach(Array(zip(row, row.indices)), id: \.1) { cell, _ in
-//                            // Cell
-//                            RAISAText(article: article, text: cell)
-//                                .scrollDisabled(true)
-//                                .frame(maxWidth: 300, maxHeight: .infinity, alignment: .leading)
-//                                .fixedSize(horizontal: false, vertical: true)
-//                                .contextMenu {
-//                                    Button {} label: {
-//                                        Label("DISMISS", systemImage: "xmark")
-//                                    }
-//                                } preview: {
-//                                    List {
-//                                        RAISAText(article: article, text: cell)
-//                                    }
-//                                }
-//                        }
-//                    }
-//                    Spacer()
-//                    Divider()
-//                }
-//            }
-//            Rectangle().frame(height: 1)
-//        }
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     /// Returns an entire table, including the headers
@@ -136,39 +107,6 @@ func matches(for regex: String, in text: String, option: NSRegularExpression.Opt
 
 struct ArticleTable_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleTable(article: placeHolderArticle, doc: """
-[[table style="width: 100%;"]]
-[[row]]
-[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 90%]]**Assigned Site**[[/size]]
-[[/cell]]
-[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 90%]]**Site Director**[[/size]]
-[[/cell]]
-[[cell style="border-bottom: 1px solid #AAA; border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 90%]]**Research Head**[[/size]]
-[[/cell]]
-[[cell style="border-bottom: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 90%]]**Assigned Task Force**[[/size]]
-[[/cell]]
-[[/row]]
-[[row]]
-[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 80%]]USMILA Site-19[[/size]]
-[[/cell]]
-[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 80%]]Tilda Moose[[/size]]
-[[/cell]]
-[[cell style="border-right: 1px solid #AAA; text-align: center; width: 25%;"]]
-[[size 80%]]Everett Mann, M.D.[[/size]]
-[[/cell]]
-[[cell style="text-align: center; width: 25%;"]]
-[[size 80%]]MTF A-14 "Dishwashers"[[/size]]
-[[/cell]]
-[[/row]]
-[[/table]]
-""").previewDisplayName("Div Style")
-        
         let textDoc = """
 ||~ Subject Information ||~ SCP-3285-A Title Instance ||~ Summary ||~ Effects of SCP-3285-A Exposure ||
 || D-37245, standard subject taken from normal pool of D-Class. Subject is a 26-year old female with high school education and criminal convictions related to motor vehicle theft. || The Free Story of Mark Twain's Stupidity || An extended dialogue between writers Mark Twain and William Shakespeare, apparently located in an afterlife resembling the traditional Western version of Heaven. Shakespeare angrily criticizes Twain for questioning the authorship of his plays, punctuating his outbursts with passages read out loud from Twain's //Is Shakespeare Dead?// (1909). Mark Twain responds with characteristic humor and wit, asking for Shakespeare to produce ready evidence of his authorship and defending his support of the Baconian theory. The story ends with Francis Bacon entering the scene and denouncing both Twain and Shakespeare as "silly dreaming children," saying that he considered the theatre a waste of time and would never have written plays. Shakespeare laughs at Twain's expense as the dream ends.  || Subject expressed a strong desire to read novels and requested reading material from researchers, despite showing no great interest in literature prior to the test. No other long-term effects. ||

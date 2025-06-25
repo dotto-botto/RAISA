@@ -44,7 +44,7 @@ struct TabViewComponent: View {
             ForEach(Array(zip(contentKeys, contentValues)), id: \.0) { key, value in
                 if key == currentKey {
                     RAISAText(article: article, text: value)
-                        .scrollDisabled(true)
+                        .scrollDisabled(!(value.contains("[[table") || value.contains("||")))
                 }
             }
             
