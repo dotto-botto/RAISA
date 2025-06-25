@@ -170,22 +170,23 @@ struct ArticleView: View {
                 }
                 .frame(width: 44.0, height: 44.0)
                 .contextMenu {
-                    var rootViewController: UIViewController? = nil
-                    Button {
-                        rootViewController?.dismiss(animated: true)
-                    } label: {
-                        Label("AV_DISMISS_ALL", systemImage: "house")
-                    }
-                    .task {
-                        // https://stackoverflow.com/a/69968825/11248074
-                        rootViewController = {
-                            UIApplication.shared.connectedScenes
+                    if #unavailable(iOS 16.0) {
+                        var rootViewController: UIViewController? = nil
+                        Button {
+                            rootViewController?.dismiss(animated: true)
+                        } label: {
+                            Label("AV_DISMISS_ALL", systemImage: "house")
+                        }
+                        .task {
+                            rootViewController = {
+                                UIApplication.shared.connectedScenes
                                     .filter {$0.activationState == .foregroundActive }
                                     .map {$0 as? UIWindowScene }
                                     .compactMap { $0 }
                                     .first?.windows
                                     .filter({ $0.isKeyWindow }).first?.rootViewController
-                        }()
+                            }()
+                        }
                     }
                 }
             }
