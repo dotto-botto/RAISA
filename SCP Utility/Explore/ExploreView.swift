@@ -15,13 +15,16 @@ struct ExploreView: View {
     @State private var editor: Bool = false
     
     @State private var connected: Bool = true
+    @State private var userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     @EnvironmentObject var networkMonitor: NetworkMonitor
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     if connected {
-                        RandomCard().clipped()
+                        if RAISALanguage.allSupportedCases.contains(userIntBranch) {
+                            RandomCard().clipped()
+                        }
                         ResumeCard()
                         SeriesCard()
                         TopCard()
