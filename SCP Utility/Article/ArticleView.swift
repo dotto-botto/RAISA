@@ -101,7 +101,7 @@ struct ArticleView: View {
                 }
             }
             
-            if scp.pagesource.contains(/\[\[.*?toc]]/) {
+            if scp.pagesource.contains(/\[\[.*?toc.*?]]/) {
                 TOCExists = true
             }
             
@@ -230,8 +230,8 @@ struct ArticleView: View {
                 Spacer()
                 Menu {
                     ForEach(RAISALanguage.allSupportedCases) { lang in
-                        Button(lang.toName()) {
-                            cromTranslate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article in
+                        Button("\(lang.emoji()) \(lang.toName())") {
+                            RaisaReq.translate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article, _ in
                                 // Wasn't translated
                                 if article == nil {
                                     noTranslationAlert.toggle()

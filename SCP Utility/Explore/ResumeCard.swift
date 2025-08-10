@@ -79,8 +79,8 @@ struct ResumeCard: View {
             }
             .task {
                 if article == nil {
-                    cromAPISearchFromURL(query: url) {
-                        article = $0
+                    RaisaReq.articlefromURL(url: url) { art, _ in
+                        article = art
                     }
                 }
             }

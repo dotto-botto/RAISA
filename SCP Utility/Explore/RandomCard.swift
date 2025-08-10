@@ -57,8 +57,11 @@ struct RandomCard: View {
                 }
                 .onTapGesture {
                     if article != nil {
-                        cromGetSourceFromURL(url: article!.url) { source in
-                            article!.pagesource = source
+                        RaisaReq.pageSourceFromURL(url: article!.url) { source, error in
+                            if source == nil || error != nil {
+                                return
+                            }
+                            article!.pagesource = source!
                             showArticle = true
                         }
                     }

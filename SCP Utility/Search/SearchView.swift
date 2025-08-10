@@ -79,7 +79,7 @@ struct SearchView: View {
                             token = lang.rawValue
                         } label: {
                             HStack {
-                                Text(lang.toName())
+                                Text("\(lang.emoji()) \(lang.toName())")
                                 Spacer()
                                 if token == lang.rawValue {
                                     Image(systemName: "checkmark")

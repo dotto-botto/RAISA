@@ -100,7 +100,7 @@ extension RTMarkdown {
     }
     
     private func callAPI(url: URL) {
-        raisaSearchFromURL(query: url) { article in
+        RaisaReq.articlefromURL(url: url) { article, _ in
             guard let article = article else { return }
             nextArticle = article
         }

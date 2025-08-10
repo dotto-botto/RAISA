@@ -27,6 +27,8 @@ struct Article: Identifiable, Codable {
     var disruption: DisruptionClass? = .unknown
     var risk: RiskClass? = .unknown
     
+    var number: Int? { get { return Int(title.slice(from: "SCP-") ?? "nan") } }
+    
     /// - Parameters:
     ///   - pagesource: The raw pagesouce that wikidot uses to display an article.
     ///   - thumbnail: Thumbnails are used as an accessory to catch the user's attention.

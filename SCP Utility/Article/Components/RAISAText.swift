@@ -190,7 +190,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             Regex(#"(\[\[span.*?\]\]|\[\[\/span\]\])"#),
             Regex(#"\[\[module rate\]\]"#).ignoresCase(),
             Regex(#"\[\[# .*?\]\]"#),
-            Regex(#"\[#toc.*?\]"#),
+            Regex(#"\[\[.*?toc.*?]]"#),
             Regex(#"(<<|«)\s*?\[\[.*?\]\]\s*?(»|>>)"#),
             Regex(#"\[\[module[\s\S]*?\[\[\/module\]\]"#),
             Regex(#"\[\[a href=.*?\]\]"#),
@@ -464,6 +464,7 @@ func FilterToPure(doc: String) -> String {
         Regex(#"\[\[include[^\]]*\]\](?![^\[]*\])"#), // all componenets
         Regex(#"\[\[a href=.*?\]\]"#),
         Regex(#"(\[\[code.*?\]\]|\[\[\/code\]\])"#),
+        Regex(#"\[\[.*?toc.*?]]"#),
     ]
     
     for regex in regexDeletes {

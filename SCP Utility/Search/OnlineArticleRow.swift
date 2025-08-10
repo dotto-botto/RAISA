@@ -39,7 +39,8 @@ struct OnlineArticleRow: View {
         HStack {
             Button {
                 loading = true
-                raisaSearchFromURL(query: url) {
+                RaisaReq.articlefromURL(url: url) {
+                    guard $1 == nil else { return }
                     guard let article = $0 else { return }
                     loading = false
                     currentArticle = article
@@ -70,7 +71,7 @@ struct OnlineArticleRow: View {
                 }
                 
                 Button {
-                    raisaSearchFromURL(query: url) { article in
+                    RaisaReq.articlefromURL(url: url) { article, _ in
                         guard let article = article else { return }
                         currentArticle = article
                         addObservedBool.toggle()

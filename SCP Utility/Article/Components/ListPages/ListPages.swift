@@ -39,7 +39,8 @@ func replaceFragmentsWithSource(article: Article, completion: @escaping (String)
         for pair in dict {
             guard let url = URL(string: pair.1.formatted().replacingOccurrences(of: "https", with: "http")) else { continue }
 
-            cromGetSourceFromURL(url: url) { source in
+            RaisaReq.pageSourceFromURL(url: url) { source, _ in
+                guard let source else { return }
                 newSource += source
                 
                 if pair == dict.last ?? ("", placeholderURL) {                    

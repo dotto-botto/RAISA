@@ -107,6 +107,28 @@ enum RAISALanguage: Int, CaseIterable, Identifiable, Codable {
         }
     }
     
+    func allowsHTTPS() -> Bool {
+        switch self {
+        case .english: return true
+        case .russian: return true
+        case .korean: return true
+            
+        case .chinese: return false
+        case .french: return false
+        case .polish: return false
+        case .spanish: return false
+        case .thai: return false
+        case .japanese: return false
+        case .german: return false
+        case .italian: return false
+        case .ukranian: return false
+        case .portuguese: return false
+        case .czech: return false
+        case .traditionalch: return false
+        case .vietnamese: return false
+        }
+    }
+    
     func toAbbr() -> String {
         switch self {
         case .english:
@@ -179,7 +201,7 @@ enum RAISALanguage: Int, CaseIterable, Identifiable, Codable {
         case .czech:
             return "🇨🇿"
         case .traditionalch:
-            return "🇨🇳*"
+            return "🇹🇼"
         case .vietnamese:
             return "🇻🇳"
         }

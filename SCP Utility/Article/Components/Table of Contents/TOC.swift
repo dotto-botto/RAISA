@@ -11,6 +11,7 @@ import Foundation
 ///    Headers are all raw text.
 struct TOC {
     let headers: [String]
+    let title: String? = nil
     
     init(headers: [String]) {
         self.headers = headers

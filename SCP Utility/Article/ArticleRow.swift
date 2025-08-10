@@ -86,10 +86,11 @@ struct ArticleRow: View {
             
             Button {
                 disabled = true
-                cromGetSourceFromURL(url: passedSCP.url) {
-                    passedSCP.updateSource($0)
+                RaisaReq.pageSourceFromURL(url: passedSCP.url) {
+                    if $1 != nil || $0 == nil { return }
+                    passedSCP.updateSource($0!)
                     passedSCP.downloadImages(ignoreUserPreference: true)
-                    con.updatePageSource(id: passedSCP.id, newPageSource: $0)
+                    con.updatePageSource(id: passedSCP.id, newPageSource: $0!)
                     disabled = false
                 }
             } label: {
@@ -157,8 +158,8 @@ struct ArticleRow: View {
             
             if passedSCP.objclass == .unknown {
                 // MARK: Article Scanning
-                raisaGetTags(url: passedSCP.url) { tags in
-                    for tag in tags {
+                RaisaReq.tags(url: passedSCP.url) { tags, _ in
+                    for tag in tags ?? [] {
                         switch tag {
                         case "keter": passedSCP.updateAttribute(objectClass: .keter); break
                         case "euclid": passedSCP.updateAttribute(objectClass: .euclid); break

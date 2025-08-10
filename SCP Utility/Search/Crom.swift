@@ -138,65 +138,6 @@ query Search {
     }
 }
 
-func cromAPISearchFromURL(query: URL, completion: @escaping (Article?) -> Void) {
-    let formattedURL = try! query
-        .formatted()
-        .replacing(Regex("https?"), with: "http")
-        .lowercased()
-        .replacingOccurrences(of: "www.", with: "")
-        .replacingOccurrences(of: ".net", with: ".wikidot.com")
-        .replacingOccurrences(of: "http:s", with: "http://s")
-    
-    let graphQLQuery = """
-query Search($query: URL! = "\(formattedURL)") {
-    page(url: $query) {
-    alternateTitles {
-      title
-    }
-    wikidotInfo {
-      title
-      source
-      thumbnailUrl
-    }
-  }
-}
-"""
-    
-    let parameters: [String: String] = [
-        "query": (graphQLQuery)
-    ]
-
-    var responseJSON: JSON = JSON()
-    
-    var article = Article(title: "", pagesource: "", url: placeholderURL)
-    cromRequest(params: parameters) { data, error in
-        if let error {
-            print(error)
-        } else if let myData = data {
-            do {
-                responseJSON = try JSON(data: myData)
-            } catch {
-                print(error)
-            }
-
-            let page = responseJSON["data"]["page"]
-            guard let title = page["wikidotInfo"]["title"].string else { completion(nil); return }
-            guard let source = page["wikidotInfo"]["source"].string else { completion(nil); return }
-            let pic = page["wikidotInfo"]["thumbnailUrl"].url
-            let subtitle = page["alternateTitles"].arrayValue.first?["title"].string
-
-            article = Article(
-                title: title,
-                subtitle: subtitle,
-                pagesource: source,
-                url: query,
-                thumbnail: pic ?? nil
-            )
-            completion(article)
-        }
-    }
-}
-
 /// Returns a list of articles without source with given query.
 func cromAPISearch(query: String, language: RAISALanguage = .english, completion: @escaping ([Article]) -> Void) {
     let graphQLQuery = """
@@ -243,46 +184,15 @@ query Search($query: String! = "\(query)") {
     }
 }
 
-/// Retruns an article's page source from its URL
-func cromGetSourceFromURL(url: URL, completion: @escaping (String) -> Void) {
-    let graphQLQuery = """
-query Search($query: URL! = "\(url)") {
-  page(url: $query) {
-    wikidotInfo {
-      source
-    }
-  }
-}
-"""
-    
-    let parameters: [String: String] = [
-        "query": (graphQLQuery)
-    ]
-
-    var responseJSON: JSON = JSON()
-    
-    cromRequest(params: parameters) { data, error in
-        if let error {
-            print(error)
-        } else if let myData = data {
-            do {
-                responseJSON = try JSON(data: myData)
-            } catch {
-                print(error)
-            }
-
-            let source = responseJSON["data"]["page"]["wikidotInfo"]["source"].string
-            completion(source ?? "Could not find source")
-        }
-    }
-}
-
 /// Retruns an article from a title
 func cromGetSourceFromTitle(title: String, language: RAISALanguage = .english, completion: @escaping (Article) -> Void) {
     let graphQLQuery = """
 query Search($query: String! = "\(title)") {
   searchPages(query: $query, filter: {anyBaseUrl: "\(language.toURL())"}) {
     url
+    alternateTitles {
+      title
+    }
     wikidotInfo {
       title
       source
@@ -311,12 +221,14 @@ query Search($query: String! = "\(title)") {
             if let article = responseJSON["data"]["searchPages"].array?.first {
                 
                 let title = article["wikidotInfo"]["title"].string
+                let subtitle = article["alternateTitles"].arrayValue.first?["title"].string
                 let source = article["wikidotInfo"]["source"].string
                 let url = article["url"].url
                 let thumbnail = article["wikidotInfo"]["thumbnailUrl"].url
                 completion(
                     Article(
                         title: title ?? "Could not find title",
+                        subtitle: subtitle,
                         pagesource: source ?? "Could not find source",
                         url: url ?? placeholderURL,
                         thumbnail: thumbnail
@@ -371,13 +283,6 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
-func cromTranslate(url: URL, from fromLang: RAISALanguage, to toLang: RAISALanguage, completion: @escaping (Article?) -> Void) {
-    let baseTitle = url.formatted().replacingOccurrences(of: fromLang.toURL().formatted(), with: "")
-    let newURL = URL(string: toLang.toURL().formatted() + baseTitle)!
-    
-    raisaSearchFromURL(query: newURL) { completion($0) }
-}
-
 func cromGetAlternateTitle(url: URL, completion: @escaping (String) -> Void) {
     let graphQLQuery = """
 query Search($query: URL! = "\(url)") {
@@ -408,42 +313,6 @@ query Search($query: URL! = "\(url)") {
             let source = responseJSON["data"]["page"]["alternateTitles"].arrayValue.first?["title"].string
             completion(source ?? "")
         }
-    }
-}
-
-// MARK: - Raisa Funcitons
-func raisaGetTags(url: URL, completion: @escaping ([String]) -> Void) {
-    guard let url = try! URL(string: url.formatted().replacing(Regex(#"https?"#), with: "https")) else { completion([]); return }
-    let task = URLSession.shared.dataTask(with: url) { data, response, error in
-        guard let data = data else { return }
-        do {
-            let articledoc = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
-            
-            var returnArray: [String] = []
-
-            if let table = try articledoc.getElementsByClass("page-tags").first() {
-                for ele in try table.select("a") {
-                    returnArray.append(try ele.text())
-                }
-            }
-            completion(returnArray)
-        } catch {
-            print(error)
-        }
-    }
-    task.resume()
-}
-
-/// Search core data for article, fallback using crom
-func raisaSearchFromURL(query: URL, completion: @escaping (Article?) -> Void) {
-    let con = PersistenceController.shared
-    
-    if con.isArticleSaved(url: query) {
-        guard let item = con.getArticleByURL(url: query) else { completion(nil); return }
-        guard let article = Article(fromEntity: item) else { completion(nil); return }
-        completion(article)
-    } else {
-        cromAPISearchFromURL(query: query) { completion($0) }
     }
 }
 
