@@ -11,6 +11,7 @@ import Network
 
 @main
 struct SCP_UtilityApp: App {
+    @State private var showSheet: Bool = false
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.managedObjectContext) var Context
     @AppStorage("isFirstLaunch") var isFirstLaunch = true
@@ -22,6 +23,8 @@ struct SCP_UtilityApp: App {
                 .environmentObject(networkMonitor)
                 .onAppear {
                     if isFirstLaunch {
+                        showSheet = true // tutorial sheet
+                        
                         // Don't cache images on disk
                         ImageCache.default.diskStorage.config.sizeLimit = 1
                         let defaults = UserDefaults.standard
@@ -34,6 +37,9 @@ struct SCP_UtilityApp: App {
                         
                     }
                     isFirstLaunch = false
+                }
+                .sheet(isPresented: $showSheet) {
+                    WelcomeView().interactiveDismissDisabled()
                 }
         }
         .onChange(of: scenePhase) { _ in

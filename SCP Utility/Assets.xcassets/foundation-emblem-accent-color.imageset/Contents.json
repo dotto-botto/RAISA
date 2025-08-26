@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "foundation-emblem-accent-color.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

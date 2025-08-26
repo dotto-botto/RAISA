@@ -12,6 +12,7 @@ import MarkdownUI
 struct RTMarkdown: View {
     @State var article: Article
     @State var text: String
+    @State var inWelcomeView: Bool = false
     @State private var nextArticle: Article = placeHolderArticle
     @State private var showSheet: Bool = false
     
@@ -33,7 +34,7 @@ struct RTMarkdown: View {
                     return .handled
                 })
             
-            if focusedCurrentText == text && focusedCurrentText != "" {
+            if focusedCurrentText == text && focusedCurrentText != "" && !inWelcomeView {
                 HStack {
                     Text("BOOKMARKED")
                     Image(systemName: "bookmark.fill")
@@ -44,12 +45,14 @@ struct RTMarkdown: View {
         }
         .textSelection(.enabled)
         .onTapGesture(count: 2) {
-            let newText: String? = focusedCurrentText == text ? nil : text
-            article.setScroll(newText)
-            if !article.isSaved() { article.saveToDisk() }
-            focusedCurrentText = newText ?? ""
+            if !inWelcomeView {
+                let newText: String? = focusedCurrentText == text ? nil : text
+                article.setScroll(newText)
+                if !article.isSaved() { article.saveToDisk() }
+                focusedCurrentText = newText ?? ""
+            }
         }
-        .task { focusedCurrentText = article.currenttext ?? "" }
+        .task { if !inWelcomeView { focusedCurrentText = article.currenttext ?? "" } }
         .onChange(of: nextArticle.id) { _ in
             showSheet = true
         }

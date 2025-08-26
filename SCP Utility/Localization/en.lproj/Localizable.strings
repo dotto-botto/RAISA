@@ -110,6 +110,16 @@
 "LANGUAGE_%@_NOT_SUPPORTED" = "%@ isn't supported, sorry for the inconvenience.";
 "HOW_TO_CHANGE_LANGUAGE" = "Press the settings icon to change your international branch.";
 
+// Welcome
+"WELCOME_TITLE" = "Welcome to RAISA!";
+"WELCOME_HEADLINE_WIKI" = "What is the SCP Wiki?";
+"WELCOME_HEADLINE_RAISA" = "What is RAISA?";
+"WELCOME_HEADLINE_START" = "Where should I start?";
+"WELCOME_SUBHEADLINE_WIKI" = "The SCP Wiki is a collection of items, monsters, and places (SCP's) that don't obey the known laws of the universe.";
+"WELCOME_SUBHEADLINE_RAISA" = "RAISA is a way to read these items on your iPhone or iPad that provides additional features such as downloading, bookmarking, and more.";
+"WELCOME_SUBHEADLINE_START" = "Some popular SCP's are [SCP-173](https://scp-wiki.wikidot.com/scp-173), [SCP-049](https://scp-wiki.wikidot.com/scp-049), and [SCP-096](https://scp-wiki.wikidot.com/scp-096).";
+"START_READING" = "Start Reading";
+
 // MARK: - Settings
 "SETTINGS_TITLE" = "Settings";
 
