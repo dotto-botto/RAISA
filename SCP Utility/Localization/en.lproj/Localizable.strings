@@ -354,3 +354,7 @@
 "ROMAN_9" = "IX";
 "ROMAN_10" = "X";
 "ROMAN_11" = "XI";
+"ROMAN_12" = "XII";
+"ROMAN_13" = "XIII";
+"ROMAN_14" = "XIV";
+"ROMAN_15" = "XV";

@@ -30,7 +30,7 @@ struct SeriesCard: View {
                     }
                     HStack(spacing: 0) {
                         GridRow {
-                            ForEach(6...9, id: \.self) { series in
+                            ForEach(6...10, id: \.self) { series in
                                 SeriesButton(series: series)
                             }
                         }
@@ -38,7 +38,7 @@ struct SeriesCard: View {
                 }
             } else {
                 HStack(spacing: 0) {
-                    ForEach(1...9, id: \.self) { series in
+                    ForEach(1...10, id: \.self) { series in
                         SeriesButton(series: series)
                     }
                 }
@@ -72,9 +72,12 @@ struct SeriesButton: View {
                     case 7: Text("ROMAN_7")
                     case 8: Text("ROMAN_8")
                     case 9: Text("ROMAN_9")
-                        // Unused
                     case 10: Text("ROMAN_10")
                     case 11: Text("ROMAN_11")
+                    case 12: Text("ROMAN_12")
+                    case 13: Text("ROMAN_13")
+                    case 14: Text("ROMAN_14")
+                    case 15: Text("ROMAN_15")
                     default: EmptyView()
                     }
                 }
