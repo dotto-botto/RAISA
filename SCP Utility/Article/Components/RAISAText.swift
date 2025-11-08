@@ -184,6 +184,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
     DispatchQueue.main.async {
         var text = doc
         
+        // Replace non break spaces with normal spaces
+        text = text.replacingOccurrences(of: "\u{00A0}", with: " ")
+        
         // Basic Divs
         let regexDeletes: [Regex] = try! [
             Regex(#"(\[\[div.*?\]\]|\[\[\/div\]\])"#),
@@ -334,6 +337,9 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
 // MARK: Pure Filter
 func FilterToPure(doc: String) -> String {
     var text = doc
+    
+    // Replace non break spaces with normal spaces
+    text = text.replacingOccurrences(of: "\u{00A0}", with: " ")
     
     // Basic Divs
     if let firstLicense = matches(for: #"\[\[include.*license-box.*?]]"#, in: text).first,

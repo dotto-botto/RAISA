@@ -136,7 +136,10 @@ func parseArticleImage(_ source: String, articleURL: URL) -> [String?:URL?] {
         
     } else if content.contains("[[") && content.contains("image ") {
         if content.contains("http") {
-            newURL = (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
+            newURL = (content.slice(with: "http", and: " "))
+            if newURL == "http " {
+                newURL = content.slice(from: "image ", to: "]]") ?? ""
+            }
         } else {
             newURL = "https://scp-wiki.wdfiles.com/local--files/" + (stringArticleURL.slice(from: "scp-wiki.wikidot.com/") ?? "") + "/" + (content.slice(from: "image ", to: " ") ?? content.slice(from: "image ", to: "]]") ?? "")
         }
@@ -148,32 +151,3 @@ func parseArticleImage(_ source: String, articleURL: URL) -> [String?:URL?] {
         .trimmingCharacters(in: .whitespaces)
     )]
 }
-
-//struct ArticleImage_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ArticleImage(
-//            article: placeHolderArticle,
-//            content: "[[include component:image-block name=hughes.jpg|align=right|width=35%|caption=United States Supreme Court Justice Charles Evans Hughes.]]"
-//        ).previewDisplayName("Old Format")
-//
-//        ArticleImage(
-//            article: placeHolderArticle,
-//            content: """
-//                    [[include :scp-wiki:component:image-features-source |hover-enlarge=--]
-//                    |enlarge-amount=6
-//                    |speed=250
-//                    |float=true
-//                    |align=right
-//                    |width=400px
-//                    |url=049xray.jpg|add-caption=true
-//                    |caption=X-Ray imaging of SCP-049's facial structure.
-//                    ]]
-//                    """
-//        ).previewDisplayName("New Format")
-//
-//        ArticleImage(
-//            article: placeHolderArticle,
-//            content: "[[image SCPArchiveLogo.png width=\"140px\"]]"
-//        ).previewDisplayName("Compact Format")
-//    }
-//}
