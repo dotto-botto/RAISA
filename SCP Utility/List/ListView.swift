@@ -106,6 +106,8 @@ struct OneListView: View {
     // 1 - Every article that the user has marked as complete.
     // 2 - Every article that the user hasn't marked as complete.
     @State private var mode: Int = 0
+    
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     var body: some View {
         VStack {
             if articles.isEmpty {
@@ -269,7 +271,7 @@ struct OneListView: View {
         self.articles = 
         self.articles
             .filter {
-                query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) || $0.subtitle?.lowercased().contains(query.lowercased()) ?? false
+                query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) || RaisaReq.getAlternateTitle(url: $0.url, store: subtitlesStore)?.lowercased().contains(query.lowercased()) ?? false
             }
             .filter {
                 switch mode {

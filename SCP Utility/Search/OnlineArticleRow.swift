@@ -11,9 +11,9 @@ import SwiftUI
 /// Used for search results as well as in SeriesView.
 struct OnlineArticleRow: View {
     var title: String
-    var alternateTitle: String? = nil
     var url: URL
     
+    @State var alternateTitle: String? = nil
     @State var loading: Bool = false
     @State var bookmarkStatus: Bool = false
     @State private var checkmarkStatus: Bool = false
@@ -22,10 +22,10 @@ struct OnlineArticleRow: View {
     @State var addObservedBool: Bool = false
     @State var currentArticle: Article = placeHolderArticle
     @State var showSheet: Bool = false
-    
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     init(_ article: Article) {
         self.title = article.title
-        self.alternateTitle = article.subtitle
+        self.alternateTitle = nil
         self.url = article.url
     }
     
@@ -47,19 +47,16 @@ struct OnlineArticleRow: View {
                     observedBool.toggle()
                 }
             } label: {
-                if let alt = alternateTitle {
-                    HStack {
+                HStack {
+                    if let alt = alternateTitle {
                         Text(.init("\(title) - **\(alt)**"))
+                    } else {
+                        Text(title)
                     }
-                    .font(.monospaced(.title3)())
-                    .lineLimit(2)
-                } else {
-                    Text(title)
-                        .font(.monospaced(.title3)())
-                        .lineLimit(2)
+                    Spacer()
                 }
-
-                Spacer()
+                .font(.monospaced(.body)())
+                .lineLimit(2)
             }
                  
             if loading {
@@ -102,9 +99,12 @@ struct OnlineArticleRow: View {
         .task {
             checkmarkStatus = (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []).contains(url.formatted())
             bookmarkStatus = PersistenceController.shared.isArticleSaved(url: url)
+            
+            // get subtitle
+            alternateTitle = RaisaReq.getAlternateTitle(url: url, store: subtitlesStore)
         }
-        .padding(.horizontal, 40)
-        .disabled(loading)
+        .padding(.horizontal, 20)
+        .disabled(alternateTitle == "[ACCESS DENIED]" || loading)
     }
 }
 

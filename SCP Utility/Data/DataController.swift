@@ -301,7 +301,6 @@ extension PersistenceController {
         
         object.identifier = article.id
         object.title = article.title
-        object.subtitle = article.subtitle
         object.pagesource = article.pagesource
         object.thumbnail = article.thumbnail
         object.currenttext = article.currenttext
@@ -614,22 +613,6 @@ extension PersistenceController {
                 case .critical: article.risk = 4
                 case .unknown: return
                 }
-            }
-            try context.save()
-        } catch let error {
-            debugPrint(error.localizedDescription)
-        }
-    }
-    
-    func updateSubtitle(articleid: String, to subtitle: String, context: NSManagedObjectContext? = nil) {
-        let context = context ?? container.viewContext
-
-        let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
-        request.predicate = NSPredicate(format: "identifier == %@", articleid)
-        
-        do {
-            if let article = try context.fetch(request).first {
-                article.subtitle = subtitle
             }
             try context.save()
         } catch let error {

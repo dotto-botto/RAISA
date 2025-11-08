@@ -283,39 +283,6 @@ query Search($query: URL! = "\(url)") {
     }
 }
 
-func cromGetAlternateTitle(url: URL, completion: @escaping (String) -> Void) {
-    let graphQLQuery = """
-query Search($query: URL! = "\(url)") {
-    page(url: $query) {
-    alternateTitles {
-      title
-    }
-  }
-}
-"""
-    
-    let parameters: [String: String] = [
-        "query": (graphQLQuery)
-    ]
-
-    var responseJSON: JSON = JSON()
-    
-    cromRequest(params: parameters) { data, error in
-        if let error {
-            print(error)
-        } else if let myData = data {
-            do {
-                responseJSON = try JSON(data: myData)
-            } catch {
-                print(error)
-            }
-
-            let source = responseJSON["data"]["page"]["alternateTitles"].arrayValue.first?["title"].string
-            completion(source ?? "")
-        }
-    }
-}
-
 func raisaGetArticleFromTitle(title: String, language: RAISALanguage = .english, completion: @escaping (Article?) -> Void) {
     let con = PersistenceController.shared
     

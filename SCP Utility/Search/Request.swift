@@ -140,7 +140,6 @@ class RaisaReq {
                 guard let data = response.data else { return }
                 do {
                     let json = try JSON(data: data)
-                    print(json)
                     guard var pagesource = json["body"].string else {
                         completion(nil, RRError.textParsingError)
                         return
@@ -236,6 +235,99 @@ class RaisaReq {
                     print(error)
                 }
             }
+        }
+    }
+    
+    static func getAlternateTitle(url: URL, store: SubtitlesStore) -> String? {
+        var subtitle = store.seriesSubtitles[url.lastPathComponent]
+        if subtitle == nil {
+            self.scrapeSubtitles(store: store)
+            store.loadsubtitles()
+            subtitle = store.seriesSubtitles[url.lastPathComponent]
+        }
+        return subtitle
+    }
+    
+    /// Scrape all subtitles from the wiki from series 1 to LATEST_SERIES as well as EX and J articles
+    static func scrapeSubtitles(language lang: RAISALanguage = .english, store: SubtitlesStore, series: Int? = nil) {
+        var baseurlcomponents = [
+            "scp-series",
+            "scp-series-2",
+            "scp-series-3",
+            "scp-series-4",
+            "scp-series-5",
+            "scp-series-6",
+            "scp-series-7",
+            "scp-series-8",
+            "scp-series-9",
+            "scp-series-10",
+            "scp-ex",
+            "joke-scps"
+        ]
+        
+        #if DEBUG
+        if baseurlcomponents.count != LATEST_SERIES + 2 {
+            fatalError("Update scrapeSubtitles urls")
+        }
+        #endif
+        
+        if series != nil {
+            baseurlcomponents = [baseurlcomponents[series!]]
+        }
+        
+        for baseurlcomp in baseurlcomponents {
+            let baseurl = lang
+                .toURL()
+                .appending(component: baseurlcomp)
+            var subtitles: [String:String] = [:]
+            
+            let task = URLSession.shared.dataTask(with: baseurl) { data, _, error in
+                guard let data = data else { return }
+                do {
+                    let document = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
+                    guard let panel = try document.getElementsByClass("content-panel standalone series").first() else { return }
+                    var uls = try panel.select("ul").array()
+                    
+                    // Remove unrelated ul tags
+                    uls = try uls.filter {
+                        try $0.html().contains(Regex(#"<li><a href="\/.*?">SCP-.*?<\/a>.*?<\/li>"#))
+                    }
+                    
+                    for hundredscps in uls {
+                        let scps = try hundredscps.select("li").array()
+                        for scp in scps {
+                            /*
+                             List of unsupported scps as of 11/7/25 (can be found by printing scp.html):
+                             No dash: 5309
+                             No scp number: 7498 6219 3183 4736
+                             */
+                            guard let endurlcomp = try scp.html().slice(from: "href=\"/", to: "\">") else { continue }
+                            guard let subtitle = try scp.text().slice(from: " - ") else { continue }
+                            
+                            subtitles[endurlcomp] = subtitle
+                        }
+                    }
+                    
+                    // turn subtitles into comma separated values
+                    let writestr = subtitles
+                        .sorted { $0.key < $1.key }
+                        .map { "\($0), \"\($1)\"" }
+                        .joined(separator: "\n")
+                    
+                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+                    
+                    let subtitledir = documentsDirectory
+                        .appendingPathComponent("Subtitles")
+                        .appendingPathComponent(lang.toAbbr())
+                    try FileManager.default.createDirectory(at: subtitledir, withIntermediateDirectories: true)
+                    
+                    let fileURL = subtitledir.appendingPathComponent("\(baseurlcomp).csv")
+                    try writestr.write(to: fileURL, atomically: true, encoding: .utf8) // Deletes quotes in subtitles
+                } catch {
+                    print("Error saving subtitles: \(error.localizedDescription)")
+                }
+            }
+            task.resume()
         }
     }
 }

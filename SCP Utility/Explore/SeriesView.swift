@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let LATEST_SERIES = 10
+
 /// View that displays a list of SCP's from the passed "series" int.
 struct SeriesView: View {
     @State var startingNum: Int
@@ -17,7 +19,7 @@ struct SeriesView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(alignment: .leading) {
                 ForEach(startingNum...startingNum + 999, id: \.self) { num in
                     OnlineArticleRow(
                         // %03d - adds leading zeroes up to 3 digits
@@ -32,7 +34,7 @@ struct SeriesView: View {
         .navigationTitle("SERIES_TITLE\(startingNum == 1 ? startingNum : startingNum / 1000 + 1)")
         .toolbar {
             Menu {
-                ForEach(1...9, id: \.self) { series in
+                ForEach(1...LATEST_SERIES, id: \.self) { series in
                     Button("SERIES_TITLE\(series)") {
                         startingNum = (series == 1) ? 1 : (series - 1) * 1000
                     }

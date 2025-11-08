@@ -17,6 +17,7 @@ struct ArticleInfoView: View {
     @State private var showUserSheet: Bool = false
     @State private var user: User = User()
     @State private var userDeleted: Bool = false
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     var body: some View {
         let Guide = {
             Rectangle()
@@ -33,7 +34,7 @@ struct ArticleInfoView: View {
                         .bold()
                         .padding(.bottom, 3)
                     
-                    if let subtitle = article.subtitle {
+                    if let subtitle = RaisaReq.getAlternateTitle(url: article.url, store: subtitlesStore) {
                         Text(subtitle)
                             .font(.system(size: 12))
                             .padding(.horizontal, 10)

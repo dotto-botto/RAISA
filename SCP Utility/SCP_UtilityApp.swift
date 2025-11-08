@@ -16,12 +16,17 @@ struct SCP_UtilityApp: App {
     @Environment(\.managedObjectContext) var Context
     @AppStorage("isFirstLaunch") var isFirstLaunch = true
     @StateObject var networkMonitor = NetworkMonitor()
+    @StateObject var subtitlesStore = SubtitlesStore()
     let con = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            ContentView().environment(\.managedObjectContext, con.container.viewContext)
+            ContentView()
+                .environment(\.managedObjectContext, con.container.viewContext)
                 .environmentObject(networkMonitor)
+                .environmentObject(subtitlesStore)
                 .onAppear {
+                    RaisaReq.scrapeSubtitles(store: subtitlesStore, series: LATEST_SERIES)
+                    
                     if isFirstLaunch {
                         showSheet = true // tutorial sheet
                         
@@ -35,11 +40,15 @@ struct SCP_UtilityApp: App {
                         defaults.set(true, forKey: "trackSearchHistory")
                         defaults.set(RAISALanguage.english.rawValue, forKey: "chosenRaisaLanguage")
                         
+                        // Scrape all subtitles
+                        RaisaReq.scrapeSubtitles(store: subtitlesStore)
                     }
                     isFirstLaunch = false
                 }
                 .sheet(isPresented: $showSheet) {
-                    WelcomeView().interactiveDismissDisabled()
+                    WelcomeView()
+                        .interactiveDismissDisabled()
+                        .environmentObject(subtitlesStore)
                 }
         }
         .onChange(of: scenePhase) { _ in
@@ -63,5 +72,44 @@ class NetworkMonitor: ObservableObject {
             }
         }
         networkMonitor.start(queue: workerQueue)
+    }
+}
+
+class SubtitlesStore: ObservableObject {
+    var seriesSubtitles: [String:String] = [:]
+    init() {
+        loadsubtitles()
+    }
+    
+    func loadsubtitles() {
+        // Load all subtitles into memory
+        do {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+            
+            guard let lang = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) else { return }
+            
+            let subtitledir = documentsDirectory
+                .appendingPathComponent("Subtitles")
+                .appendingPathComponent(lang.toAbbr())
+            
+            let contents = try FileManager.default.contentsOfDirectory(at: subtitledir, includingPropertiesForKeys: nil)
+            for file in contents {
+                let subtitlelist = try Dictionary(uniqueKeysWithValues: String(contentsOf: file)
+                    .components(separatedBy: .newlines)
+                    .compactMap { item in
+                        let components = item.split(separator: ", ", maxSplits: 1)
+                        guard components.count == 2 else { return ("","") }
+                        // Remove end quotes
+                        let subtitle: String = String(String(components[1])
+                                .dropFirst()
+                                .dropLast())
+                        return (String(components[0]), subtitle)
+                    })
+                                                  
+                seriesSubtitles.merge(subtitlelist, uniquingKeysWith: {_, newvalue in newvalue})
+            }
+        } catch {
+            print("Error retrieving subtitles: \(error.localizedDescription)")
+        }
     }
 }

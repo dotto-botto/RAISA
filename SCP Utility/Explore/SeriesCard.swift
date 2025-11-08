@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// ExploreView card that displays the 8 series.
+/// ExploreView card that displays the series.
 struct SeriesCard: View {
     var body: some View {
         VStack {
@@ -30,7 +30,7 @@ struct SeriesCard: View {
                     }
                     HStack(spacing: 0) {
                         GridRow {
-                            ForEach(6...10, id: \.self) { series in
+                            ForEach(6...LATEST_SERIES, id: \.self) { series in
                                 SeriesButton(series: series)
                             }
                         }
@@ -38,7 +38,7 @@ struct SeriesCard: View {
                 }
             } else {
                 HStack(spacing: 0) {
-                    ForEach(1...10, id: \.self) { series in
+                    ForEach(1...LATEST_SERIES, id: \.self) { series in
                         SeriesButton(series: series)
                     }
                 }

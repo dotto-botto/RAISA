@@ -12,6 +12,7 @@ import SwiftUI
 /// ArticleView also displays warnings before an article is displayed.
 struct ArticleView: View {
     @State var scp: Article
+    @State var subtitle: String? = nil
     @State var dismissText: String? = ""
     @State var presentSheet: Bool = false
     @State var theme: RAISATheme? = nil
@@ -34,6 +35,7 @@ struct ArticleView: View {
     @State private var TOCExists: Bool = false
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     let defaults = UserDefaults.standard
     let con = PersistenceController.shared
     var body: some View {
@@ -147,13 +149,13 @@ struct ArticleView: View {
             ToolbarItem(placement: .principal) {
                 VStack {
                     Text(scp.title).font(.headline)
-                    if scp.subtitle != nil && scp.subtitle != "" {
-                        Text(containsExplicitContent ? "-" : scp.subtitle!).font(.subheadline)
+                    if subtitle != nil && subtitle != "" {
+                        Text(containsExplicitContent ? "-" : subtitle!).font(.subheadline)
                     }
                 }
                 .task {
-                    if scp.subtitle == nil {
-                        cromGetAlternateTitle(url: scp.url) { scp.setSubtitle(to: $0) }
+                    if subtitle == nil {
+                        subtitle = RaisaReq.getAlternateTitle(url: scp.url, store: subtitlesStore)
                     }
                 }
             }

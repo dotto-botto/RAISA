@@ -16,6 +16,7 @@ struct ArticleRow: View {
     @State private var showUpdateView: Bool = false
     @State private var showListAddView: Bool = false
     @State private var disabled: Bool = false
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     var body: some View {
         let con = PersistenceController.shared
         
@@ -29,7 +30,7 @@ struct ArticleRow: View {
                             .foregroundColor(.primary)
                             .lineLimit(1)
                         
-                        if let subtitle = passedSCP.subtitle, subtitle != "" {
+                        if let subtitle = RaisaReq.getAlternateTitle(url: passedSCP.url, store: subtitlesStore), subtitle != "" {
                             Rectangle()
                                 .frame(width: 5, height: 1)
                                 .foregroundColor(.accentColor)
