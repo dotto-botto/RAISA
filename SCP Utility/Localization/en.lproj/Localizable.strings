@@ -274,6 +274,8 @@
 "ACS_ITEMNUM" = "ITEM #";
 "ACS_LEVEL%lld" = "LEVEL %lld";
 "ACS_TOPSECRET" = "TOP SECRET";
+"ACS_ESOTERIC_INDICATOR" = "ESOTERIC:";
+"ACS_OBJECT_INDICATOR" = "CONTAINMENT CLASS:";
 "FOOTNOTE_TITLE" = "Footnotes";
 "FV_NO_FOOTNOTES" = "No Footnotes Detected";
 "TOCV_TITLE" = "Table of Contents";

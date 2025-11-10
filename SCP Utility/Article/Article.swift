@@ -239,20 +239,19 @@ struct Article: Identifiable, Codable {
         con.createArticleEntity(article: self)
         self.downloadImages()
     }
-}
-
-/// Finds the next article using "currentTitle" as a query.
-/// If "currentTitle" is not an SCP from the main series, (eg: SCP-173 or SCP-097, but not SCP-8900-EX), this returns nil.
-func findNextArticle(currentTitle title: String, completion: @escaping (Article?) -> Void) {
-    if var key = title.slice(from: "SCP-"), let num = Int(key) {
-        key = String(format: "%03d", num + 1)
-        
-        let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
-        raisaGetArticleFromTitle(title: key, language: userIntBranch) { article in
+    
+    /// Finds the next article using "currentTitle" as a query.
+    /// If "currentTitle" is not an SCP from the main series, (eg: SCP-173 or SCP-097, but not SCP-8900-EX), this returns nil.
+    func findNextArticle(completion: @escaping (Article?) -> Void) {
+        guard let num = self.number else { completion(nil); return }
+        guard let url = URL(string: self.url.formatted().replacingOccurrences(of: String(num), with: String(num + 1))) else { completion(nil); return }
+        RaisaReq.articlefromURL(url: url) { article, _ in
             completion(article)
         }
-    } else { completion(nil) }
+    }
 }
+
+
 
 // MARK: - Atribute Enums
 enum ObjectClass: Int16, Codable, CaseIterable {
@@ -498,6 +497,20 @@ enum ArticleAttribute {
         case .esoteric(let esotericClass): return esotericClass.toColor()
         case .disruption(let disruptionClass): return disruptionClass.toColor()
         case .risk(let riskClass): return riskClass.toColor()
+        }
+    }
+    
+    func isEsoteric() -> Bool {
+        switch self {
+        case .esoteric: return true
+        default: return false
+        }
+    }
+    
+    func isObject() -> Bool {
+        switch self {
+        case .object: return true
+        default: return false
         }
     }
 }

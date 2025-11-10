@@ -29,7 +29,8 @@ struct RTMarkdown: View {
                     ForegroundColor(findTint() ?? .primary)
                 }
                 .environment(\.openURL, OpenURLAction { url in
-                    guard url.formatted().contains("scp") else { return .systemAction }
+                    let formatted = url.formatted()
+                    guard formatted.contains("scp") && !formatted.contains("offset/") else { return .systemAction }
                     callAPI(url: url)
                     return .handled
                 })

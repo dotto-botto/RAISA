@@ -107,7 +107,7 @@ struct ArticleView: View {
                 TOCExists = true
             }
             
-            findNextArticle(currentTitle: scp.title) { article in
+            scp.findNextArticle() { article in
                 nextArticle = article
             }
         }

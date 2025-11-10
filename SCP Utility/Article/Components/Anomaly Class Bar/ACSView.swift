@@ -171,9 +171,210 @@ struct ACSView: View {
     }
 }
 
+/// Container for the attribute icons used in ACSView.
+struct ACSCellView: View {
+    @State var componentClass: ArticleAttribute
+    @State var customIcon: [String:URL?] = [:]
+    
+    private let esotericSquareHeight: CGFloat = 110
+    private let leftRectangleWidth: CGFloat = 20
+    private let esotericCapsuleWidth: CGFloat = 180
+    private let esotericCapsuleHeight: CGFloat = 80
+    private let esotericIconsWidth: CGFloat = 65
+    private let normalCapsuleWidth: CGFloat = 130
+    private let normalCapsuleHeight: CGFloat = 70
+    private let normalIconsHeight: CGFloat = 55
+    
+    init?(_ attr: ArticleAttribute) {
+        // Check if attr is unknown since unknown will be an empty string
+        guard attr.toLocalString() != "" else { return nil }
+        componentClass = attr
+    }
+    
+    init?(secondaryname: String, secondaryIconURL url: URL?) {
+        customIcon = [secondaryname:url]
+        componentClass = .object(.unknown)
+    }
+    
+    var body: some View {
+        if componentClass.isEsoteric() {
+            esoteric
+        } else if componentClass.isObject() {
+            object
+        } else {
+            normal
+        }
+    }
+    
+    var esoteric: some View {
+        HStack {
+            Rectangle()
+                .foregroundColor(componentClass.toColor())
+                .frame(width: leftRectangleWidth)
+            // Text
+            VStack {
+                Text("ACS_ESOTERIC_INDICATOR")
+                    .font(.title3)
+                    .bold()
+                Text(customIcon.first?.key.uppercased() ?? componentClass.toLocalString().uppercased())
+                    .font(.title)
+                    .bold()
+            }
+            Spacer()
+            
+            // Capsule
+            ZStack {
+                Capsule()
+                    .foregroundColor(.black)
+                    .frame(width: esotericCapsuleWidth, height: esotericCapsuleHeight)
+                HStack {
+                    Image("esoteric-icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: esotericIconsWidth)
+                        .colorInvert()
+                    
+                    
+                    ZStack {
+                        Circle()
+                            .foregroundColor(.white)
+                            .frame(height: esotericIconsWidth + 5)
+                        
+                        if let url = customIcon.first?.value {
+                            AsyncImage(url: url) {
+                                $0
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: esotericIconsWidth)
+                                    .clipShape(Circle())
+                            } placeholder: {}
+                        } else {
+                            Image(componentClass.toImage())
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: esotericIconsWidth)
+                        }
+                    }
+                }
+                .scaledToFit()
+            }
+            .padding(.trailing, 5)
+        }
+        .frame(height: esotericSquareHeight)
+        .background(componentClass.toColor().opacity(0.3))
+    }
+    
+    var object: some View {
+        HStack {
+            Rectangle()
+                .foregroundColor(componentClass.toColor())
+                .frame(width: leftRectangleWidth)
+            // Text
+            VStack {
+                Text("ACS_OBJECT_INDICATOR")
+                    .font(.title3)
+                    .bold()
+                Text(customIcon.first?.key.uppercased() ?? componentClass.toLocalString().uppercased())
+                    .font(.title)
+                    .bold()
+            }
+            Spacer()
+            
+            // Capsule
+            ZStack {
+                Circle()
+                    .foregroundColor(.black)
+                    .frame(width: esotericIconsWidth + 20)
+                
+                Circle()
+                    .foregroundColor(componentClass.toColor())
+                    .frame(height: esotericIconsWidth + 5)
+                
+                if let url = customIcon.first?.value {
+                    AsyncImage(url: url) {
+                        $0
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: esotericIconsWidth)
+                    } placeholder: {}
+                } else {
+                    Image(componentClass.toImage())
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: esotericIconsWidth)
+                }
+            }
+            .scaledToFit()
+            .padding(.trailing, 5)
+        }
+        .frame(height: esotericSquareHeight)
+        .background(componentClass.toColor().opacity(0.3))
+    }
+    
+    var normal: some View {
+        HStack {
+            Rectangle()
+                .foregroundColor(componentClass.toColor())
+                .frame(width: leftRectangleWidth)
+            
+            // Text
+            VStack {
+                Text(customIcon.first?.key.uppercased() ?? componentClass.toLocalString().uppercased())
+                    .font(.title)
+                    .bold()
+            }
+            Spacer()
+            
+            // Capsule
+            ZStack {
+                Capsule()
+                    .foregroundColor(.black)
+                    .frame(width: normalCapsuleWidth, height: normalCapsuleHeight)
+                HStack {
+                    Circle()
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
+                        .font(.largeTitle)
+                        .frame(width: 40)
+                    
+                    
+                    ZStack {
+                        Circle()
+                            .foregroundColor(
+                                componentClass.toColor() == Color("Pending Black") ? .white : componentClass.toColor()
+                            )
+                            .frame(height: 60)
+                        
+                        if let url = customIcon.first?.value {
+                            AsyncImage(url: url) {
+                                $0
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: normalIconsHeight)
+                            } placeholder: {}
+                        } else {
+                            Image(componentClass.toImage())
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: normalIconsHeight)
+                        }
+                    }
+                }
+            }
+            .frame(height: esotericSquareHeight / 2)
+            .clipShape(Rectangle())
+            .padding(.trailing, 5)
+        }
+        .frame(height: esotericSquareHeight / 2)
+        .background(componentClass.toColor().opacity(0.3))
+    }
+}
+
+
 struct ACSView_Previews: PreviewProvider {
     static var previews: some View {
-        ACSView(component: """
+        VStack {
+            ACSView(component: """
 [[include :scp-wiki:component:anomaly-class-bar-source
 |item-number=5004
 |clearance=5
@@ -184,5 +385,7 @@ struct ACSView_Previews: PreviewProvider {
 |risk-class=notice
 ]]
 """)
+            ACSCellView(.object(.keter))
+        }
     }
 }

@@ -115,7 +115,7 @@ func parseRT(_ text: String) -> [RTItem] {
             audioIndex += matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: content).count
         }
         
-        if item.contains("anomaly-class") || item.contains("object-warning-box") {
+        if item.contains("anomaly-class") || item.contains("object-warning-box") || item.contains("customizable-acs") {
             let slice = source.slice(with: item, and: "]]")
             items.append(.component(slice))
             source.removeText(from: item, to: "]]")
@@ -187,6 +187,8 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         // Replace non break spaces with normal spaces
         text = text.replacingOccurrences(of: "\u{00A0}", with: " ")
         
+        text = text.replacingOccurrences(of: "[[include\n", with: "[[include ")
+        
         // Basic Divs
         let regexDeletes: [Regex] = try! [
             Regex(#"(\[\[div.*?\]\]|\[\[\/div\]\])"#),
@@ -223,7 +225,11 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
         text.removeText(from: "[[include :scp-wiki:component:author-label-source start=--", to: "[[include :scp-wiki:component:author-label-source end=--]]")
         
         // "--]" is used as a component parameter, and it doesnt match anything, so it causes problems
-        text = text.replacingOccurrences(of: "--]", with: "")
+        text = try! text.replacing(Regex(#"--\](?:]])"#), with: "]]")
+        for match in matches(for: #"\[\[div class="blockquote".*?]][\s\S]*?\[\[\/div]]"#, in: text) {
+            let replacement = match.replacingOccurrences(of: "--", with: "")
+            text = text.replacingOccurrences(of: match, with: replacement)
+        }
         
         text = text.replacingOccurrences(of: "[*http", with: "[http")
         
@@ -323,6 +329,7 @@ func FilterToMarkdown(doc: String, completion: @escaping (String) -> Void) {
             "anomaly-class",
             "object-warning-box",
             "snippets:html5player",
+            "customizable-acs"
         ]
         
         let regex = try! Regex(#"\[\[include(?!.*("# + supportedIncludes.joined(separator: "|") + #"))[^\]]*\]\](?![^\[]*\])"#)
@@ -342,7 +349,7 @@ func FilterToPure(doc: String) -> String {
     text = text.replacingOccurrences(of: "\u{00A0}", with: " ")
     
     // Basic Divs
-    if let firstLicense = matches(for: #"\[\[include.*license-box.*?]]"#, in: text).first,
+    if let firstLicense = matches(for: #"\[\[include.*license-box[\s\S]*?]]"#, in: text).first,
        let lastLicense = matches(for: #"\[\[include.*?license-box-end.*?]]"#, in: text).first {
         text.removeText(from: firstLicense, to: lastLicense)
     }

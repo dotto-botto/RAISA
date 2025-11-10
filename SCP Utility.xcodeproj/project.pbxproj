@@ -37,7 +37,6 @@
 		F66AD54A2A33A77C003DF992 /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66AD5492A33A77C003DF992 /* StorageView.swift */; };
 		F66AD54E2A33F211003DF992 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66AD54D2A33F211003DF992 /* AboutView.swift */; };
 		F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2362A05DEDF004437AC /* ACSView.swift */; };
-		F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66DF2382A05DF1C004437AC /* ACSCellView.swift */; };
 		F672FDD62DD3D26600B3AB02 /* TOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F672FDD32DD3D26600B3AB02 /* TOC.swift */; };
 		F672FDD72DD3D26600B3AB02 /* TOCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F672FDD42DD3D26600B3AB02 /* TOCView.swift */; };
 		F69219F129BA5C1200EF19D0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F69219F029BA5C1200EF19D0 /* Kingfisher */; };
@@ -120,7 +119,6 @@
 		F66AD54C2A33E58D003DF992 /* SCP Utility.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SCP Utility.entitlements"; sourceTree = "<group>"; };
 		F66AD54D2A33F211003DF992 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		F66DF2362A05DEDF004437AC /* ACSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSView.swift; sourceTree = "<group>"; };
-		F66DF2382A05DF1C004437AC /* ACSCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSCellView.swift; sourceTree = "<group>"; };
 		F672FDD32DD3D26600B3AB02 /* TOC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOC.swift; sourceTree = "<group>"; };
 		F672FDD42DD3D26600B3AB02 /* TOCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOCView.swift; sourceTree = "<group>"; };
 		F69219F929BA6A4400EF19D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -250,7 +248,6 @@
 			isa = PBXGroup;
 			children = (
 				F66DF2362A05DEDF004437AC /* ACSView.swift */,
-				F66DF2382A05DF1C004437AC /* ACSCellView.swift */,
 			);
 			path = "Anomaly Class Bar";
 			sourceTree = "<group>";
@@ -547,7 +544,6 @@
 				F6E9D9232A38BDB60096912F /* ListPages.swift in Sources */,
 				F60FF7072E5D0F0900A08535 /* WelcomeView.swift in Sources */,
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
-				F66DF2392A05DF1C004437AC /* ACSCellView.swift in Sources */,
 				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,
 				F6C059BA2A50B14E00706D10 /* UserParser.swift in Sources */,
 				F6A7FCE52A5F6A17001E2BED /* ThemeView.swift in Sources */,
