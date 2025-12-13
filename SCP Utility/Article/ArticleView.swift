@@ -270,6 +270,7 @@ struct ArticleView: View {
                 Group {
                     Spacer()
                     Menu {
+                        // Footnote view
                         Button {
                             showFootnoteView.toggle()
                         } label: {
@@ -281,6 +282,7 @@ struct ArticleView: View {
                         .disabled(!scp.pagesource.contains("[[footnote]]"))
                         .disabled(containsExplicitContent)
                         
+                        // Background toggle
                         Button {
                             showBackground.toggle()
                         } label: {
@@ -292,6 +294,7 @@ struct ArticleView: View {
                         }
                         .disabled(theme == nil)
                         
+                        // Table of contents view
                         Button {
                             showTOCView.toggle()
                         } label: {
@@ -302,6 +305,52 @@ struct ArticleView: View {
                             }
                         }
                         .disabled(!TOCExists)
+                        
+                        // Vote button
+//                        Menu {
+//                            if #available(iOS 16.4, *) {
+//                                ControlGroup {
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
+//                                    } label: {
+//                                        Label("Upvote", systemImage: "plus")
+//                                    }
+//                                    
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
+//                                    } label: {
+//                                        Label("Downvote", systemImage: "minus")
+//                                    }
+//                                    
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
+//                                    } label: {
+//                                        Label("Clear vote", systemImage: "xmark")
+//                                    }
+//                                }
+//                                .controlGroupStyle(.compactMenu)
+//                            } else {
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
+//                                } label: {
+//                                    Label("Clear vote", systemImage: "xmark")
+//                                }
+//                                
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
+//                                } label: {
+//                                    Label("Downvote", systemImage: "minus")
+//                                }
+//                                
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
+//                                } label: {
+//                                    Label("Upvote", systemImage: "plus")
+//                                }
+//                            }
+//                        } label: {
+//                            Label("Vote", systemImage: "arrow.up.arrow.down")
+//                        }
                     } label: {
                         Image(systemName: "list.bullet")
                     }

@@ -13,10 +13,12 @@ struct ExploreView: View {
     @State private var settings: Bool = false
     @State private var language: Bool = false
     @State private var editor: Bool = false
+    @State private var signInSheet: Bool = false
     
     @State private var connected: Bool = true
     @State private var userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     @EnvironmentObject var networkMonitor: NetworkMonitor
+    @EnvironmentObject var loginMonitor: LoginMonitor
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -45,14 +47,24 @@ struct ExploreView: View {
             }
             .navigationTitle("RAISA_HEADER")
             .toolbar {
-//                ToolbarItemGroup(placement: .navigationBarLeading) {
-//                    Button {
-//                        editor = true
-//                    } label: {
-//                        Image(systemName: "plus")
+//                if loginMonitor.isLoggedIn {
+//                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+//                        Button {
+//                            
+//                        } label: {
+//                            Image(systemName: "person.crop.circle")
+//                        }
+//                    }
+//                } else {
+//                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+//                        Button {
+//                            signInSheet = true
+//                        } label: {
+//                            Text("SIGN_IN")
+//                        }
 //                    }
 //                }
-                
+                    
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {
                         settings = true
@@ -63,13 +75,17 @@ struct ExploreView: View {
             }
             .fullScreenCover(isPresented: $settings) { NavigationStack { SettingsView() } }
             .fullScreenCover(isPresented: $editor) { NavigationStack { EditorView() } }
+            .sheet(isPresented: $signInSheet) { NavigationStack { LoginView() } }
         }
     }
 }
 
 struct ExploreView_Previews: PreviewProvider {
     static let networkMonitor = NetworkMonitor()
+    static let loginMonitor = LoginMonitor()
     static var previews: some View {
-        ExploreView().environmentObject(networkMonitor)
+        ExploreView()
+            .environmentObject(networkMonitor)
+            .environmentObject(loginMonitor)
     }
 }

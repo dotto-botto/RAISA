@@ -10,6 +10,7 @@ import Alamofire
 import SwiftyJSON
 import SwiftUI
 import SwiftSoup
+import Security
 
 class RaisaReq {
     private static let baseHeaders: HTTPHeaders = [
@@ -19,6 +20,80 @@ class RaisaReq {
         "Cookie" : "wikidot_token7=888888",
     ]
     
+    // MARK: - Login Requests
+    /// Log in to wikidot
+    static func login(username: String, password: String, saveInKeychain keychain: Bool = false, completion: @escaping (Error?) -> Void) {
+        let loginURL = URL(string: "https://www.wikidot.com/default--flow/login__LoginPopupScreen")!
+        let body = [
+            "login" : username,
+            "password" : password,
+            "action" : "Login2Action",
+            "event" : "login"
+        ]
+        AF.request(
+            loginURL,
+            method: .post,
+            parameters: body,
+            encoding: URLEncoding.default,
+            headers: baseHeaders
+        ).responseString { response in
+            guard let data = response.value else { completion(RRError.invalidAuthenticationError); return }
+            if data.contains("The login and password do not match") {
+                completion(RRError.invalidAuthenticationError)
+            } else {
+                if keychain {
+                    do {
+                        try Keychain.saveLogin(username: username, password: password)
+                    } catch {
+                        completion(error)
+                    }
+                }
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    /// Log out of wikidot
+    static func logout() {
+        let loginURL = URL(string: "https://www.wikidot.com/default--flow/login__LoginPopupScreen")!
+        let body = [
+            "action" : "Login2Action",
+            "event" : "logout",
+            "moduleName" : "Empty"
+        ]
+        _ = AF.request(
+            loginURL,
+            method: .post,
+            parameters: body,
+            encoding: URLEncoding.default,
+            headers: baseHeaders
+        )
+    }
+    
+    static func ratePage(url: URL, vote: RRVote, completion: @escaping (Error?) -> Void) {
+        findPageID(url: url) { id, _ in
+            let body = [
+                "action" : "RateAction",
+                "event" : "ratePage",
+                "points" : "\(vote.rawValue)",
+                "pageId" : id,
+                "force" : "yes"
+            ]
+            AF.request(
+                ajaxModuleURL(),
+                method: .post,
+                parameters: body,
+                encoding: URLEncoding.default,
+                headers: baseHeaders
+            ).responseString { response in
+                guard let data = response.value else { return }
+                print(data)
+            }
+        }
+    }
+    
+    // MARK: - Article Requests
     static private func ajaxModuleURL(language lang: RAISALanguage = .english) -> URL {
         return try! URL(string: lang.toURL()
             .formatted()
@@ -341,17 +416,18 @@ enum RRError: Error {
     case textParsingError
     case articleRequestError
     case coreDataError
+    case invalidAuthenticationError
 }
 
-#Preview {
-    Text("Text")
-        .onAppear {
-            RaisaReq.articlefromURL(url: URL(string: "https://scpfoundation.net/scp-173")!) { data , error in
-                print(data ?? "no data")
-                print(error ?? "no error")
-            }
-        }
+enum RRVote: String {
+    case up = "+"
+    case down = "-"
+    case clear = "x"
 }
+
+//#Preview {
+//    LoginView()
+//}
 
 // MARK: Headers for data requests
 /*

@@ -341,6 +341,13 @@
 "4_KARMA" = "Very High Karma";
 "5_KARMA" = "Guru";
 
+// MARK: - Login
+"USERNAME" = "Username (Email)";
+"PASSWORD" = "Password";
+"SUBMIT" = "Submit";
+"SIGN_IN" = "Sign In";
+"INVALID_CREDENTIALS" = "The username or password is incorrect.";
+
 // MARK: - Other
 "SEARCH_TITLE" = "Search";
 "RECENT_SEARCHES" = "Recent Searches";

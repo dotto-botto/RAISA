@@ -17,6 +17,7 @@ struct SCP_UtilityApp: App {
     @AppStorage("isFirstLaunch") var isFirstLaunch = true
     @StateObject var networkMonitor = NetworkMonitor()
     @StateObject var subtitlesStore = SubtitlesStore()
+    @StateObject var loginMonitor = LoginMonitor()
     let con = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
@@ -24,6 +25,7 @@ struct SCP_UtilityApp: App {
                 .environment(\.managedObjectContext, con.container.viewContext)
                 .environmentObject(networkMonitor)
                 .environmentObject(subtitlesStore)
+                .environmentObject(loginMonitor)
                 .onAppear {
                     RaisaReq.scrapeSubtitles(store: subtitlesStore, series: LATEST_SERIES)
                     
@@ -111,5 +113,13 @@ class SubtitlesStore: ObservableObject {
         } catch {
             print("Error retrieving subtitles: \(error.localizedDescription)")
         }
+    }
+}
+
+class LoginMonitor: ObservableObject {
+    @Published var isLoggedIn: Bool = false
+    
+    init() {
+        
     }
 }

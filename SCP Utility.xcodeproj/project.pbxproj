@@ -55,6 +55,8 @@
 		F6D331262A2149F200F8D004 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331252A2149F200F8D004 /* Theme.swift */; };
 		F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331282A27EB8700F8D004 /* RTItem.swift */; };
 		F6D3312D2A2ABCA500F8D004 /* ObjectWarningBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */; };
+		F6D8314A2EC29A2F000E8B2F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D831492EC29A2F000E8B2F /* LoginView.swift */; };
+		F6D8314C2EC7B033000E8B2F /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D8314B2EC7B033000E8B2F /* Keychain.swift */; };
 		F6DCB8202A16E72D0048C180 /* UpdateAttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */; };
 		F6DCB8222A1A8CBD0048C180 /* OnlineArticleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */; };
 		F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DCB8232A1A97930048C180 /* SeriesCard.swift */; };
@@ -135,6 +137,8 @@
 		F6D331252A2149F200F8D004 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		F6D331282A27EB8700F8D004 /* RTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTItem.swift; sourceTree = "<group>"; };
 		F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWarningBoxView.swift; sourceTree = "<group>"; };
+		F6D831492EC29A2F000E8B2F /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		F6D8314B2EC7B033000E8B2F /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		F6DCB81F2A16E72D0048C180 /* UpdateAttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAttributeView.swift; sourceTree = "<group>"; };
 		F6DCB8212A1A8CBD0048C180 /* OnlineArticleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineArticleRow.swift; sourceTree = "<group>"; };
 		F6DCB8232A1A97930048C180 /* SeriesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesCard.swift; sourceTree = "<group>"; };
@@ -274,6 +278,7 @@
 			children = (
 				F69219FE29BA6C7500EF19D0 /* ExploreView.swift */,
 				F615611A29D87332003561CD /* RandomCard.swift */,
+				F6D831492EC29A2F000E8B2F /* LoginView.swift */,
 				F6E1FF2429E78C540030DF41 /* ResumeCard.swift */,
 				F6DCB8232A1A97930048C180 /* SeriesCard.swift */,
 				F6DCB8252A1AA2630048C180 /* SeriesView.swift */,
@@ -377,6 +382,7 @@
 			children = (
 				F6DFECFD299AED80002C3F1A /* Model.xcdatamodeld */,
 				F6DFED00299AEFC6002C3F1A /* DataController.swift */,
+				F6D8314B2EC7B033000E8B2F /* Keychain.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -516,6 +522,7 @@
 				F6EFF42329DB81D200605E40 /* ArticleInfoView.swift in Sources */,
 				F6236F6929A2F43F007A5A61 /* Model.xcdatamodeld in Sources */,
 				F6D331262A2149F200F8D004 /* Theme.swift in Sources */,
+				F6D8314C2EC7B033000E8B2F /* Keychain.swift in Sources */,
 				F64BEECD29FD630100AEB15B /* Comment.swift in Sources */,
 				F64BEED129FD67CC00AEB15B /* CommentParser.swift in Sources */,
 				F6E9D9272A438AD40096912F /* ArticleAudio.swift in Sources */,
@@ -547,6 +554,7 @@
 				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,
 				F6C059BA2A50B14E00706D10 /* UserParser.swift in Sources */,
 				F6A7FCE52A5F6A17001E2BED /* ThemeView.swift in Sources */,
+				F6D8314A2EC29A2F000E8B2F /* LoginView.swift in Sources */,
 				F64BEEC529F9C80C00AEB15B /* TabViewComponent.swift in Sources */,
 				F64BEED72A03057A00AEB15B /* ListRow.swift in Sources */,
 				F6DCB8242A1A97930048C180 /* SeriesCard.swift in Sources */,
