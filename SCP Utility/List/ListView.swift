@@ -18,7 +18,7 @@ struct ListView: View {
     @State private var items = PersistenceController.shared.getAllLists()
     var body: some View {
         let con = PersistenceController.shared
-        let builtInLists = {
+        let allsaved = {
             NavigationLink {
                 OneListView(list: SCPList()).navigationTitle("ALL_SAVED_ARTICLES")
             } label: {
@@ -36,15 +36,37 @@ struct ListView: View {
             }
         }
         
+        let recentsaved = {
+            NavigationLink {
+                OneListView(list: SCPList(recent: true)).navigationTitle("RECENT_ARTICLES")
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("RECENT_ARTICLES")
+                            .foregroundColor(.accentColor)
+                            .lineLimit(1)
+                        Text("RECENT_ARTICLES_SUBTITLE")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 13))
+                            .lineLimit(1)
+                    }
+                }
+            }
+        }
+        
         NavigationStack {
             VStack {
                 if items == nil || (items ?? []).isEmpty {
-                    List { builtInLists() }
+                    List {
+                        allsaved()
+                        recentsaved()
+                    }
                 }
                 
                 List(items ?? []) { item in
                     if item.identifier == items!.first!.identifier {
-                        builtInLists()
+                        allsaved()
+                        recentsaved()
                     }
                     
                     ListRow(fromEntity: item)
@@ -106,11 +128,15 @@ struct OneListView: View {
     // 1 - Every article that the user has marked as complete.
     // 2 - Every article that the user hasn't marked as complete.
     @State private var mode: Int = 0
-    
+    @State private var doneInitialLoad: Bool = false
     @EnvironmentObject var subtitlesStore: SubtitlesStore
     var body: some View {
         VStack {
-            if articles.isEmpty {
+            if !doneInitialLoad {
+                Spacer()
+                ProgressView()
+                Spacer()
+            } else if articles.isEmpty && doneInitialLoad {
                 VStack {
                     Spacer()
                     Text("NO_ARTICLES_IN_LIST")
@@ -124,10 +150,20 @@ struct OneListView: View {
                 
             } else {
                 List(articles) { article in
-                    ArticleRow(passedSCP: article)
-                        .swipeActions(edge: .leading) {
-                            Button(role: .destructive) {
+                    ArticleRow(
+                        id: article.id,
+                        title: article.title,
+                        url: article.url,
+                        completed: article.isComplete(),
+                        currenttext: article.currenttext,
+                        language: article.findLanguage(),
+                        objclass: article.objclass,
+                        esotericclass: article.esoteric
+                    )
+                        .swipeActions(edge: .trailing) {
+                            Button {
                                 list.removeContent(id: article.id)
+                                updateAndFilterArticles()
                             } label: {
                                 Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
                             }
@@ -136,7 +172,14 @@ struct OneListView: View {
             }
         }
         .navigationTitle(list.listid)
-        .task { updateAndFilterArticles() }
+        .task {
+            updateAndFilterArticles()
+            
+            if list.id == "ALL_SAVED_ARTICLES" || list.id == "RECENT_ARTICLES" {
+                ascending = true
+            }
+            doneInitialLoad = true
+        }
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always))
         .onChange(of: query) { _ in updateAndFilterArticles() }
         .onChange(of: mode) { _ in updateAndFilterArticles() }
@@ -254,14 +297,28 @@ struct OneListView: View {
                 query = ""
             }
         }
-        Spacer()
     }
     
     private func updateAndFilterArticles() {
         var articlelist: [Article] = []
-        for article in PersistenceController.shared.getAllListArticles(list: self.list) ?? [] {
-            if let article = Article(fromEntity: article) {
-                articlelist.append(article)
+        if list.id == "ALL_SAVED_ARTICLES" {
+            for article in PersistenceController.shared.getAllArticles(filter: query) ?? [] {
+                if let article = Article(fromEntity: article) {
+                    articlelist.append(article)
+                }
+            }
+        } else if list.id == "RECENT_ARTICLES" {
+            for article in PersistenceController.shared.getAllArticles(filter: query, last: 20) ?? [] {
+                if let article = Article(fromEntity: article) {
+                    articlelist.append(article)
+                }
+            }
+        } else if let newlistentity = PersistenceController.shared.getListByID(id: list.id) {
+            self.list = SCPList(fromEntity: newlistentity) ?? self.list
+            for article in PersistenceController.shared.getAllListArticles(list: self.list, filter: query) ?? [] {
+                if let article = Article(fromEntity: article) {
+                    articlelist.append(article)
+                }
             }
         }
         
@@ -270,9 +327,6 @@ struct OneListView: View {
         // Resolve filters
         self.articles = 
         self.articles
-            .filter {
-                query.isEmpty ? true : $0.title.lowercased().contains(query.lowercased()) || RaisaReq.getAlternateTitle(url: $0.url, store: subtitlesStore)?.lowercased().contains(query.lowercased()) ?? false
-            }
             .filter {
                 switch mode {
                 case 0: return true

@@ -13,6 +13,7 @@ struct ArticleImage: View {
     var content: String
     
     var storedImage: UIImage? = nil
+    var filename: String? = nil
     var subtitle: String? = nil
     
     init(article: Article, content: String) {
@@ -30,6 +31,7 @@ struct ArticleImage: View {
                 
                 return  UIImage(contentsOfFile: file)
             }()
+            self.filename = parsed?.value?.lastPathComponent
             self.subtitle = FilterToPure(doc: parsed?.key ?? "")
         }
     }
@@ -50,11 +52,8 @@ struct ArticleImage: View {
                             }
                         }
                         .contextMenu {
-                            Menu {
-                                Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
-                            } label: {
-                                Label("IMAGE_INFO", systemImage: "ladybug")
-                            }
+                            Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
+                            Text(filename ?? "error")
                         }
                     Text(subtitle ?? "")
                         .font(.headline)
@@ -80,20 +79,15 @@ struct ArticleImage: View {
                         }
                     }
                     .contextMenu {
-                        Menu {
-                            Label("IMAGE_STORED_ON_DISK", systemImage: "xmark")
-                            
-                            if let url = parsed?.value {
-                                Link(destination: url) {
-                                    Text(url.formatted())
-                                }
-                            } else {
-                                Text("error finding url")
+                        Label("IMAGE_NOT_STORED", systemImage: "xmark")
+                        
+                        if let url = parsed?.value {
+                            Link(destination: url) {
+                                Text(url.formatted())
                             }
-                        } label: {
-                            Label("IMAGE_INFO", systemImage: "ladybug")
+                        } else {
+                            Text("error finding url")
                         }
-                        .frame(maxWidth: .infinity)
                     }
                     Text(FilterToPure(doc: parsed?.key ?? ""))
                         .font(.headline)

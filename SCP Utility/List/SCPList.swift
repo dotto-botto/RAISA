@@ -24,6 +24,16 @@ struct SCPList: Identifiable {
             .compactMap { Article(fromEntity: $0) }
             .map { $0.id } ?? []
     }
+    
+    /// init with recent (20) articles.
+    init(recent: Bool) {
+        self.id = "RECENT_ARTICLES"
+        self.listid = String(localized: "RECENT_ARTICLES")
+
+        self.contents = con.getAllArticles()?
+            .compactMap { Article(fromEntity: $0) }
+            .map { $0.id } ?? []
+    }
 
     init(id: String = UUID().uuidString, listid: String, subtitle: String? = nil) {
         self.id = id
@@ -81,3 +91,4 @@ struct SCPList: Identifiable {
         con.deleteListEntity(listitem: self)
     }
 }
+

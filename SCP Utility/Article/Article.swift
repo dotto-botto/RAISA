@@ -193,7 +193,11 @@ struct Article: Identifiable, Codable {
     func downloadImages(ignoreUserPreference pref: Bool = false) {
         if !UserDefaults.standard.bool(forKey: "downloadImages") && !pref { return }
         
-        let images = matches(for: #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#, in: self.pagesource)
+        let source = self.pagesource
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: "[[include\n", with: "[[include ")
+        
+        let images = matches(for: #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#, in: source)
         
         for image in images {
             guard let url = parseArticleImage(image, articleURL: self.url).first?.value else { continue }

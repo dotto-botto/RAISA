@@ -404,7 +404,7 @@ extension PersistenceController {
     }
     
     /// Return all articles in a list.
-    func getAllListArticles(list: SCPList, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
+    func getAllListArticles(list: SCPList, filter: String? = nil, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
         let context = context ?? container.viewContext
         guard list.contents != nil else {return nil}
         guard list.id != "ALL_SAVED_ARTICLES" else {
@@ -415,7 +415,9 @@ extension PersistenceController {
         var articles = [ArticleItem]()
         let object = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
         for id in list.contents! {
-            object.predicate = NSPredicate(format: "identifier == %@", id)
+            let predicate: String = (filter != nil && !filter!.isEmpty) ? "identifier == %@ AND title contains[cd] %@" : "identifier == %@"
+            object.predicate = NSPredicate(format: predicate, id, filter!)
+            
             do {
                 if let toAdd = try context.fetch(object).first {
                     articles.append(toAdd)
@@ -431,11 +433,14 @@ extension PersistenceController {
     }
     
     /// Retrieve all saved article entities.
-    func getAllArticles(context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
+    func getAllArticles(filter: String? = nil, last: Int? = nil, context: NSManagedObjectContext? = nil) -> [ArticleItem]? {
         let context = context ?? container.viewContext
         
         var articles = [ArticleItem]()
         let request = NSFetchRequest<ArticleItem>(entityName: "ArticleItem")
+        if filter != nil && !filter!.isEmpty{
+            request.predicate = NSPredicate(format: "title contains[cd] %@", filter!)
+        }
         
         do {
             articles = try context.fetch(request)
@@ -443,6 +448,9 @@ extension PersistenceController {
             debugPrint(error.localizedDescription)
         }
         
+        if last != nil {
+            articles = Array(articles.suffix(last!))
+        }
         return articles
     }
     

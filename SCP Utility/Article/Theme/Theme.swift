@@ -58,16 +58,32 @@ struct SpaceTheme: RAISATheme {
 struct SpaceThemeBackground: View {
     @Environment(\.colorScheme) var scheme
     var body: some View {
-        VStack {
-            Spacer()
-            Image("spacefooter")
-                .resizable()
-                .scaledToFit()
+        Group {
+            if #available(iOS 26.0, *) {
+                VStack {
+                    Spacer()
+                    Image("spacefooter")
+                        .resizable()
+                        .scaledToFit()
+                }
+                .ignoresSafeArea()
+                .background {
+                    Image("spacebg")
+                }
+                .opacity(scheme == .dark ? 1 : 0.5)
+            } else {
+                VStack {
+                    Spacer()
+                    Image("spacefooter")
+                        .resizable()
+                        .scaledToFit()
+                }
+                .background {
+                    Image("spacebg")
+                }
+                .opacity(scheme == .dark ? 1 : 0.5)
+            }
         }
-        .background {
-            Image("spacebg")
-        }
-        .opacity(scheme == .dark ? 1 : 0.5)
     }
 }
 
