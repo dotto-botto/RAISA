@@ -404,6 +404,98 @@ class RaisaReq {
             }
             task.resume()
         }
+    // https://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--modules/js/forum/ForumViewThreadPostsModule.js
+    static func getComments(url: URL, page: Int, language lang: RAISALanguage = .english, completion: @escaping ([Comment]?, Int?, Error?) -> Void) {
+        guard let stringURL = URL(string: url.formatted().replacingOccurrences(of: "http://", with: "https://")) else { return }
+        let task = URLSession.shared.dataTask(with: stringURL) { data, response, error in
+            guard let data = data else { return }
+            do {
+                // Find forum url id
+                let articledoc = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
+                let forumurlid = try articledoc
+                    .getElementById("discuss-button")?
+                    .attr("href")
+                    .asURL()
+                    .formatted()
+                    .slice(from: "/t-", to: "/")
+                
+                if forumurlid == nil { return }
+                
+                // Request
+                var reqbody = [
+                    "moduleName" : "forum/ForumViewThreadPostsModule",
+                    "page_id" : "",
+                    "pageNo" : page,
+                    "t" : forumurlid ?? "",
+                    "wikidot_token7" : "888888"
+                ]
+                findPageID(url: url) { id, _ in
+                    reqbody["page_id"] = id
+                    AF.request(
+                        ajaxModuleURL(language: lang),
+                        method: .post,
+                        parameters: reqbody,
+                        encoding: URLEncoding.default,
+                        headers: baseHeaders
+                    ).responseString { response in
+                        guard let data = response.data else { return }
+                        do {
+                            let json = try JSON(data: data)
+                            guard let body = json["body"].string else {
+                                completion(nil, nil, RRError.textParsingError)
+                                return
+                            }
+                            
+                            // Parse comments
+                            let doc = try SwiftSoup.parse(body)
+                            
+                            let maxpage = try Int(doc.html().slice(from: "page \(page) of ", to: "</span>") ?? "err") ?? 1
+                            
+                            let comments = try doc.getElementsByClass("long").array()
+                            
+                            var returnComments: [Comment] = []
+                            for element in comments {
+                                let img = try element.getElementsByClass("small").attr("src").asURL()
+                                
+                                var user = ""
+                                if try element.getElementsByClass("printuser deleted").first() == nil {
+                                    user = try element.getElementsByClass("printuser avatarhover").first()?.select("a").array().last?.text() ?? "unknown user"
+                                } else { user = "(account deleted)" }
+                                
+                                let keyword = matches(for: #"odate.*?agohover"#, in: element.description).first ?? "÷"
+                                let dateElement = try element.getElementsByClass(keyword).text()
+                                let dateFormatter = DateFormatter()
+                                dateFormatter.dateFormat = "dd MMM yyyy HH:mm"
+                                let date = dateFormatter.date(from: dateElement)
+                                
+                                let content = try element.getElementsByClass("content").first()?.text() ?? ""
+                                
+                                let subject = try element.getElementsByClass("title").first()?.text()
+                                
+                                returnComments.append(
+                                    Comment(
+                                        username: user,
+                                        subject: subject,
+                                        content: content,
+                                        profilepic: img,
+                                        date: date
+                                    )
+                                    
+                                )
+                            }
+                            
+                            completion(returnComments, maxpage, nil)
+                        } catch {
+                            print(error)
+                        }
+                    }
+                }
+                
+            } catch {
+                print(error)
+            }
+        }
+        task.resume()
     }
 }
 

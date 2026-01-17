@@ -92,6 +92,7 @@
 "USER_OFFLINE" = "You are not connected to the internet.";
 "DISMISS" = "Dismiss";
 "DONE" = "Done";
+"ERROR_OCCURED" = "An Error occured, please try again.";
 
 // MARK: - Explore
 "EXPLORE_TITLE" = "Explore";
@@ -244,6 +245,10 @@
 "CV_TITLE%@" = "Discuss: %@";
 "CV_FOLD" = "Fold";
 "CV_UNFOLD" = "Unfold";
+"CV_OLDEST" = "Oldest";
+"CV_NEWEST" = "Newest";
+"CV_NOCOMMENTS" = "This article has no comments.";
+"%lldCV_PAGECOUNT%lld" = "Page %lld of %lld";
 "FOOTNOTE_MARK%lld" = "fn.%lld";
 "BOOKMARKED" = "Bookmarked";
 "NO_TRANSLATION_FOUND" = "No translation found.";
