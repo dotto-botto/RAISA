@@ -299,6 +299,7 @@
 "SUICIDE_WARNING" = "suicide";
 "TORTURE_WARNING" = "torture";
 "CUSTOM_WARNING" = "other content";
+"MSG_FROM_ARTICLE" = "Message from the article:";
 
 // MARK: - Languages
 "ENGLISH" = "English";

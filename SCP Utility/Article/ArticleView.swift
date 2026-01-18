@@ -50,8 +50,11 @@ struct ArticleView: View {
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
-                    ForEach(explicitContent, id: \.self) { comp in
-                        Text(comp).foregroundColor(.secondary)
+                    ScrollView {
+                        ForEach(explicitContent, id: \.self) { comp in
+                            Text(comp).foregroundColor(.secondary)
+                        }
+                        .padding(.horizontal, 10)
                     }
                     
                     Button("CONTINUE") {

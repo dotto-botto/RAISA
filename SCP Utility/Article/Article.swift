@@ -144,8 +144,26 @@ struct Article: Identifiable, Codable {
                 values.append(NSLocalizedString(key, comment: ""))
             }
         }
-        if values == [] { return nil }
-        else { return values }
+        if values != [] { return values }
+        
+        let sourcetoecheck = self.pagesource
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: "[[include\n", with: "[[include ")
+        
+        let cwmatches = matches(for: #"\[\[include.*?info[\s\S]*?content warning[\s\S]*?end\]\]"#, in: sourcetoecheck, option: .caseInsensitive)
+        if !cwmatches.isEmpty {
+            let messg = try! cwmatches.first?
+                .slice(from: "⚠️")?
+                .replacingOccurrences(of: "**", with: "")
+                .replacing(Regex(#"\[\[.*?\]\]"#), with: "")
+            
+            return [
+                NSLocalizedString("MSG_FROM_ARTICLE", comment: ""),
+                "\n" + (messg ?? NSLocalizedString("CUSTOM_WARNING", comment: ""))
+            ]
+        }
+        
+        return nil
     }
     
     func findTheme() -> RAISATheme? {
