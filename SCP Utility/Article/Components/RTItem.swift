@@ -37,7 +37,7 @@ enum RTItem: Hashable {
         case .table(let str):
             return AnyView(ArticleTable(article: article, doc: str))
         case .html(let str):
-            return AnyView(ArticleHTML(htmlContent: str))
+            return AnyView(ArticleHTML(htmlContent: str, articleTitle: article.title))
         case .audio(let str):
             return AnyView(ArticleAudio(component: str))
         }

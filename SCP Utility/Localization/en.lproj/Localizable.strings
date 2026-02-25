@@ -242,6 +242,8 @@
 "IMAGE_STORED_ON_DISK" = "Image is saved.";
 "IMAGE_NOT_STORED" = "Image is not saved.";
 "TAP_FOR_HTML" = "Tap to View HTML";
+"HTMLVIEW_TITLE%@" = "HTML Content of: %@";
+"HTMLVIEW_TITLE" = "HTML Content";
 "CV_TITLE%@" = "Discuss: %@";
 "CV_FOLD" = "Fold";
 "CV_UNFOLD" = "Unfold";

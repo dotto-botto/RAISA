@@ -10,29 +10,16 @@ import WebKit
 
 struct ArticleHTML: View {
     @State var htmlContent: String
-    @State private var viewContent: Bool = false
+    @State var articleTitle: String? = nil
     var body: some View {
-        Button {
-            viewContent = true
+        NavigationLink {
+            ArticleHTMLWrapper(htmlContent: htmlContent)
+                .navigationTitle(articleTitle != nil ? "HTMLVIEW_TITLE\(articleTitle!)" : "HTMLVIEW_TITLE")
         } label: {
             HStack {
                 Image(systemName: "chevron.left")
                 Text("TAP_FOR_HTML")
                 Image(systemName: "chevron.right")
-            }
-        }
-        .fullScreenCover(isPresented: $viewContent) {
-            NavigationStack {
-                ArticleHTMLWrapper(htmlContent: htmlContent)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button {
-                                viewContent = false
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
-                        }
-                    }
             }
         }
     }

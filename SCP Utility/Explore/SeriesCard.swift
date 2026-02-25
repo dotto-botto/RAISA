@@ -51,10 +51,9 @@ struct SeriesCard: View {
 /// A roman numeral on top of the corresponding series background.
 struct SeriesButton: View {
     let series: Int
-    @State private var presentSheet: Bool = false
     var body: some View {
-        Button {
-            presentSheet = true
+        NavigationLink {
+            SeriesView(series: series)
         } label: {
             ZStack {
                 Image("Series\(series)")
@@ -88,9 +87,6 @@ struct SeriesButton: View {
             }
         }
         .frame(width: 80, height: 80)
-        .sheet(isPresented: $presentSheet) {
-            NavigationStack { SeriesView(series: series) }
-        }
     }
 }
 
