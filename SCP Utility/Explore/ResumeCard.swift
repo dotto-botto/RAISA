@@ -81,6 +81,9 @@ struct ResumeCard: View {
                 if article == nil {
                     RaisaReq.articlefromURL(url: url) { art, _ in
                         article = art
+                        if UserDefaults.standard.bool(forKey: "reopenLastRead") {
+                            showSheet = true
+                        }
                     }
                 }
             }

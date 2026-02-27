@@ -129,7 +129,7 @@
 "SUPPORT_CROM_PROMPT" = "Support the Crom Creator";
 
 "GENERAL_OPTIONS" = "General";
-"OPEN_LAST_READ_OPTION" = "Open Last Read Article on Startup";
+"OPEN_LAST_READ_OPTION" = "Open Last Read Article on Start";
 "MANAGE_STORAGE" = "Manage Storage";
 "CHANGE_INT_BRANCH" = "Change International Branch";
 "SHOW_AV_WALLPAPER" = "Show Wallpapers";

@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("trackSearchHistory") var trackSearchHistory = true
     @AppStorage("showAVWallpaper") var showAVWallpaper = true
     @AppStorage("downloadImages") var downloadImages = true
+    @AppStorage("reopenLastRead") var reopenLastRead = true
     
     @State private var historyConf = false
     @Environment(\.dismiss) private var dismiss
@@ -53,6 +54,7 @@ struct SettingsView: View {
                 
                 Toggle("SHOW_AV_WALLPAPER", isOn: $showAVWallpaper)
                 Toggle("DOWNLOAD_IMAGES", isOn: $downloadImages)
+                Toggle("OPEN_LAST_READ_OPTION", isOn: $reopenLastRead)
             }
             
             Section("HISTORY_OPTIONS") {
