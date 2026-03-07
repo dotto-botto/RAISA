@@ -70,7 +70,6 @@
 		F6E1FF2529E78C540030DF41 /* ResumeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E1FF2429E78C540030DF41 /* ResumeCard.swift */; };
 		F6E9D91E2A3683290096912F /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D91D2A3683290096912F /* EditorView.swift */; };
 		F6E9D9202A36886F0096912F /* SyntaxGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D91F2A36886F0096912F /* SyntaxGuideView.swift */; };
-		F6E9D9232A38BDB60096912F /* ListPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9222A38BDB60096912F /* ListPages.swift */; };
 		F6E9D9252A4342CB0096912F /* HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9242A4342CB0096912F /* HTML.swift */; };
 		F6E9D9272A438AD40096912F /* ArticleAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9262A438AD40096912F /* ArticleAudio.swift */; };
 		F6E9D9292A486B3E0096912F /* RTMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9D9282A486B3E0096912F /* RTMarkdown.swift */; };
@@ -154,7 +153,6 @@
 		F6E1FF2429E78C540030DF41 /* ResumeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeCard.swift; sourceTree = "<group>"; };
 		F6E9D91D2A3683290096912F /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		F6E9D91F2A36886F0096912F /* SyntaxGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxGuideView.swift; sourceTree = "<group>"; };
-		F6E9D9222A38BDB60096912F /* ListPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPages.swift; sourceTree = "<group>"; };
 		F6E9D9242A4342CB0096912F /* HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTML.swift; sourceTree = "<group>"; };
 		F6E9D9262A438AD40096912F /* ArticleAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleAudio.swift; sourceTree = "<group>"; };
 		F6E9D9282A486B3E0096912F /* RTMarkdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMarkdown.swift; sourceTree = "<group>"; };
@@ -393,19 +391,10 @@
 			path = Editor;
 			sourceTree = "<group>";
 		};
-		F6E9D9212A38BDAF0096912F /* ListPages */ = {
-			isa = PBXGroup;
-			children = (
-				F6E9D9222A38BDB60096912F /* ListPages.swift */,
-			);
-			path = ListPages;
-			sourceTree = "<group>";
-		};
 		F6EFF42429DF878900605E40 /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				F672FDD52DD3D26600B3AB02 /* Table of Contents */,
-				F6E9D9212A38BDAF0096912F /* ListPages */,
 				F66DF2352A05DED0004437AC /* Anomaly Class Bar */,
 				F64BEEC629FC6B2700AEB15B /* RAISAText.swift */,
 				F6E9D9242A4342CB0096912F /* HTML.swift */,
@@ -544,7 +533,6 @@
 				F6EFF42129DB7D0200605E40 /* ArticleInfo.swift in Sources */,
 				F608B71929E09D8600B583EF /* ArticleImage.swift in Sources */,
 				F6E9D9202A36886F0096912F /* SyntaxGuideView.swift in Sources */,
-				F6E9D9232A38BDB60096912F /* ListPages.swift in Sources */,
 				F60FF7072E5D0F0900A08535 /* WelcomeView.swift in Sources */,
 				F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */,
 				F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */,

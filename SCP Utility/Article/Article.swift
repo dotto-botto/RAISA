@@ -258,8 +258,16 @@ struct Article: Identifiable, Codable {
     }
     
     func saveToDisk() {
-        con.createArticleEntity(article: self)
-        self.downloadImages()
+        if self.pagesource.contains("[[module ListPages") {
+            let original = self
+            RaisaReq.getSourceOfFragments(article: original) { source in
+                var updated = original
+                updated.pagesource = source
+            }
+        } else {
+            con.createArticleEntity(article: self)
+            self.downloadImages()
+        }
     }
     
     /// Finds the next article using "currentTitle" as a query.
@@ -560,3 +568,4 @@ The reddish brown substance on the floor is a combination of feces and blood. Or
     disruption: .vlam,
     risk: .notice
 )
+

@@ -89,7 +89,7 @@ struct ArticleView: View {
             
             if scp.pagesource.contains("[[module ListPages") {
                 isFragmented = true
-                replaceFragmentsWithSource(article: scp) { newSource in
+                RaisaReq.getSourceOfFragments(article: scp) { newSource in
                     con.updatePageSource(id: scp.id, newPageSource: newSource)
                     scp.updateSource(newSource)
                     isFragmented = false
