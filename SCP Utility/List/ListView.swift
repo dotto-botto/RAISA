@@ -36,37 +36,17 @@ struct ListView: View {
             }
         }
         
-        let recentsaved = {
-            NavigationLink {
-                OneListView(list: SCPList(recent: true)).navigationTitle("RECENT_ARTICLES")
-            } label: {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("RECENT_ARTICLES")
-                            .foregroundColor(.accentColor)
-                            .lineLimit(1)
-                        Text("RECENT_ARTICLES_SUBTITLE")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 13))
-                            .lineLimit(1)
-                    }
-                }
-            }
-        }
-        
         NavigationStack {
             VStack {
                 if items == nil || (items ?? []).isEmpty {
                     List {
                         allsaved()
-                        recentsaved()
                     }
                 }
                 
                 List(items ?? []) { item in
                     if item.identifier == items!.first!.identifier {
                         allsaved()
-                        recentsaved()
                     }
                     
                     ListRow(fromEntity: item)
@@ -149,23 +129,22 @@ struct OneListView: View {
                 .padding(.horizontal, 30)
                 
             } else {
-                List(articles) { article in
-                    ArticleRow(
-                        id: article.id,
-                        title: article.title,
-                        url: article.url,
-                        completed: article.isComplete(),
-                        currenttext: article.currenttext,
-                        language: article.findLanguage(),
-                        objclass: article.objclass,
-                        esotericclass: article.esoteric
-                    )
-                        .swipeActions(edge: .trailing) {
-                            Button {
-                                list.removeContent(id: article.id)
-                                updateAndFilterArticles()
+                List($articles) { $article in
+                    ArticleRow(article: $article)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                PersistenceController.shared.deleteArticleEntity(id: article.id)
                             } label: {
-                                Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+                                Label("DELETE", systemImage: "trash")
+                            }
+                            
+                            if list.id != "ALL_SAVED_ARTICLES" {
+                                Button {
+                                    list.removeContent(id: article.id)
+                                    updateAndFilterArticles()
+                                } label: {
+                                    Label("REMOVE_FROM_\(list.listid)", systemImage: "minus.circle")
+                                }
                             }
                         }
                 }
@@ -175,7 +154,7 @@ struct OneListView: View {
         .task {
             updateAndFilterArticles()
             
-            if list.id == "ALL_SAVED_ARTICLES" || list.id == "RECENT_ARTICLES" {
+            if list.id == "ALL_SAVED_ARTICLES" {
                 ascending = true
             }
             doneInitialLoad = true
@@ -303,12 +282,6 @@ struct OneListView: View {
         var articlelist: [Article] = []
         if list.id == "ALL_SAVED_ARTICLES" {
             for article in PersistenceController.shared.getAllArticles(filter: query) ?? [] {
-                if let article = Article(fromEntity: article) {
-                    articlelist.append(article)
-                }
-            }
-        } else if list.id == "RECENT_ARTICLES" {
-            for article in PersistenceController.shared.getAllArticles(filter: query, last: 20) ?? [] {
                 if let article = Article(fromEntity: article) {
                     articlelist.append(article)
                 }

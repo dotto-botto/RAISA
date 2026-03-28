@@ -30,7 +30,7 @@ struct RTMarkdown: View {
                 }
                 .environment(\.openURL, OpenURLAction { url in
                     let formatted = url.formatted()
-                    guard formatted.contains("scp") && !formatted.contains("offset/") else { return .systemAction }
+                    guard formatted.contains("scp") else { return .systemAction }
                     callAPI(url: url)
                     return .handled
                 })

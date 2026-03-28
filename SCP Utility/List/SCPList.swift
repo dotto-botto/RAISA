@@ -62,10 +62,11 @@ struct SCPList: Identifiable {
             self.contents = [article.id]
         }
         
-        if !(con.isArticleSaved(id: article.id) ?? false) {
-            article.saveToDisk()
+        var tempart = article
+        if !(con.isArticleSaved(id: tempart.id) ?? false) {
+            tempart.saveToDisk()
         }
-        con.addArticleToListFromId(listid: self.listid, article: article)
+        con.addArticleToListFromId(listid: self.listid, article: tempart)
     }
     
     /// Remove an id from a list without deleting the article

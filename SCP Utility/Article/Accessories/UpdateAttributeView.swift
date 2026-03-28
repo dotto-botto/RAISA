@@ -9,7 +9,8 @@ import SwiftUI
 
 /// View that allows the user to update an article's attributes.
 struct UpdateAttributeView: View {
-    @State var article: Article
+    @Binding var article: Article
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         let Guide = {
             Rectangle()
@@ -18,6 +19,10 @@ struct UpdateAttributeView: View {
         }
         
         VStack {
+            Text(article.title)
+                .font(.title)
+                .padding(.vertical, 10)
+            
             Group {
                 HStack {
                     Text("OBJECT_CLASS")
@@ -41,11 +46,8 @@ struct UpdateAttributeView: View {
                                 .scaledToFit()
                         }
                         .background {
-                            if article.objclass == obj {
-                                Capsule()
-                                    .foregroundColor(.accentColor)
-                                    .opacity(0.7)
-                            }
+                            Capsule()
+                                .foregroundColor(article.objclass == obj ? .accentColor : .white)
                         }
                     }
                 }
@@ -78,11 +80,8 @@ struct UpdateAttributeView: View {
                                 .scaledToFit()
                         }
                         .background {
-                            if article.esoteric == obj {
-                                Capsule()
-                                    .foregroundColor(.accentColor)
-                                    .opacity(0.7)
-                            }
+                            Capsule()
+                                .foregroundColor(article.esoteric == obj ? .accentColor : .white)
                         }
                     }
                 }
@@ -104,11 +103,8 @@ struct UpdateAttributeView: View {
                                 .scaledToFit()
                         }
                         .background {
-                            if article.risk == obj {
-                                Capsule()
-                                    .foregroundColor(.accentColor)
-                                    .opacity(0.7)
-                            }
+                            Capsule()
+                                .foregroundColor(article.risk == obj ? .accentColor : .white)
                         }
                     }
                 }
@@ -130,22 +126,25 @@ struct UpdateAttributeView: View {
                                 .scaledToFit()
                         }
                         .background {
-                            if article.disruption == obj {
-                                Capsule()
-                                    .foregroundColor(.accentColor)
-                                    .opacity(0.7)
-                            }
+                            Capsule()
+                                .foregroundColor(article.disruption == obj ? .accentColor : .white)
                         }
                     }
                 }
                 .frame(height: 45)
             }
         }
-    }
-}
-
-struct UpdateAttributeView_Previews: PreviewProvider {
-    static var previews: some View {
-        UpdateAttributeView(article: placeHolderArticle)
+        .padding(.horizontal, 8)
+        .navigationTitle("UPDATE_ATTRIBUTE")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                }
+            }
+        }
     }
 }

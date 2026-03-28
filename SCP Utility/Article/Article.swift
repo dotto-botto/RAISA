@@ -257,7 +257,7 @@ struct Article: Identifiable, Codable {
         }
     }
     
-    func saveToDisk() {
+    mutating func saveToDisk() {
         if self.pagesource.contains("[[module ListPages") {
             let original = self
             RaisaReq.getSourceOfFragments(article: original) { source in
@@ -268,6 +268,10 @@ struct Article: Identifiable, Codable {
             con.createArticleEntity(article: self)
             self.downloadImages()
         }
+        
+        if self.objclass == .unknown {
+            self.scanTagsforAttributes()
+        }
     }
     
     /// Finds the next article using "currentTitle" as a query.
@@ -277,6 +281,42 @@ struct Article: Identifiable, Codable {
         guard let url = URL(string: self.url.formatted().replacingOccurrences(of: String(num), with: String(num + 1))) else { completion(nil); return }
         RaisaReq.articlefromURL(url: url) { article, _ in
             completion(article)
+        }
+    }
+    
+    func scanTagsforAttributes() {
+        let articleID = self.id
+        let currentURL = self.url
+
+        RaisaReq.tags(url: currentURL) { tags, _ in
+            var newObj: ObjectClass = .esoteric
+            var newEso: EsotericClass? = nil
+
+            for tag in tags ?? [] {
+                switch tag {
+                case "keter": newObj = .keter
+                case "euclid": newObj = .euclid
+                case "safe": newObj = .safe
+                case "neutralized": newObj = .neutralized
+                case "pending": newObj = .pending
+                case "explained": newObj = .explained
+                case "apollyon": newObj = .esoteric; newEso = .apollyon
+                case "archon": newObj = .esoteric; newEso = .archon
+                case "cernunnos": newObj = .esoteric; newEso = .cernunnos
+                case "decommissioned": newObj = .esoteric; newEso = .decommissioned
+                case "hiemal": newObj = .esoteric; newEso = .hiemal
+                case "tiamat": newObj = .esoteric; newEso = .tiamat
+                case "ticonderoga": newObj = .esoteric; newEso = .ticonderoga
+                case "thaumiel": newObj = .esoteric; newEso = .thaumiel
+                case "uncontained": newObj = .esoteric; newEso = .uncontained
+                default: continue
+                }
+            }
+
+            DispatchQueue.main.async {
+                con.updateObjectClass(articleid: articleID, newattr: newObj)
+                if let newEso { con.updateEsotericClass(articleid: articleID, newattr: newEso) }
+            }
         }
     }
 }
