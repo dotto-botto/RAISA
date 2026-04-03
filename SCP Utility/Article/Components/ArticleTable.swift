@@ -13,45 +13,88 @@ import MarkdownUI
 struct ArticleTable: View {
     @State var article: Article
     @State var doc: String
-    var body: some View {
-        let table = parseEntireTable(doc)
+    @State private var focusedCell: SheetData? = nil
+    @State private var table: [[String]] = [[]]
+    @State private var tableViewed: Bool = false
 
+    var body: some View {
+        NavigationLink {
+            subView.tint(article.findTheme()?.themeAccent ?? .accentColor)
+        } label: {
+            HStack {
+                Image(systemName: "chevron.left")
+                Text("TAP_FOR_TABLE")
+                if tableViewed { Image(systemName: "checkmark") }
+                Image(systemName: "chevron.right")
+            }
+        }
+        .task { parseEntireTable(doc) }
+    }
+    
+    private var subView: some View {
         VStack {
-            Rectangle().frame(height: 1)
-            Grid {
-                ForEach(Array(zip(table, table.indices)), id: \.1) { row, index in
-                    // Row
-                    HStack {
-                        ForEach(Array(zip(row, row.indices)), id: \.1) { cell, _ in
-                            // Cell
-                            RAISAText(article: article, text: cell)
-                                .scrollDisabled(true)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .contextMenu {
-                                    Button {} label: {
-                                        Label("DISMISS", systemImage: "xmark")
-                                    }
-                                } preview: {
-                                    List {
-                                        RAISAText(article: article, text: cell)
-                                    }
+            Group {
+                Text("TABLE_CELL_PROMPT")
+                Text("TABLE_SCROLL_PROMPT")
+            }
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+
+            Rectangle()
+                .frame(height: 1)
+            ScrollView(.horizontal) {
+                let maxWidth = UIScreen.main.bounds.width * 2
+                VStack(alignment: .leading, spacing: 0) {
+                    Grid {
+                        ForEach(Array(zip(table, table.indices)), id: \.1) { row, index in
+                            // Row
+                            HStack(alignment: .top) {
+                                ForEach(Array(zip(row, row.indices)), id: \.1) { cell, _ in
+                                    // Cell
+                                    RAISAText(article: article, text: cell)
+                                        .scrollDisabled(true)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .fixedSize(horizontal: false, vertical: false)
+                                        .onTapGesture {
+                                            focusedCell = SheetData(text: cell)
+                                        }
                                 }
+                            }
+                            
+                            if index != table.count - 1 {
+                                Rectangle().frame(height: 0.5)
+                            }
                         }
                     }
-                    .bold(index == 0)
-                    
-                    if index != table.count - 1 {
-                        Divider()
-                    }
                 }
+                .frame(maxWidth: maxWidth, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: false)
             }
             Rectangle().frame(height: 1)
         }
+        .sheet(item: $focusedCell) { data in
+            NavigationStack {
+                RAISAText(article: article, text: data.text)
+                    .padding(.horizontal, 10)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button {
+                                focusedCell = nil
+                            } label: {
+                                Image(systemName: "chevron.down")
+                            }
+                        }
+                    }
+            }
+        }
+        .navigationTitle("TABLE_VIEW_TITLE")
+        .onAppear {
+            tableViewed = true
+        }
     }
-    
-    /// Returns an entire table, including the headers
-    func parseEntireTable(_ doc: String) -> [[String]] {
+        
+    /// Parses an entire table, including the headers
+    func parseEntireTable(_ doc: String) {
         var rows: [[String]] = []
         
         let doc = doc.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -86,7 +129,12 @@ struct ArticleTable: View {
             }
         }
         
-        return rows
+        self.table = rows
+    }
+    
+    private struct SheetData: Identifiable {
+        let id = UUID()
+        var text: String
     }
 }
 
@@ -114,10 +162,8 @@ struct ArticleTable_Previews: PreviewProvider {
 || Junior Researcher Adams. After lack of negative side effects in previous tests, consumption of SCP-3285-A instances by Foundation personnel for research purposes was provisionally approved. || The Free Story of Lawrence the Preserver || A medieval fantasy epic featuring a fictionalized version of Creative Commons founder Lawrence Lessig as the primary protagonist. Story begins as an army of antagonists referred to as the Suppressors sack Lawrence's hometown, destroying the library that Lawrence had previously worked in as a scribe. Vowing to avenge "the ink and the blood," Lawrence raises an army of peasants and other lower-class citizens to remove the Suppressors from their land. Climax of the story takes place in a battlefield referred to as Extentia, as Lawrence does battle with and defeats the nameless leader of the Suppressors, suffering a mortal wound in the process. The Suppressors are driven from the land, and Lawrence is idolized and immortalized as "Lawrence the Preserver." || Researcher Adams expressed a desire to "contribute to humanity's collective knowledge." After being placed in on-site lodging, logs of Researcher Adams' computer indicated numerous visits to the Wikimedia Commons image website, followed by uploads of public domain images collected from elsewhere on the Internet to the site. Full recovery from SCP-3285-A's effects was successfully achieved following Class-B Amnestic treatment. ||
 || Andrew Garcia, Foundation legal counsel. Subject had previously worked for ████████████ as an intellectual property attorney, representing the company in court when it brought suit against competitors for trademark infringement. Test cleared by Site Director. || [REDACTED] || [REDACTED - SEE ADDENDUM] || [REDACTED] ||
 """
-        ScrollView {
-            Text("vvvv")
-            ArticleTable(article: placeHolderArticle, doc: textDoc).previewDisplayName("Text Style")
-            Text("^^^^")
-        }
+
+        ArticleTable(article: placeHolderArticle, doc: textDoc).previewDisplayName("Text Style")
     }
 }
+

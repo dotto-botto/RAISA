@@ -85,7 +85,7 @@ func parseRT(_ text: String) -> [RTItem] {
     
     let regex = #"(\[\[include.*?(image-features-source|image-block)[\s\S]*?]]|\[\[.*?image.*?]])"#
     let imageStrings = matches(for: regex, in: source)
-    let quickTables = matches(for: #"(\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
+    let quickTables = matches(for: #"((?:> )?\|\|[\s\S]+?\|\|(?:\n|$))+"#, in: source)
     let htmls = matches(for: #"\[\[html[\s\S]*?\[\[\/html]]"#, in: source)
     let audios = matches(for: #"\[\[include.+?html5player[\s\S]*?]]"#, in: source)
     let divTables = matches(for: #"\[\[table.*?]][\s\S]*?\[\[\/table]]"#, in: source)

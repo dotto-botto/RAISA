@@ -290,6 +290,10 @@
 "FV_NO_FOOTNOTES" = "No Footnotes Detected";
 "TOCV_TITLE" = "Table of Contents";
 "TOCV_NO_HEADERS" = "No Headers Detected";
+"TAP_FOR_TABLE" = "Tap to View Table";
+"TABLE_CELL_PROMPT" = "Press any cell to view its text if it's cut off.";
+"TABLE_SCROLL_PROMPT" = "You can scroll horizontally.";
+"TABLE_VIEW_TITLE" = "Table";
 
 // Content Warnings
 "GORE_WARNING" = "gore";
