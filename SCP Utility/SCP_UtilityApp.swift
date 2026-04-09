@@ -19,6 +19,25 @@ struct SCP_UtilityApp: App {
     @StateObject var subtitlesStore = SubtitlesStore()
     @StateObject var loginMonitor = LoginMonitor()
     let con = PersistenceController.shared
+    
+    init() {
+        let defaults = UserDefaults.standard
+        if isFirstLaunch {
+            showSheet = true // tutorial sheet
+            
+            // Don't cache images on disk
+            ImageCache.default.diskStorage.config.sizeLimit = 1
+            defaults.set(true, forKey: "trackHistory")
+            defaults.set(true, forKey: "showAVWallpaper")
+            defaults.set(true, forKey: "bookmarkAlert")
+            defaults.set(true, forKey: "downloadImages")
+            defaults.set(true, forKey: "trackSearchHistory")
+            defaults.set(true, forKey: "reopenLastRead")
+            defaults.set(RAISALanguage.english.rawValue, forKey: "chosenRaisaLanguage")
+        }
+        isFirstLaunch = false
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -26,31 +45,18 @@ struct SCP_UtilityApp: App {
                 .environmentObject(networkMonitor)
                 .environmentObject(subtitlesStore)
                 .environmentObject(loginMonitor)
-                .onAppear {
-                    RaisaReq.scrapeSubtitles(store: subtitlesStore, series: LATEST_SERIES)
-                    
-                    if isFirstLaunch {
-                        showSheet = true // tutorial sheet
-                        
-                        // Don't cache images on disk
-                        ImageCache.default.diskStorage.config.sizeLimit = 1
-                        let defaults = UserDefaults.standard
-                        defaults.set(true, forKey: "trackHistory")
-                        defaults.set(true, forKey: "showAVWallpaper")
-                        defaults.set(true, forKey: "bookmarkAlert")
-                        defaults.set(true, forKey: "downloadImages")
-                        defaults.set(true, forKey: "trackSearchHistory")
-                        defaults.set(RAISALanguage.english.rawValue, forKey: "chosenRaisaLanguage")
-                        
-                        // Scrape all subtitles
-                        RaisaReq.scrapeSubtitles(store: subtitlesStore)
-                    }
-                    isFirstLaunch = false
-                }
                 .sheet(isPresented: $showSheet) {
                     WelcomeView()
                         .interactiveDismissDisabled()
                         .environmentObject(subtitlesStore)
+                }
+                .onAppear {
+                    if isFirstLaunch {
+                        // Scrape all subtitles
+                        RaisaReq.scrapeSubtitles(store: subtitlesStore)
+                    } else {
+                        RaisaReq.scrapeSubtitles(store: subtitlesStore, series: LATEST_SERIES)
+                    }
                 }
         }
         .onChange(of: scenePhase) { _ in

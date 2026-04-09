@@ -314,11 +314,15 @@ class RaisaReq {
     }
     
     static func getAlternateTitle(url: URL, store: SubtitlesStore) -> String? {
-        var subtitle = store.seriesSubtitles[url.lastPathComponent]
+        let key = url.lastPathComponent
+            .lowercased()
+            .replacingOccurrences(of: "\'", with: "-")
+            .replacingOccurrences(of: ".", with: "")
+        var subtitle = store.seriesSubtitles[key]
         if subtitle == nil {
             self.scrapeSubtitles(store: store)
             store.loadsubtitles()
-            subtitle = store.seriesSubtitles[url.lastPathComponent]
+            subtitle = store.seriesSubtitles[key]
         }
         return subtitle
     }
@@ -342,12 +346,23 @@ class RaisaReq {
         
         #if DEBUG
         if baseurlcomponents.count != LATEST_SERIES + 2 {
-            fatalError("Update scrapeSubtitles urls")
+            fatalError("Update scrapeSubtitles urls/latest series variable")
         }
         #endif
         
         if series != nil {
             baseurlcomponents = [baseurlcomponents[series!]]
+        }
+        
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        
+        let subtitledir = documentsDirectory
+            .appendingPathComponent("Subtitles")
+            .appendingPathComponent(lang.toAbbr())
+        do {
+            try FileManager.default.createDirectory(at: subtitledir, withIntermediateDirectories: true)
+        } catch {
+            print("Error saving subtitles: \(error.localizedDescription)")
         }
         
         for baseurlcomp in baseurlcomponents {
@@ -389,13 +404,6 @@ class RaisaReq {
                         .map { "\($0), \"\($1)\"" }
                         .joined(separator: "\n")
                     
-                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-                    
-                    let subtitledir = documentsDirectory
-                        .appendingPathComponent("Subtitles")
-                        .appendingPathComponent(lang.toAbbr())
-                    try FileManager.default.createDirectory(at: subtitledir, withIntermediateDirectories: true)
-                    
                     let fileURL = subtitledir.appendingPathComponent("\(baseurlcomp).csv")
                     try writestr.write(to: fileURL, atomically: true, encoding: .utf8) // Deletes quotes in subtitles
                 } catch {
@@ -404,6 +412,38 @@ class RaisaReq {
             }
             task.resume()
         }
+        
+        // SCP-001 subtitles
+        var proposalsubtitles: [String:String] = [:]
+        let proposaltask = URLSession.shared.dataTask(with: URL(string: "https://scp-wiki.wikidot.com/scp-001") ?? lang.toURL()) { data, _, error in
+            guard let data = data else { return }
+            do {
+                let document = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
+                guard let panel = try document.getElementById("wiki-tab-0-1") else { return }
+                let ps = try panel.select("p").array()
+                
+                for p in ps {
+                    let html = try p.html()
+                    guard let endurlcomp = html.slice(from: "href=\"/", to: "\">") else { continue }
+                    guard let subtitle = html.slice(from: " - ") else { continue }
+                    
+                    proposalsubtitles[endurlcomp] = subtitle
+                }
+                
+                let writestr = proposalsubtitles
+                    .sorted { $0.key < $1.key }
+                    .map { "\($0), \"\($1)\"" }
+                    .joined(separator: "\n")
+                
+                let fileURL = subtitledir.appendingPathComponent("scp-001.csv")
+                try writestr.write(to: fileURL, atomically: true, encoding: .utf8) // Deletes quotes in subtitles
+            } catch {
+                print("Error saving subtitles: \(error.localizedDescription)")
+            }
+        }
+        proposaltask.resume()
+    }
+    
     // https://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--modules/js/forum/ForumViewThreadPostsModule.js
     static func getComments(url: URL, page: Int, language lang: RAISALanguage = .english, completion: @escaping ([Comment]?, Int?, Error?) -> Void) {
         guard let stringURL = URL(string: url.formatted().replacingOccurrences(of: "http://", with: "https://")) else { return }

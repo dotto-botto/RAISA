@@ -79,6 +79,7 @@ struct OnlineArticleRow: View {
                 .onLongPressGesture { showSheet.toggle() }
             }
         }
+        .foregroundStyle(alternateTitle == "[ACCESS DENIED]" ? Color.gray : Color.accentColor)
         .onChange(of: observedBool) { _ in
             toArticle = true
         }
@@ -104,7 +105,7 @@ struct OnlineArticleRow: View {
             alternateTitle = RaisaReq.getAlternateTitle(url: url, store: subtitlesStore)
         }
         .padding(.horizontal, 20)
-        .disabled(alternateTitle == "[ACCESS DENIED]" || loading)
+        .disabled(loading)
     }
 }
 
