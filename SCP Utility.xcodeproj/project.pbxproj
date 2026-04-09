@@ -51,6 +51,7 @@
 		F6C059B62A50AFC200706D10 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B52A50AFC200706D10 /* UserView.swift */; };
 		F6C059B82A50AFCA00706D10 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B72A50AFCA00706D10 /* User.swift */; };
 		F6C059BA2A50B14E00706D10 /* UserParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C059B92A50B14E00706D10 /* UserParser.swift */; };
+		F6CA430D2F873E9D00935C1A /* FeaturedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CA430C2F873E9D00935C1A /* FeaturedCard.swift */; };
 		F6D331262A2149F200F8D004 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331252A2149F200F8D004 /* Theme.swift */; };
 		F6D331292A27EB8700F8D004 /* RTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D331282A27EB8700F8D004 /* RTItem.swift */; };
 		F6D3312D2A2ABCA500F8D004 /* ObjectWarningBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */; };
@@ -131,6 +132,7 @@
 		F6C059B52A50AFC200706D10 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		F6C059B72A50AFCA00706D10 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		F6C059B92A50B14E00706D10 /* UserParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserParser.swift; sourceTree = "<group>"; };
+		F6CA430C2F873E9D00935C1A /* FeaturedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedCard.swift; sourceTree = "<group>"; };
 		F6D331252A2149F200F8D004 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		F6D331282A27EB8700F8D004 /* RTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTItem.swift; sourceTree = "<group>"; };
 		F6D3312C2A2ABCA500F8D004 /* ObjectWarningBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWarningBoxView.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				F6DCB8232A1A97930048C180 /* SeriesCard.swift */,
 				F6DCB8252A1AA2630048C180 /* SeriesView.swift */,
 				F64BEED229FD9FA900AEB15B /* TopCard.swift */,
+				F6CA430C2F873E9D00935C1A /* FeaturedCard.swift */,
 				F60FF7062E5D0F0900A08535 /* WelcomeView.swift */,
 			);
 			path = Explore;
@@ -556,6 +559,7 @@
 				F62A5D7829D9F91200661DE0 /* ArticleView.swift in Sources */,
 				F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */,
 				F64BEECF29FD63BB00AEB15B /* CommentView.swift in Sources */,
+				F6CA430D2F873E9D00935C1A /* FeaturedCard.swift in Sources */,
 				F64BEEC729FC6B2700AEB15B /* RAISAText.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

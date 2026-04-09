@@ -99,6 +99,7 @@
 "SITE_NEWS" = "Site News";
 "RAISA_HEADER" = "RAISA";
 "FEATURED_SCP" = "Featured SCP";
+"FEATURED_CARD_BY_%@" = "By %@";
 "FEATURED_TALE" = "Featured Tale";
 "FEATURED_GOI" = "Featured GOI Format";
 "REVIEWER_SPOTLIGHT" = "Reviewer's Spotlight";
@@ -108,6 +109,8 @@
 "SERIES_CARD" = "Series";
 "SERIES_TITLE%lld" = "Series %lld";
 "TOP_CARD" = "Popular Articles";
+"TOP_CARD_SCPS" = "Popular SCP's";
+"TOP_CARD_TALES" = "Popular Tales / Non-SCP's";
 "LANGUAGE_%@_NOT_SUPPORTED" = "%@ isn't supported, sorry for the inconvenience.";
 "HOW_TO_CHANGE_LANGUAGE" = "Press the settings icon to change your international branch.";
 

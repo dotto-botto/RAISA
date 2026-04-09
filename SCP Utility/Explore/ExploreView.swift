@@ -24,11 +24,12 @@ struct ExploreView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     if connected {
+                        FeaturedCard()
+                        ResumeCard()
+                        SeriesCard()
                         if RAISALanguage.allSupportedCases.contains(userIntBranch) {
                             RandomCard().clipped()
                         }
-                        ResumeCard()
-                        SeriesCard()
                         TopCard()
                     } else {
                         VStack {

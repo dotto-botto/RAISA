@@ -12,13 +12,16 @@ import SwiftSoup
 struct TopCard: View {
     @State private var titles: [String] = []
     @State private var showArticle: Bool = false
+    @State private var alternateTitle: String? = nil
+    @EnvironmentObject var subtitlesStore: SubtitlesStore
     
     let defaults = UserDefaults.standard
+    let userIntBranch = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage")) ?? .english
     var body: some View {
         var article = placeHolderArticle
         VStack {
             HStack {
-                Text("TOP_CARD")
+                Text("TOP_CARD_SCPS")
                     .font(.headline)
                     .fontWeight(.bold)
                     .padding(.leading)
@@ -29,25 +32,58 @@ struct TopCard: View {
             }
             .padding(.bottom, 1)
             
-            HStack {
-                ForEach([titles.filter { $0.contains("SCP-") }, titles.filter { !$0.contains("SCP-") }], id: \.self) { list in
-                    VStack {
-                        ForEach(list, id: \.self) { title in
-                            Button {
-                                let userIntBranch = RAISALanguage(rawValue: defaults.integer(forKey: "chosenRaisaLanguage")) ?? .english
-                                
-                                raisaGetArticleFromTitle(title: title, language: userIntBranch) {
-                                    guard let art = $0 else { return }
-                                    article = art
-                                    showArticle = true
-                                }
-                            } label: {
-                                Text(title).font(.monospaced(.body)())
+            ForEach(titles.filter { $0.contains("SCP-") && $0.count < 16 }, id: \.self) { title in
+                VStack {
+                        Button {
+                            raisaGetArticleFromTitle(title: title, language: userIntBranch) {
+                                guard let art = $0 else { return }
+                                article = art
+                                showArticle = true
                             }
-                            Divider()
+                        } label: {
+                            HStack {
+                                if let url = URL(string: userIntBranch.toURL().absoluteString + title),
+                                    let alt = RaisaReq.getAlternateTitle(url: url, store: subtitlesStore) {
+                                    Text(.init("\(title) - **\(alt)**"))
+                                } else {
+                                    Text(title)
+                                }
+                                Spacer()
+                            }
+                            .font(.monospaced(.body)())
+                            .lineLimit(2)
                         }
-                        Spacer()
-                    }
+                        Divider()
+                    Spacer()
+                }
+            }
+            
+            HStack {
+                Text("TOP_CARD_TALES")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .padding(.leading)
+                    .padding(.bottom, 1)
+                    .padding(.top, 40)
+                Spacer()
+                Image(systemName: "arrow.clockwise")
+                    .padding([.top, .trailing], 5)
+                    .onTapGesture { getParse() }
+            }
+            
+            ForEach(titles.filter { !($0.contains("SCP-") && $0.count < 16) }, id: \.self) { title in
+                VStack {
+                        Button {
+                            raisaGetArticleFromTitle(title: title, language: userIntBranch) {
+                                guard let art = $0 else { return }
+                                article = art
+                                showArticle = true
+                            }
+                        } label: {
+                            Text(title).font(.monospaced(.body)())
+                        }
+                        Divider()
+                    Spacer()
                 }
             }
         }
