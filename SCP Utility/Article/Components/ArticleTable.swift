@@ -8,6 +8,8 @@
 import SwiftUI
 import MarkdownUI
 
+let ROWS_PER_PAGE = 10
+
 /// Table to be displayed inside RAISAText.
 /// "doc" should be the corresponsing [[table]] div or a table made using the "||" syntax.
 struct ArticleTable: View {
@@ -16,6 +18,9 @@ struct ArticleTable: View {
     @State private var focusedCell: SheetData? = nil
     @State private var table: [[String]] = [[]]
     @State private var tableViewed: Bool = false
+    
+    @State private var page: Int = 1
+    @State private var maxpage: Int = 1
 
     var body: some View {
         NavigationLink {
@@ -46,7 +51,8 @@ struct ArticleTable: View {
                 let maxWidth = UIScreen.main.bounds.width * 2
                 VStack(alignment: .leading, spacing: 0) {
                     Grid {
-                        ForEach(Array(zip(table, table.indices)), id: \.1) { row, index in
+                        let pages = Array(zip(table, table.indices)).dropFirst((page - 1) * ROWS_PER_PAGE).prefix(ROWS_PER_PAGE)
+                        ForEach(pages, id: \.1) { row, index in
                             // Row
                             HStack(alignment: .top) {
                                 ForEach(Array(zip(row, row.indices)), id: \.1) { cell, _ in
@@ -71,6 +77,10 @@ struct ArticleTable: View {
                 .fixedSize(horizontal: false, vertical: false)
             }
             Rectangle().frame(height: 1)
+            
+            if maxpage > 1 {
+                pager
+            }
         }
         .sheet(item: $focusedCell) { data in
             NavigationStack {
@@ -90,6 +100,61 @@ struct ArticleTable: View {
         .navigationTitle("TABLE_VIEW_TITLE")
         .onAppear {
             tableViewed = true
+        }
+    }
+    
+    @ViewBuilder
+    private var pager: some View {
+        if maxpage > 1 {
+            HStack {
+                Spacer()
+                
+                if page > 2 {
+                    Button {
+                        page = 1
+                    } label: {
+                        Image(systemName: "chevron.left.2")
+                    }
+                    .padding(.trailing, 5)
+                }
+                
+                if page > 1 {
+                    Button {
+                        page -= 1
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                }
+                
+                Menu {
+                    ForEach((1...maxpage).reversed(), id: \.self) { pagenum in
+                        Button("\(pagenum)") { page = pagenum }
+                    }
+                } label: {
+                    Text("\(page)CV_PAGECOUNT\(maxpage)")
+                }
+                .padding(.horizontal, 5)
+                
+                if page < maxpage {
+                    Button {
+                        page += 1
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                }
+                
+                if page < maxpage - 1 {
+                    Button {
+                        page = maxpage
+                    } label: {
+                        Image(systemName: "chevron.right.2")
+                    }
+                    .padding(.leading, 5)
+                }
+                
+                Spacer()
+            }
+            .font(.title3)
         }
     }
         
@@ -130,6 +195,7 @@ struct ArticleTable: View {
         }
         
         self.table = rows
+        self.maxpage = rows.count / ROWS_PER_PAGE
     }
     
     private struct SheetData: Identifiable {

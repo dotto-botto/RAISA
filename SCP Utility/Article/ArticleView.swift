@@ -50,11 +50,21 @@ struct ArticleView: View {
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
-                    ScrollView {
-                        ForEach(explicitContent, id: \.self) { comp in
-                            Text(comp).foregroundColor(.secondary)
+                    if #available(iOS 16.4, *) {
+                        ScrollView {
+                            ForEach(explicitContent, id: \.self) { comp in
+                                Text(comp).foregroundColor(.secondary)
+                            }
+                            .padding(.horizontal, 10)
                         }
-                        .padding(.horizontal, 10)
+                        .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+                    } else {
+                        ScrollView {
+                            ForEach(explicitContent, id: \.self) { comp in
+                                Text(comp).foregroundColor(.secondary)
+                            }
+                            .padding(.horizontal, 10)
+                        }
                     }
                     
                     Button("CONTINUE") {
@@ -63,6 +73,7 @@ struct ArticleView: View {
                     .padding(.top, 20)
                     .frame(height: 44.0)
                 }
+                .padding(.vertical, 100)
             }
             
             if !containsExplicitContent && !isFragmented {
@@ -70,50 +81,7 @@ struct ArticleView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        // MARK: On Appear
-        .onAppear {
-            bookmarkStatus = scp.isSaved()
-            checkmarkStatus = scp.isComplete()
-            
-            if scp.title == "Could not find title" {
-                dismiss()
-            }
-            
-            if defaults.bool(forKey: "trackHistory") && scp.title != "Could not find title" {
-                con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
-            }
-            
-            if markLatest ?? false {
-                defaults.set(scp.url, forKey: "lastReadUrl")
-            }
-            
-            if scp.pagesource.contains("[[module ListPages") {
-                isFragmented = true
-                RaisaReq.getSourceOfFragments(article: scp) { newSource in
-                    con.updatePageSource(id: scp.id, newPageSource: newSource)
-                    scp.updateSource(newSource)
-                    isFragmented = false
-                }
-            } else {
-                isFragmented = false
-            }
-            
-            if containsExplicitContent {
-                if let list = scp.findContentWarnings() {
-                    explicitContent = list
-                } else {
-                    containsExplicitContent = false
-                }
-            }
-            
-            if scp.pagesource.contains(/\[\[.*?toc.*?]]/) {
-                TOCExists = true
-            }
-            
-            scp.findNextArticle() { article in
-                nextArticle = article
-            }
-        }
+        .onAppear { tasks() }
         // MARK: Sheets
         .sheet(isPresented: $presentSheet, onDismiss: {
             bookmarkStatus = scp.isSaved()
@@ -147,219 +115,9 @@ struct ArticleView: View {
         } message: {
             Text("HOW_TO_SAVE")
         }
-        .toolbar {
-            // MARK: Top Bar
-            ToolbarItem(placement: .principal) {
-                VStack {
-                    Text(scp.title).font(.headline)
-                    if subtitle != nil && subtitle != "" {
-                        Text(containsExplicitContent ? "-" : subtitle!).font(.subheadline)
-                    }
-                }
-                .task {
-                    if subtitle == nil {
-                        subtitle = RaisaReq.getAlternateTitle(url: scp.url, store: subtitlesStore)
-                    }
-                }
-            }
-            
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    if bookmarkStatus == true && con.getScroll(id: scp.id) == nil && defaults.bool(forKey: "bookmarkAlert") {
-                        showBookmarkAlert.toggle()
-                    } else {
-                        dismiss()
-                    }
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
-                .frame(width: 44.0, height: 44.0)
-                .contextMenu {
-                    if #unavailable(iOS 16.0) {
-                        var rootViewController: UIViewController? = nil
-                        Button {
-                            rootViewController?.dismiss(animated: true)
-                        } label: {
-                            Label("AV_DISMISS_ALL", systemImage: "house")
-                        }
-                        .task {
-                            rootViewController = {
-                                UIApplication.shared.connectedScenes
-                                    .filter {$0.activationState == .foregroundActive }
-                                    .map {$0 as? UIWindowScene }
-                                    .compactMap { $0 }
-                                    .first?.windows
-                                    .filter({ $0.isKeyWindow }).first?.rootViewController
-                            }()
-                        }
-                    }
-                }
-            }
-            
-            ToolbarItem {
-                if nextArticle != nil {
-                    Button {
-                        showNext = true
-                    } label: {
-                        Image(systemName: "chevron.right")
-                    }
-                    .frame(width: 44.0, height: 44.0)
-                }
-            }
-
-            // MARK: Bottom Bar
-            ToolbarItemGroup(placement: .bottomBar) {
-                Button {
-                    presentSheet.toggle()
-                } label: {
-                    Image(systemName: bookmarkStatus ? "bookmark.fill": "bookmark")
-                }
-                .disabled(containsExplicitContent)
-
-                Spacer()
-                Button {
-                    showInfo.toggle()
-                } label: {
-                    Image(systemName: "info.circle")
-                }
-                .disabled(containsExplicitContent)
-
-                Spacer()
-                Button {
-                    showComments.toggle()
-                } label: {
-                    Image(systemName: "bubble.left.and.bubble.right")
-                }
-                .disabled(containsExplicitContent)
-
-                Spacer()
-                Menu {
-                    ForEach(RAISALanguage.allSupportedCases) { lang in
-                        Button("\(lang.emoji()) \(lang.toName())") {
-                            RaisaReq.translate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article, _ in
-                                // Wasn't translated
-                                if article == nil {
-                                    noTranslationAlert.toggle()
-                                } else {
-                                    nextArticle = article
-                                    showNext = true
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    Image(systemName: "globe")
-                }
-                .alert("NO_TRANSLATION_FOUND", isPresented: $noTranslationAlert) {
-                    Button("OK") {}
-                }
-
-                Spacer()
-                Button {
-                    checkmarkStatus.toggle()
-                } label: {
-                    if checkmarkStatus {
-                        Image(systemName: "checkmark")
-                    } else {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.secondary)
-                            .opacity(0.5)
-                    }
-                }
-                .onChange(of: checkmarkStatus) {
-                    scp.complete(updateTo: $0)
-                }
-                
-                Group {
-                    Spacer()
-                    Menu {
-                        // Footnote view
-                        Button {
-                            showFootnoteView.toggle()
-                        } label: {
-                            HStack {
-                                Text("FOOTNOTE_TITLE")
-                                Image(systemName: "textformat.superscript")
-                            }
-                        }
-                        .disabled(!scp.pagesource.contains("[[footnote]]"))
-                        .disabled(containsExplicitContent)
-                        
-                        // Background toggle
-                        Button {
-                            showBackground.toggle()
-                        } label: {
-                            HStack {
-                                Text("TOGGLE_BG")
-                                Image(systemName: "photo")
-                                    .opacity(showBackground ? 1 : 0.3)
-                            }
-                        }
-                        .disabled(theme == nil)
-                        
-                        // Table of contents view
-                        Button {
-                            showTOCView.toggle()
-                        } label: {
-                            HStack {
-                                Text("TOCV_TITLE")
-                                Image(systemName: "list.bullet.rectangle")
-                                    .opacity(showBackground ? 1 : 0.3)
-                            }
-                        }
-                        .disabled(!TOCExists)
-                        
-                        // Vote button
-//                        Menu {
-//                            if #available(iOS 16.4, *) {
-//                                ControlGroup {
-//                                    Button {
-//                                        RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
-//                                    } label: {
-//                                        Label("Upvote", systemImage: "plus")
-//                                    }
-//                                    
-//                                    Button {
-//                                        RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
-//                                    } label: {
-//                                        Label("Downvote", systemImage: "minus")
-//                                    }
-//                                    
-//                                    Button {
-//                                        RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
-//                                    } label: {
-//                                        Label("Clear vote", systemImage: "xmark")
-//                                    }
-//                                }
-//                                .controlGroupStyle(.compactMenu)
-//                            } else {
-//                                Button {
-//                                    RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
-//                                } label: {
-//                                    Label("Clear vote", systemImage: "xmark")
-//                                }
-//                                
-//                                Button {
-//                                    RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
-//                                } label: {
-//                                    Label("Downvote", systemImage: "minus")
-//                                }
-//                                
-//                                Button {
-//                                    RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
-//                                } label: {
-//                                    Label("Upvote", systemImage: "plus")
-//                                }
-//                            }
-//                        } label: {
-//                            Label("Vote", systemImage: "arrow.up.arrow.down")
-//                        }
-                    } label: {
-                        Image(systemName: "list.bullet")
-                    }
-                }
-            }
-        }
+        
+        // Theme
+        .toolbar { toolbarContent }
         .background {
             if showBackground {
 //            theme?.wallpaper
@@ -377,6 +135,8 @@ struct ArticleView: View {
         .onDisappear {
             defaults.set("", forKey: "focusedCurrentText")
         }
+        
+        // Footnotes
         .onOpenURL { url in
             // raisa://footnote/x
             guard url.scheme == "raisa" else { return }
@@ -399,6 +159,266 @@ struct ArticleView: View {
         // footnote index won't be correctly passed to the sheet without this workaround
         .onChange(of: footnoteIndex) { _ in
             showFootnoteView = true
+        }
+    }
+    
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        // MARK: Top Bar
+        ToolbarItem(placement: .principal) {
+            VStack {
+                Text(scp.title).font(.headline)
+                if subtitle != nil && subtitle != "" {
+                    Text(containsExplicitContent ? "-" : subtitle!).font(.subheadline)
+                }
+            }
+            .task {
+                if subtitle == nil {
+                    subtitle = RaisaReq.getAlternateTitle(url: scp.url, store: subtitlesStore)
+                }
+            }
+        }
+        
+        ToolbarItem(placement: .cancellationAction) {
+            Button {
+                if bookmarkStatus == true && con.getScroll(id: scp.id) == nil && defaults.bool(forKey: "bookmarkAlert") {
+                    showBookmarkAlert.toggle()
+                } else {
+                    dismiss()
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+            }
+            .frame(width: 44.0, height: 44.0)
+            .contextMenu {
+                if #unavailable(iOS 16.0) {
+                    var rootViewController: UIViewController? = nil
+                    Button {
+                        rootViewController?.dismiss(animated: true)
+                    } label: {
+                        Label("AV_DISMISS_ALL", systemImage: "house")
+                    }
+                    .task {
+                        rootViewController = {
+                            UIApplication.shared.connectedScenes
+                                .filter {$0.activationState == .foregroundActive }
+                                .map {$0 as? UIWindowScene }
+                                .compactMap { $0 }
+                                .first?.windows
+                                .filter({ $0.isKeyWindow }).first?.rootViewController
+                        }()
+                    }
+                }
+            }
+        }
+        
+        ToolbarItem {
+            if nextArticle != nil {
+                Button {
+                    showNext = true
+                } label: {
+                    Image(systemName: "chevron.right")
+                }
+                .frame(width: 44.0, height: 44.0)
+            }
+        }
+
+        // MARK: Bottom Bar
+        ToolbarItemGroup(placement: .bottomBar) {
+            Button {
+                presentSheet.toggle()
+            } label: {
+                Image(systemName: bookmarkStatus ? "bookmark.fill": "bookmark")
+            }
+            .disabled(containsExplicitContent)
+
+            Spacer()
+            Button {
+                showInfo.toggle()
+            } label: {
+                Image(systemName: "info.circle")
+            }
+            .disabled(containsExplicitContent)
+
+            Spacer()
+            Button {
+                showComments.toggle()
+            } label: {
+                Image(systemName: "bubble.left.and.bubble.right")
+            }
+            .disabled(containsExplicitContent)
+
+            Spacer()
+            Menu {
+                ForEach(RAISALanguage.allSupportedCases) { lang in
+                    Button("\(lang.emoji()) \(lang.toName())") {
+                        RaisaReq.translate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article, _ in
+                            // Wasn't translated
+                            if article == nil {
+                                noTranslationAlert.toggle()
+                            } else {
+                                nextArticle = article
+                                showNext = true
+                            }
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "globe")
+            }
+            .alert("NO_TRANSLATION_FOUND", isPresented: $noTranslationAlert) {
+                Button("OK") {}
+            }
+
+            Spacer()
+            Button {
+                checkmarkStatus.toggle()
+            } label: {
+                if checkmarkStatus {
+                    Image(systemName: "checkmark")
+                } else {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.secondary)
+                        .opacity(0.5)
+                }
+            }
+            .onChange(of: checkmarkStatus) {
+                scp.complete(updateTo: $0)
+            }
+            
+            Group {
+                Spacer()
+                Menu {
+                    // Footnote view
+                    Button {
+                        showFootnoteView.toggle()
+                    } label: {
+                        HStack {
+                            Text("FOOTNOTE_TITLE")
+                            Image(systemName: "textformat.superscript")
+                        }
+                    }
+                    .disabled(!scp.pagesource.contains("[[footnote]]"))
+                    .disabled(containsExplicitContent)
+                    
+                    // Background toggle
+                    Button {
+                        showBackground.toggle()
+                    } label: {
+                        HStack {
+                            Text("TOGGLE_BG")
+                            Image(systemName: "photo")
+                                .opacity(showBackground ? 1 : 0.3)
+                        }
+                    }
+                    .disabled(theme == nil)
+                    
+                    // Table of contents view
+                    Button {
+                        showTOCView.toggle()
+                    } label: {
+                        HStack {
+                            Text("TOCV_TITLE")
+                            Image(systemName: "list.bullet.rectangle")
+                                .opacity(showBackground ? 1 : 0.3)
+                        }
+                    }
+                    .disabled(!TOCExists)
+                    
+                    // Vote button
+//                        Menu {
+//                            if #available(iOS 16.4, *) {
+//                                ControlGroup {
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
+//                                    } label: {
+//                                        Label("Upvote", systemImage: "plus")
+//                                    }
+//
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
+//                                    } label: {
+//                                        Label("Downvote", systemImage: "minus")
+//                                    }
+//
+//                                    Button {
+//                                        RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
+//                                    } label: {
+//                                        Label("Clear vote", systemImage: "xmark")
+//                                    }
+//                                }
+//                                .controlGroupStyle(.compactMenu)
+//                            } else {
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .clear) { _ in }
+//                                } label: {
+//                                    Label("Clear vote", systemImage: "xmark")
+//                                }
+//
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .down) { _ in }
+//                                } label: {
+//                                    Label("Downvote", systemImage: "minus")
+//                                }
+//
+//                                Button {
+//                                    RaisaReq.ratePage(url: scp.url, vote: .up) { _ in }
+//                                } label: {
+//                                    Label("Upvote", systemImage: "plus")
+//                                }
+//                            }
+//                        } label: {
+//                            Label("Vote", systemImage: "arrow.up.arrow.down")
+//                        }
+                } label: {
+                    Image(systemName: "list.bullet")
+                }
+            }
+        }
+    }
+    
+    // MARK: On Appear
+    private func tasks() {
+        bookmarkStatus = scp.isSaved()
+        checkmarkStatus = scp.isComplete()
+        
+        if scp.title == "Could not find title" {
+            dismiss()
+        }
+        
+        if defaults.bool(forKey: "trackHistory") && scp.title != "Could not find title" {
+            con.createHistory(from: History(title: scp.title, thumbnail: scp.thumbnail))
+        }
+        
+        if markLatest ?? false {
+            defaults.set(scp.url, forKey: "lastReadUrl")
+        }
+        
+        if scp.pagesource.contains("[[module ListPages") {
+            isFragmented = true
+            RaisaReq.getSourceOfFragments(article: scp) { newSource in
+                con.updatePageSource(id: scp.id, newPageSource: newSource)
+                scp.updateSource(newSource)
+                isFragmented = false
+            }
+        } else {
+            isFragmented = false
+        }
+        
+        if containsExplicitContent {
+            if let list = scp.findContentWarnings() {
+                explicitContent = list
+            } else {
+                containsExplicitContent = false
+            }
+        }
+        
+        if scp.pagesource.contains(/\[\[.*?toc.*?]]/) {
+            TOCExists = true
+        }
+        
+        scp.findNextArticle() { article in
+            nextArticle = article
         }
     }
 }

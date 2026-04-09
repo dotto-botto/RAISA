@@ -75,6 +75,10 @@ extension RTMarkdown {
     }
     
     private func colorToButton(text markdown: String) -> String {
+        guard markdown.contains("##") else {
+            return try! markdown.replacing(Regex(#"(\[\[size .*?\]\]|\[\[\/size\]\])"#), with: "")
+        }
+        
         var newText = markdown
         for match in matches(for: #"###?[^|#]*\|.*?##"#, in: markdown) {
             let text = match.slice(from: "|", to: "##") ?? match
@@ -111,7 +115,16 @@ extension RTMarkdown {
     }
     
     private func parseLink(_ content: String) -> String {
-        var doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
+        var doc = content
+        
+        defer {
+            doc = doc.replacingOccurrences(of: "\n", with: "")
+            doc = doc.replacingOccurrences(of: "*http", with: "http")
+        }
+        
+        guard content.contains("http") || content.contains("[[[") else { return doc }
+        
+        doc = try! content.replacing(Regex(#"https?:\*"#), with: "https://")
             .replacingOccurrences(of: "[[[/", with: "[[[") // some articles put a slash in front of the link
         
         let baseURL: String = RAISALanguage(rawValue: UserDefaults.standard.integer(forKey: "chosenRaisaLanguage"))?.toURL().formatted() ?? "https://scp-wiki.wikidot.com/"
@@ -150,8 +163,6 @@ extension RTMarkdown {
             }
         }
 
-        doc = doc.replacingOccurrences(of: "\n", with: "")
-        doc = doc.replacingOccurrences(of: "*http", with: "http")
         return doc
     }
 }

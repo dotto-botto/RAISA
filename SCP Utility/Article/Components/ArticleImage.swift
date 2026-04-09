@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MarkdownUI
 
 /// Image view to be displayed inside ArticleView.
 struct ArticleImage: View {
@@ -55,8 +56,10 @@ struct ArticleImage: View {
                             Label("IMAGE_STORED_ON_DISK", systemImage: "checkmark")
                             Text(filename ?? "error")
                         }
-                    Text(subtitle ?? "")
-                        .font(.headline)
+                    Markdown(subtitle ?? "")
+                        .markdownTextStyle(\.text) {
+                            FontWeight(.bold)
+                        }
                 }
             } else {
                 let parsed = parseArticleImage(content, articleURL: article.url).first
@@ -89,8 +92,10 @@ struct ArticleImage: View {
                             Text("error finding url")
                         }
                     }
-                    Text(FilterToPure(doc: parsed?.key ?? ""))
-                        .font(.headline)
+                    Markdown(parsed?.key ?? "")
+                        .markdownTextStyle(\.text) {
+                            FontWeight(.bold)
+                        }
                 }
             }
         }

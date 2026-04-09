@@ -51,6 +51,7 @@ struct CommentView: View {
                             .font(.system(size: 16))
                             .bold()
                     }
+                    .disabled(comment.username == "(account deleted)")
                     
                     if comment.date != nil {
                         Guide()
