@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     @Environment(\.dismiss) var dismiss
+    @AppStorage("isFirstLaunch") var isFirstLaunch = true
     var body: some View {
         VStack {
             Image("RAISA-icon")
@@ -45,6 +46,7 @@ struct WelcomeView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
         }
+        .onAppear { isFirstLaunch = false }
     }
 }
 
@@ -78,7 +80,7 @@ struct WelcomeCardView: View {
             VStack(alignment: .leading) {
                 Text(headlines[card])
                     .font(.title3)
-                RTMarkdown(article: placeHolderArticle, text: subheadlines[card])
+                RTMarkdown(article: placeHolderArticle, text: subheadlines[card], inWelcomeView: true)
             }
             .padding(.leading, 10)
         }

@@ -35,7 +35,6 @@ struct SCP_UtilityApp: App {
             defaults.set(true, forKey: "reopenLastRead")
             defaults.set(RAISALanguage.english.rawValue, forKey: "chosenRaisaLanguage")
         }
-        isFirstLaunch = false
     }
     
     var body: some Scene {
@@ -53,6 +52,7 @@ struct SCP_UtilityApp: App {
                 .onAppear {
                     if isFirstLaunch {
                         // Scrape all subtitles
+                        showSheet = true
                         RaisaReq.scrapeSubtitles(store: subtitlesStore)
                     } else {
                         RaisaReq.scrapeSubtitles(store: subtitlesStore, series: LATEST_SERIES)
