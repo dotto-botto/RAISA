@@ -65,6 +65,11 @@ struct TabViewComponent: View {
             
             currentKey = contentKeys.first ?? ""
             
+            // Default to chronological tab in SCP-001 because it does not rely on html
+            if article.title == "SCP-001" {
+                currentKey = "Order Chronologically"
+            }
+            
             // Switch tab if text is bookmarked in tab
             for item in content {
                 if let currenttext = article.currenttext, item.1.contains(currenttext) {
