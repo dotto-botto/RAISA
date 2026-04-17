@@ -219,7 +219,7 @@
 "SUBTITLE" = "Subtitle";
 "DEAFULT_LIST_TITLE" = "New List";
 
-// MARK: - Article View, Bar, and Info
+// MARK: - Article View and child views
 "LOADING_SAFARI" = "This article will open in safari.";
 "RESUME_READING" = "Resume Reading?";
 "PLACE_SAVED" = "Place Saved!";
@@ -258,6 +258,26 @@
 "BOOKMARKED" = "Bookmarked";
 "NO_TRANSLATION_FOUND" = "No translation found.";
 "TRANSLATE" = "Translate";
+
+// Tutorial
+"HELP" = "Help";
+"AVTV_TOP" = "Top of the Reader";
+"AVTV_BOT" = "Bottom of the Reader";
+"AVTV_MENU" = "Bottom Right Menu";
+"AVTV_READER_FUNCS" = "Reader Functions";
+"AVTV_BOOKMARK" = "Double tap any line of text to bookmark and scroll to it automatically.";
+"AVTV_HYPERLINK" = "If a piece of text is highlighted, tap it to open a new page.";
+"AVTV_DISMISS" = "Returns to the main page or the previous article.";
+"AVTV_NEXT" = "Switches to the next article in the series if available.";
+"AVTV_SAVE" = "Brings up a menu that lets you save the article; filled if saved already.";
+"AVTV_INFO" = "Brings up a menu with info about the article and author.";
+"AVTV_COMMENTS" = "Shows the discussion page for the article.";
+"AVTV_HIDETOOLBAR" = "Hides all toolbar items.";
+"AVTV_CHECKMARK" = "Press to indicate you completed this article.";
+"AVTV_TRANSLATE" = "Shows languages available for translation, not all languages may have translations.";
+"AVTV_TOC" = "Shows the table of contents if one is available.";
+"AVTV_BG" = "Toggles the background of a theme if one is applied.";
+"AVTV_FOOTNOTE" = "Shows all footnotes if any are available. Highlighted text of the format \"[fn.x]\" will open the corresponding footnote.";
 
 // Article Bar + Row
 "ADD_TO_BAR" = "Add to Bar";

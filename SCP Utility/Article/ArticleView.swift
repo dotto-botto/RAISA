@@ -34,6 +34,7 @@ struct ArticleView: View {
     @State private var showTOCView: Bool = false
     @State private var TOCExists: Bool = false
     @State private var toolbarShown: Bool = true
+    @State private var showTutorialView: Bool = false
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var subtitlesStore: SubtitlesStore
@@ -89,12 +90,8 @@ struct ArticleView: View {
         }) {
             ListAdd(isPresented: $presentSheet, article: scp)
         }
-        .sheet(isPresented: $showInfo) {
-            ArticleInfoView(article: scp)
-        }
-        .sheet(isPresented: $showComments) {
-            CommentsView(article: scp)
-        }
+        .sheet(isPresented: $showInfo) { ArticleInfoView(article: scp) }
+        .sheet(isPresented: $showComments) { CommentsView(article: scp) }
         .sheet(isPresented: $showFootnoteView) {
             FootnoteView(article: scp, selectedNoteIndex: footnoteIndex)
                 .presentationDetents([.medium])
@@ -106,7 +103,8 @@ struct ArticleView: View {
         .fullScreenCover(isPresented: $showNext) {
             NavigationStack { ArticleView(scp: nextArticle ?? scp, dismissText: scp.title) }
         }
-        .alert("WANTED_TO_BOOKMARK", isPresented: $showBookmarkAlert) { 
+        .fullScreenCover(isPresented: $showTutorialView) { AVTutorialView() }
+        .alert("WANTED_TO_BOOKMARK", isPresented: $showBookmarkAlert) {
             Button("BACK_TO_ARTICLE") {}
             
             Button("DONT_SHOW_AGAIN") {
@@ -391,6 +389,18 @@ struct ArticleView: View {
 //                        } label: {
 //                            Label("Vote", systemImage: "arrow.up.arrow.down")
 //                        }
+                    
+                    Divider()
+                    
+                    // tutorial view
+                    Button {
+                        showTutorialView.toggle()
+                    } label: {
+                        HStack {
+                            Text("HELP")
+                            Image(systemName: "questionmark.circle")
+                        }
+                    }
                 } label: {
                     Image(systemName: "list.bullet")
                 }
