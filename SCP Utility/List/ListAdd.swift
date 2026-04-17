@@ -73,6 +73,14 @@ struct ListAdd: View {
                         Image(systemName: "plus")
                     }
                 }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("CANCEL")
+                    }
+                }
             }
             .alert("ADD_LIST_PROMPT", isPresented: $alertPresent) {
                 // Copied from ListView

@@ -15,6 +15,7 @@ struct CommentsView: View {
     @State private var page: Int = 1
     @State private var maxpage: Int = 1
     @State private var error: Error? = nil
+    @Environment(\.dismiss) private var dismiss
 
     @ViewBuilder
     var pager: some View {
@@ -113,6 +114,15 @@ struct CommentsView: View {
             }
             .navigationTitle("CV_TITLE\(article.title)")
             .scrollDisabled(loading)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.down")
+                    }
+                }
+            }
         }
         .onAppear {
             loading = true

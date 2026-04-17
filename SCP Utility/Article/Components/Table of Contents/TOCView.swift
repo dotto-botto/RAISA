@@ -42,6 +42,15 @@ struct TOCView: View {
                 }
             }
             .navigationTitle("TOCV_TITLE")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.down")
+                    }
+                }
+            }
         }
     }
 }
