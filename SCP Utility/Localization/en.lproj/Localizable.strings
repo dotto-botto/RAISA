@@ -257,6 +257,7 @@
 "FOOTNOTE_MARK%lld" = "fn.%lld";
 "BOOKMARKED" = "Bookmarked";
 "NO_TRANSLATION_FOUND" = "No translation found.";
+"TRANSLATE" = "Translate";
 
 // Article Bar + Row
 "ADD_TO_BAR" = "Add to Bar";

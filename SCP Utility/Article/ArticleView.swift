@@ -33,6 +33,7 @@ struct ArticleView: View {
     @State private var noTranslationAlert: Bool = false
     @State private var showTOCView: Bool = false
     @State private var TOCExists: Bool = false
+    @State private var toolbarShown: Bool = true
     @AppStorage("showAVWallpaper") var showBackground: Bool = true
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var subtitlesStore: SubtitlesStore
@@ -115,9 +116,21 @@ struct ArticleView: View {
         } message: {
             Text("HOW_TO_SAVE")
         }
+        .toolbar {
+            if toolbarShown {
+                toolbarContent
+            } else {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        toolbarShown.toggle()
+                    } label: {
+                        Image(systemName: "text.page.slash")
+                    }
+                }
+            }
+        }
         
         // Theme
-        .toolbar { toolbarContent }
         .background {
             if showBackground {
 //            theme?.wallpaper
@@ -249,26 +262,12 @@ struct ArticleView: View {
             .disabled(containsExplicitContent)
 
             Spacer()
-            Menu {
-                ForEach(RAISALanguage.allSupportedCases) { lang in
-                    Button("\(lang.emoji()) \(lang.toName())") {
-                        RaisaReq.translate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article, _ in
-                            // Wasn't translated
-                            if article == nil {
-                                noTranslationAlert.toggle()
-                            } else {
-                                nextArticle = article
-                                showNext = true
-                            }
-                        }
-                    }
-                }
+            Button {
+                toolbarShown.toggle()
             } label: {
-                Image(systemName: "globe")
+                Image(systemName: "richtext.page")
             }
-            .alert("NO_TRANSLATION_FOUND", isPresented: $noTranslationAlert) {
-                Button("OK") {}
-            }
+            .disabled(containsExplicitContent)
 
             Spacer()
             Button {
@@ -324,6 +323,28 @@ struct ArticleView: View {
                         }
                     }
                     .disabled(!TOCExists)
+                    
+                    // Translate
+                    Menu {
+                        ForEach(RAISALanguage.allSupportedCases) { lang in
+                            Button("\(lang.emoji()) \(lang.toName())") {
+                                RaisaReq.translate(url: scp.url, from: scp.findLanguage() ?? .english, to: lang) { article, _ in
+                                    // Wasn't translated
+                                    if article == nil {
+                                        noTranslationAlert.toggle()
+                                    } else {
+                                        nextArticle = article
+                                        showNext = true
+                                    }
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("TRANSLATE", systemImage: "globe")
+                    }
+                    .alert("NO_TRANSLATION_FOUND", isPresented: $noTranslationAlert) {
+                        Button("OK") {}
+                    }
                     
                     // Vote button
 //                        Menu {
