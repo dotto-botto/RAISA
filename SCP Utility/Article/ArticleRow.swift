@@ -125,9 +125,9 @@ struct ArticleRow: View {
     }
 
     private func computeCompImg() {
-        if let im = article.objclass?.toImage(), !im.isEmpty, article.objclass != .esoteric {
+        if let im = article.esoteric?.toImage(), !im.isEmpty {
             compImgName = im
-        } else if let im = article.esoteric?.toImage(), !im.isEmpty {
+        } else if let im = article.objclass?.toImage(), !im.isEmpty, article.objclass != .esoteric {
             compImgName = im
         }
     }
