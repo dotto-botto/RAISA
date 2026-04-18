@@ -18,6 +18,7 @@ struct RAISAText: View {
     @State private var filteredText: String = ""
     @State private var itemList: [RTItem] = []
     @State private var currentId: String?
+    @State private var scrolledAlready = false
     
     var body: some View {
         ScrollViewReader { value in
@@ -30,7 +31,8 @@ struct RAISAText: View {
                             item.toCorrespondingView(article: article)
                         }
                         .onAppear {
-                            if article.currenttext != nil {
+                            if article.currenttext != nil && !scrolledAlready {
+                                scrolledAlready = true
                                 withAnimation {
                                     value.scrollTo(article.currenttext!)
                                 }
