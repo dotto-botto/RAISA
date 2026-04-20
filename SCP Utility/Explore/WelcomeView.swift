@@ -80,7 +80,8 @@ struct WelcomeCardView: View {
             VStack(alignment: .leading) {
                 Text(headlines[card])
                     .font(.title3)
-                RTMarkdown(article: placeHolderArticle, text: subheadlines[card], inWelcomeView: true)
+                RTMarkdown(article: placeHolderArticle, text: subheadlines[card])
+                    .environment(\.disableBookmark, true)
             }
             .padding(.leading, 10)
         }

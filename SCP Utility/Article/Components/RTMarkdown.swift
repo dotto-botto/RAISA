@@ -12,10 +12,10 @@ import MarkdownUI
 struct RTMarkdown: View {
     @State var article: Article
     @State var text: String
-    @State var inWelcomeView: Bool = false
     @State private var nextArticle: Article = placeHolderArticle
     @State private var showSheet: Bool = false
     
+    @Environment(\.disableBookmark) private var disableBM
     @AppStorage("focusedCurrentText") var focusedCurrentText: String = ""
     var body: some View {
         VStack {
@@ -35,7 +35,7 @@ struct RTMarkdown: View {
                     return .handled
                 })
             
-            if focusedCurrentText == text && focusedCurrentText != "" && !inWelcomeView {
+            if focusedCurrentText == text && focusedCurrentText != "" && !disableBM {
                 HStack {
                     Text("BOOKMARKED")
                     Image(systemName: "bookmark.fill")
@@ -46,19 +46,20 @@ struct RTMarkdown: View {
         }
         .textSelection(.enabled)
         .onTapGesture(count: 2) {
-            if !inWelcomeView {
+            if !disableBM {
                 let newText: String? = focusedCurrentText == text ? nil : text
                 article.setScroll(newText)
                 if !article.isSaved() { article.saveToDisk() }
                 focusedCurrentText = newText ?? ""
             }
         }
-        .task { if !inWelcomeView { focusedCurrentText = article.currenttext ?? "" } }
+        .task { if !disableBM { focusedCurrentText = article.currenttext ?? "" } }
         .onChange(of: nextArticle.id) { _ in
             showSheet = true
         }
         .fullScreenCover(isPresented: $showSheet) {
             NavigationStack { ArticleView(scp: nextArticle, dismissText: article.title, markLatest: false) }
+                .environment(\.disableBookmark, false)
         }
         .id(text)
     }

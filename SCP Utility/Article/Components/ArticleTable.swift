@@ -84,19 +84,22 @@ struct ArticleTable: View {
         }
         .sheet(item: $focusedCell) { data in
             NavigationStack {
-                RAISAText(article: article, text: data.text)
-                    .padding(.horizontal, 10)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button {
-                                focusedCell = nil
-                            } label: {
-                                Image(systemName: "chevron.down")
+                ScrollView {
+                    RAISAText(article: article, text: data.text)
+                        .padding(.horizontal, 10)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button {
+                                    focusedCell = nil
+                                } label: {
+                                    Image(systemName: "chevron.down")
+                                }
                             }
                         }
-                    }
+                }
             }
         }
+        .environment(\.disableBookmark, true)
         .navigationTitle("TABLE_VIEW_TITLE")
         .onAppear {
             tableViewed = true
@@ -202,6 +205,10 @@ struct ArticleTable: View {
         let id = UUID()
         var text: String
     }
+}
+
+extension EnvironmentValues {
+    @Entry var disableBookmark: Bool = false
 }
 
 // https://stackoverflow.com/a/27880748/11248074
