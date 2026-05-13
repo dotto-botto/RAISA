@@ -93,7 +93,7 @@ struct TopCard: View {
         }
         .onAppear {
             let timeOfLastParse = Date(timeIntervalSince1970: defaults.double(forKey: "timeOfLastParse")).timeIntervalSinceNow
-            if timeOfLastParse < -604800 {
+            if timeOfLastParse < -86400 {
                 getParse()
             } else {
                 titles = defaults.stringArray(forKey: "topTitles") ?? []
