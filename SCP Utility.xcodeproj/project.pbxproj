@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F6027C0F2FB4C81D0048712E /* KofiCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6027C0E2FB4C81D0048712E /* KofiCard.swift */; };
 		F6040515296248F8003577D7 /* SCP_UtilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6040514296248F8003577D7 /* SCP_UtilityApp.swift */; };
 		F6040519296248F8003577D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6040518296248F8003577D7 /* Assets.xcassets */; };
 		F604051C296248F8003577D7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F604051B296248F8003577D7 /* Preview Assets.xcassets */; };
@@ -93,6 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F6027C0E2FB4C81D0048712E /* KofiCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KofiCard.swift; sourceTree = "<group>"; };
 		F6040511296248F8003577D7 /* SCP Utility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SCP Utility.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6040514296248F8003577D7 /* SCP_UtilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCP_UtilityApp.swift; sourceTree = "<group>"; };
 		F6040518296248F8003577D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				F6DCB8232A1A97930048C180 /* SeriesCard.swift */,
 				F6DCB8252A1AA2630048C180 /* SeriesView.swift */,
 				F64BEED229FD9FA900AEB15B /* TopCard.swift */,
+				F6027C0E2FB4C81D0048712E /* KofiCard.swift */,
 				F6CA430C2F873E9D00935C1A /* FeaturedCard.swift */,
 				F60FF7062E5D0F0900A08535 /* WelcomeView.swift */,
 			);
@@ -556,6 +559,7 @@
 				F6DFED06299EF1B6002C3F1A /* Crom.swift in Sources */,
 				F66DF2372A05DEDF004437AC /* ACSView.swift in Sources */,
 				F6DEC9CA29B5227F00E72063 /* Article.swift in Sources */,
+				F6027C0F2FB4C81D0048712E /* KofiCard.swift in Sources */,
 				F62A5D7829D9F91200661DE0 /* ArticleView.swift in Sources */,
 				F64BEED329FD9FA900AEB15B /* TopCard.swift in Sources */,
 				F64BEECF29FD63BB00AEB15B /* CommentView.swift in Sources */,

@@ -30,6 +30,7 @@ struct ExploreView: View {
                         if RAISALanguage.allSupportedCases.contains(userIntBranch) {
                             RandomCard().clipped()
                         }
+                        KofiCard()
                         TopCard()
                     } else {
                         VStack {
@@ -82,11 +83,10 @@ struct ExploreView: View {
 }
 
 struct ExploreView_Previews: PreviewProvider {
-    static let networkMonitor = NetworkMonitor()
-    static let loginMonitor = LoginMonitor()
     static var previews: some View {
         ExploreView()
-            .environmentObject(networkMonitor)
-            .environmentObject(loginMonitor)
+            .environmentObject(NetworkMonitor())
+            .environmentObject(LoginMonitor())
+            .environmentObject(SubtitlesStore())
     }
 }

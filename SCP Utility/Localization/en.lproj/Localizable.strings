@@ -128,8 +128,8 @@
 "SETTINGS_TITLE" = "Settings";
 
 "SUPPORT_OPTIONS" = "Support";
-"SUPPORT_RAISA_PROMPT" = "Support the RAISA Creator";
-"SUPPORT_CROM_PROMPT" = "Support the Crom Creator";
+"SUPPORT_RAISA_PROMPT" = "Support RAISA on Ko-fi";
+"SUPPORT_CROM_PROMPT" = "Support Crom on Patreon";
 
 "GENERAL_OPTIONS" = "General";
 "OPEN_LAST_READ_OPTION" = "Open Last Read Article on Start";
