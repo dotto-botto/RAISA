@@ -14,12 +14,38 @@ struct SearchView: View {
     @State var recentSearches: [String] = []
     @State private var showPrompt: Bool = false
     @State private var connected: Bool = true
+    @State private var overriddenQuery: String = ""
+    @State private var newQuery: String = ""
+    @State private var loading: Bool = false
 
     @AppStorage("chosenRaisaLanguage") var token = RAISALanguage.english.rawValue
     @EnvironmentObject var networkMonitor: NetworkMonitor
     var body: some View {
         let defaults = UserDefaults.standard
         NavigationStack {
+            if loading {
+                VStack {
+                    ProgressView()
+                    Spacer()
+                }
+            }
+            
+            if !overriddenQuery.isEmpty && !loading && connected {
+                Text("SHOWING_RESULTS_FOR\(newQuery)")
+                    .bold()
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 10)
+                Button {
+                    query = overriddenQuery
+                    searchCrom(overrideQuery: false)
+                } label: {
+                    Text("REVERT_RESULTS_TO\(overriddenQuery)")
+                        .bold()
+                        .padding(.horizontal, 10)
+                }
+                Divider().padding(.horizontal, 10)
+            }
+            
             if showPrompt {
                 Text("NO_RESULTS_FOR_\(query)")
                     .bold()
@@ -36,7 +62,7 @@ struct SearchView: View {
                 .foregroundColor(.secondary)
             }
             
-            if articles.isEmpty && !recentSearches.isEmpty && !showPrompt && connected {
+            if articles.isEmpty && !recentSearches.isEmpty && !showPrompt && connected && !loading {
                 VStack(alignment: .leading) {
                     HStack {
                         Image(systemName: "clock.arrow.circlepath")
@@ -53,6 +79,7 @@ struct SearchView: View {
                     ForEach(recentSearches.reversed(), id: \.self) { search in
                         Button(search) {
                             query = search
+                            searchCrom()
                         }
                         .lineLimit(2)
                     }
@@ -65,11 +92,13 @@ struct SearchView: View {
             }
             
             VStack {
-                ForEach(articles) { article in
-                    OnlineArticleRow(article)
-                        .padding(.vertical, 1)
+                if !loading {
+                    ForEach(articles) { article in
+                        OnlineArticleRow(article)
+                            .padding(.vertical, 1)
+                    }
+                    Spacer()
                 }
-                Spacer()
             }
             .navigationTitle("SEARCH_TITLE")
             .toolbar {
@@ -93,22 +122,7 @@ struct SearchView: View {
             }
         }
         .searchable(text: $query, prompt: "SEARCH_PROMPT")
-        .onSubmit(of: .search) {
-            cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp in
-                articles = scp
-                
-                showPrompt = scp.isEmpty
-            
-                if !recentSearches.contains(query) && defaults.bool(forKey: "trackSearchHistory") {
-                    recentSearches.append(query)
-                    if recentSearches.count > 5 {
-                        recentSearches.remove(at: 0)
-                    }
-                    
-                    defaults.set(recentSearches, forKey: "recentSearches")
-                }
-            }
-        }
+        .onSubmit(of: .search) { searchCrom() }
         .onChange(of: networkMonitor.isConnected) {
             connected = $0
             articles = []
@@ -119,11 +133,42 @@ struct SearchView: View {
             recentSearches = defaults.stringArray(forKey: "recentSearches") ?? []
         }
     }
+    
+    private func searchCrom(overrideQuery: Bool = true) {
+        loading = true
+        
+        let defaults = UserDefaults.standard
+        
+        // Detect if query is a two digit number without leading zeroes - these won't show the expected results
+        overriddenQuery = ""
+        if overrideQuery && !query.isEmpty && query.first != "0" && query.count < 3 && Int(query) != nil {
+            overriddenQuery = query
+            
+            newQuery = String(format: "%03d", Int(query)!)
+            query = newQuery
+        }
+        
+        cromAPISearch(query: query, language: RAISALanguage(rawValue: token) ?? .english) { scp in
+            articles = scp
+            
+            showPrompt = scp.isEmpty
+        
+            if !recentSearches.contains(query) && defaults.bool(forKey: "trackSearchHistory") {
+                recentSearches.append(query)
+                if recentSearches.count > 5 {
+                    recentSearches.remove(at: 0)
+                }
+                
+                defaults.set(recentSearches, forKey: "recentSearches")
+            }
+            
+            loading = false
+        }
+    }
 }
 
 struct SearchView_Previews: PreviewProvider {
-    static let networkMonitor = NetworkMonitor()
     static var previews: some View {
-        SearchView().environmentObject(networkMonitor)
+        SearchView().environmentObject(NetworkMonitor())
     }
 }

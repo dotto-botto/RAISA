@@ -219,6 +219,13 @@
 "SUBTITLE" = "Subtitle";
 "DEAFULT_LIST_TITLE" = "New List";
 
+// MARK: - Search View
+"SEARCH_TITLE" = "Search";
+"RECENT_SEARCHES" = "Recent Searches";
+"NO_RESULTS_FOR_%@" = "No results for \"%@\", try broadening your search.";
+"SHOWING_RESULTS_FOR%@" = "Showing results for: \"%@\"";
+"REVERT_RESULTS_TO%@" = "Show results for: \"%@\"";
+
 // MARK: - Article View and child views
 "LOADING_SAFARI" = "This article will open in safari.";
 "RESUME_READING" = "Resume Reading?";
@@ -388,9 +395,6 @@
 "INVALID_CREDENTIALS" = "The username or password is incorrect.";
 
 // MARK: - Other
-"SEARCH_TITLE" = "Search";
-"RECENT_SEARCHES" = "Recent Searches";
-"NO_RESULTS_FOR_%@" = "No results for \"%@\", try broadening your search.";
 "ROMAN_1" = "I";
 "ROMAN_2" = "II";
 "ROMAN_3" = "III";
