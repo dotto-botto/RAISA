@@ -104,7 +104,7 @@ struct ArticleRow: View {
                 Label("UPDATE_ATTRIBUTE", image: article.objclass?.toImage() ?? "euclid-icon")
             }
             Button(role: .destructive) {
-                PersistenceController.shared.deleteArticleEntity(id: article.id)
+                article.delete()
                 loading = true
             } label: {
                 Label("DELETE", systemImage: "trash")

@@ -133,7 +133,7 @@ struct OneListView: View {
                     ArticleRow(article: $article)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
-                                PersistenceController.shared.deleteArticleEntity(id: article.id)
+                                article.delete()
                             } label: {
                                 Label("DELETE", systemImage: "trash")
                             }

@@ -257,6 +257,43 @@ struct Article: Identifiable, Codable {
         }
     }
     
+    /// Delete this article along with it's images
+    func delete() {
+        con.deleteArticleEntity(id: self.id)
+        deleteAllImages()
+    }
+    
+    /// Delete all images from this article on this device
+    func deleteAllImages() {
+        guard let imagesDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("Articles")
+            .appendingPathComponent(self.url.lastPathComponent)
+        else { return }
+        
+        do {
+            try FileManager.default.removeItem(at: imagesDirectory)
+        } catch {
+            print("Error deleting images: \(error.localizedDescription)")
+            return
+        }
+    }
+    
+    /// Delete all images from all articles on this device
+    static func deleteAllImages() {
+        guard let imagesDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("Articles")
+        else { return }
+        
+        do {
+            try FileManager.default.removeItem(at: imagesDirectory)
+        } catch {
+            print("Error deleting images: \(error.localizedDescription)")
+            return
+        }
+    }
+    
     mutating func saveToDisk() {
         if self.pagesource.contains("[[module ListPages") {
             let original = self

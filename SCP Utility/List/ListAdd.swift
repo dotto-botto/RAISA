@@ -54,7 +54,7 @@ struct ListAdd: View {
                     }
                     .confirmationDialog("LAV_DELETE_\(article.title)", isPresented: $showConf) {
                         Button("LAV_DELETE_\(article.title)", role: .destructive) {
-                            con.deleteArticleEntity(id: article.id)
+                            article.delete()
                             dismiss()
                         }
                     }

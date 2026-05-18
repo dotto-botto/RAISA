@@ -10,10 +10,13 @@ import Kingfisher
 
 struct StorageView: View {
     @State private var diskCacheSize: Double = 0
+    @State private var totalImagesSize: Double = 0
+    @State private var totalSubtitlesSize: Double = 0
     
     @State private var listConf = false
     @State private var articleConf = false
     @State private var allDataConf = false
+    @State private var imagesConf = false
     let con = PersistenceController.shared
     var body: some View {
         Form {
@@ -33,6 +36,20 @@ struct StorageView: View {
             
             
             Section("DATA_OPTIONS") {
+                HStack {
+                    Text("IMAGES_SIZE")
+                    Spacer()
+                    let cacheStr = String(format: "%.1f", totalImagesSize)
+                    Text("MB_SYMBOL\(cacheStr)")
+                }
+                
+                HStack {
+                    Text("SUBTITLES_SIZE")
+                    Spacer()
+                    let cacheStr = String(format: "%.1f", totalSubtitlesSize)
+                    Text("MB_SYMBOL\(cacheStr)")
+                }
+                                
                 CompletedArticlesView()
                 
                 Button("DELETE_ALL_LISTS") {
@@ -42,11 +59,21 @@ struct StorageView: View {
                         con.deleteAllLists()
                     }
                 }
+                
                 Button("DELETE_ALL_ARTICLES") {
                     articleConf = true
                 }.confirmationDialog("ASSURANCE", isPresented: $articleConf) {
                     Button("ASSURANCE", role: .destructive) {
-                        con.deleteAllLists()
+                        con.deleteAllArticles()
+                    }
+                }
+                
+                Button("DELETE_ALL_IMAGES") {
+                    imagesConf = true
+                }.confirmationDialog("ASSURANCE", isPresented: $imagesConf) {
+                    Button("ASSURANCE", role: .destructive) {
+                        Article.deleteAllImages()
+                        totalImagesSize = 0
                     }
                 }
                 
@@ -55,6 +82,7 @@ struct StorageView: View {
                 }.confirmationDialog("ASSURANCE", isPresented: $allDataConf) {
                     Button("ASSURANCE", role: .destructive) {
                         con.deleteAllData()
+                        Article.deleteAllImages()
                     }
                 }
             }
@@ -68,6 +96,76 @@ struct StorageView: View {
                 case .failure(let error):
                     print(error)
                 }
+            }
+            
+            // Articles
+            if let imagesDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                .first?
+                .appendingPathComponent("Articles") {
+                
+                let resourceKeys: Set<URLResourceKey> = [.fileSizeKey, .isRegularFileKey]
+                
+                let enumerator = FileManager.default.enumerator(
+                    at: imagesDirectory,
+                    includingPropertiesForKeys: Array(resourceKeys),
+                    options: [],
+                    errorHandler: { (url, error) -> Bool in
+                        print("Error at \(url): \(error)")
+                        return true
+                    }
+                )
+
+                var totalSize: Int = 0
+                
+                if let enumerator {
+                    for case let fileURL as URL in enumerator {
+                        do {
+                            let resourceValues = try fileURL.resourceValues(forKeys: resourceKeys)
+                            if resourceValues.isRegularFile ?? false {
+                                totalSize += Int(resourceValues.fileSize ?? 0)
+                            }
+                        } catch {
+                            continue
+                        }
+                    }
+                }
+                
+                totalImagesSize = Double(totalSize) / 1024 / 1024
+            }
+            
+            // Subtitles
+            if let imagesDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                .first?
+                .appendingPathComponent("Subtitles") {
+                
+                let resourceKeys: Set<URLResourceKey> = [.fileSizeKey, .isRegularFileKey]
+                
+                let enumerator = FileManager.default.enumerator(
+                    at: imagesDirectory,
+                    includingPropertiesForKeys: Array(resourceKeys),
+                    options: [],
+                    errorHandler: { (url, error) -> Bool in
+                        print("Error at \(url): \(error)")
+                        return true
+                    }
+                )
+
+                var totalSize: Int = 0
+                
+                if let enumerator {
+                    for case let fileURL as URL in enumerator {
+                        do {
+                            let resourceValues = try fileURL.resourceValues(forKeys: resourceKeys)
+                            if resourceValues.isRegularFile ?? false {
+                                totalSize += Int(resourceValues.fileSize ?? 0)
+                            }
+                        } catch {
+                            continue
+                        }
+                    }
+                }
+                
+                totalSubtitlesSize = Double(totalSize) / 1024 / 1024
             }
         }
     }
@@ -137,7 +235,9 @@ struct CompletedArticlesView: View {
     func updateCompleted() {
         self.completed =
         (UserDefaults.standard.stringArray(forKey: "completedArticles") ?? []) +
-        (PersistenceController.shared.getAllArticles() ?? []).map { Article(fromEntity: $0)?.url.formatted() ?? "" }
+        (PersistenceController.shared.getAllArticles() ?? [])
+            .filter { $0.completed }
+            .map { Article(fromEntity: $0)?.url.formatted() ?? "" }
     }
 }
 

@@ -147,6 +147,7 @@
 "DELETE_ALL_LISTS" = "Delete All Saved Lists";
 "DELETE_ALL_ARTICLES" = "Delete All Saved Articles";
 "DELETE_ALL_DATA" = "Delete All Data";
+"DELETE_ALL_IMAGES" = "Delete All Saved Images";
 
 "ICLOUD" = "ICloud";
 "UPLOAD_ICLOUD" = "Upload Saved Articles to ICloud";
@@ -174,6 +175,8 @@
 "CACHE_SIZE" = "Cache Size";
 "CLEAR_CACHE" = "Clear Cache";
 "MB_SYMBOL%@" = "%@ MB";
+"IMAGES_SIZE" = "Storage Used by Images";
+"SUBTITLES_SIZE" = "Storage Used by Subtitles";
 
 // MARK: - History View
 "HISTORY_TITLE" = "History";
